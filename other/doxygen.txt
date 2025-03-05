@@ -1,0 +1,56 @@
+
+https://www.ibm.com/developerworks/aix/library/au-learningdoxygen/index.html
+
+1. install:
+doxygen,
+Graphviz
+
+2. generate Doxyfile file:
+
+$ doxygen -g
+
+
+3. run:
+
+$ doxygen Doxyfile
+
+CREATE_SUBDIRS         = YES
+EXTRACT_ALL            = YES
+EXTRACT_PRIVATE        = YES
+EXTRACT_PACKAGE        = YES
+EXTRACT_STATIC         = YES
+EXTRACT_LOCAL_METHODS  = YES
+EXTRACT_ANON_NSPACES   = YES
+RECURSIVE              = YES
+SOURCE_BROWSER         = YES
+INLINE_SOURCES         = YES
+REFERENCED_BY_RELATION = YES
+REFERENCES_RELATION    = YES
+GENERATE_LATEX         = NO
+HAVE_DOT               = YES
+CALL_GRAPH             = YES
+CALLER_GRAPH           = YES
+DOT_PATH               = "C:\Program Files (x86)\Graphviz2.38\bin"
+
+$
+
+
+4. exclude non-business-logic related stuff to make a clearer call graph.
+    add the following configuration in Doxyfile:
+
+# https://www.doxygen.nl/manual/config.html ,
+
+# If this tag is empty the current directory is searched ,
+#INPUT                  = myfile.cpp /usr/src/myproject
+
+# If left blank the following patterns are tested: *.c, *.cc, *.cxx, *.cxxm, *.cpp, *.cppm, *.ccm, *.c++, *.c++m, *.java, .. ,
+#FILE_PATTERNS          =
+
+# relative paths are relative to the directory from which Doxygen is run ,
+EXCLUDE                = /usr/src/myproject/test  /usr/src/myproject/foo.h
+
+# the wildcards are matched against the file with absolute path ,
+EXCLUDE_PATTERNS       = */test/* *codec.cpp moc_* */compat/* */3rdparty/*
+
+# symbol name can be a fully qualified name, a word, or if the wildcard * is used, a substring ,
+EXCLUDE_SYMBOLS        = functionName1, functionName2, ClassName1, ANamespace, AClass, ANamespace::AClass, ANamespace::*Test
