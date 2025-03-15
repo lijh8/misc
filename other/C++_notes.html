@@ -2029,15 +2029,34 @@ objdump - display information from object files;
 readelf - display information about ELF files;
 
 $ ldd a.out
+
+# static archive
 $ ar -t libfoo.a # list member object files: foo.o bar.o
-$ nm -a /path/to/library.so | grep foo # symbol
-$ nm -D /path/to/library.so | grep foo # dynamic symbol
-$ objdump -t /path/to/library.so | grep ".text" # symbol table
-$ objdump -T /path/to/library.so | grep ".text" # dynamic symbol table
-$ readelf -Ws /path/to/library.so | grep FUNC
+
+# shared object dynamic library
+$ nm -a /path/to/libfoo.so | grep foo # symbol
+$ nm -D /path/to/libfoo.so | grep foo # dynamic symbol
+$ objdump -t /path/to/libfoo.so | grep ".text" # symbol table
+$ objdump -T /path/to/libfoo.so | grep ".text" # dynamic symbol table
+$ readelf -Ws /path/to/libfoo.so | grep FUNC
+
+# in C,C++, when run a executable,
+# if the dynamic library libfoo.so is not in current working directory,
+# use LD_LIBRARY_PATH to specify the directory to it.
 
 $ LD_LIBRARY_PATH=../boost_1_82_0/stage/lib  ./a.out
+$ LD_LIBRARY_PATH=../boost_1_82_0/stage/lib  /path/to/a.out
 
+#
+# in python, when run a file with python: `python3 /path/to/foo.py`,
+# the directory containing foo.py is added to sys.path,
+# not necessary the current working directory is added to it.
+# if the imported module in foo.py is not in the same directory with foo.py,
+# use PYTHONPATH to specify the directory to it.
+#
+# PYTHONPATH=/path/to/imported/module  python3 foo.py
+# PYTHONPATH=/path/to/imported/module  python3 /path/to/foo.py
+#
 
 ---
 
