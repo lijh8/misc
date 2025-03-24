@@ -13,11 +13,12 @@
   "C_Cpp.errorSquiggles": "Disabled",
   // "C_Cpp.formatting": "clangFormat",
   "C_Cpp.formatting": "none",
+  "chat.commandCenter.enabled": false,
   "clangd.arguments": [
-    "--background-index",
-    // "--compile-commands-dir=/Users/ljh/Documents/lijh8.github/Asio/",
+    // "--background-index",
+    // "--compile-commands-dir=/path/", // path to compile_commands.json,
     // "--fallback-style=none", // https://clang.llvm.org/docs/ClangFormat.html ,
-    "--header-insertion=never",
+    // "--header-insertion=never",
   ],
   "clangd.fallbackFlags": [
     "-std=c++2a", // all should have this: .clangd, compile_commands.json, compile_flags.txt
@@ -80,6 +81,12 @@
   "git.enableSmartCommit": true,
   "git.ignoreRebaseWarning": true,
   "git.openRepositoryInParentFolders": "never",
+  "github.copilot.advanced": {
+    "authProvider": "github"
+  },
+  "github.copilot.enable": {
+    "*": false,
+  },
   "go.enableCodeLens": {
     "references": false,
     "runtest": false,
