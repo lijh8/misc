@@ -16,20 +16,20 @@
   "chat.commandCenter.enabled": false,
   "clangd.arguments": [
     // "--background-index",
-    // "--compile-commands-dir=/path/", // path to compile_commands.json,
+    // "--compile-commands-dir=/path/to/compile_commands/", // path to compile_commands.json,
     // "--fallback-style=none", // https://clang.llvm.org/docs/ClangFormat.html ,
     // "--header-insertion=never",
   ],
   "clangd.fallbackFlags": [
-    "-std=c++2a", // all should have this: .clangd, compile_commands.json, compile_flags.txt
+    "-std=c++2a", // all with this: .clangd, compile_commands.json, compile_flags.txt
     "-DGLOG_USE_GLOG_EXPORT",
     "-I../foo",
     "-I${workspaceFolder}/src/foo",
-    "-I/Users/ljh/Downloads/boost_1_86_0/",
-    "-I/Users/ljh/Downloads/asio-1.30.2/include",
+    "-I/home/ljh/Downloads/boost_1_86_0/",
+    "-I/home/ljh/Downloads/asio-1.30.2/include",
     "-I/home/ljh/Downloads/glog/src",
     "-I/home/ljh/Downloads/glog/build",
-    "-I/Users/ljh/Downloads/utfcpp-4.0.5/source",
+    "-I/home/ljh/Downloads/utfcpp-4.0.5/source",
   ],
   "clangd.semanticHighlighting": false,
   "debug.internalConsoleOptions": "neverOpen",
@@ -81,9 +81,6 @@
   "git.enableSmartCommit": true,
   "git.ignoreRebaseWarning": true,
   "git.openRepositoryInParentFolders": "never",
-  "github.copilot.advanced": {
-    "authProvider": "github"
-  },
   "github.copilot.enable": {
     "*": false,
   },
