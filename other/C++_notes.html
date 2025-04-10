@@ -1561,6 +1561,37 @@ int main() {
 ---
 
 
+// print log with source location
+
+#define printf2(fmt, ...) printf("%s:%d: " fmt "\n", __FILE__, __LINE__, ##__VA_ARGS__)
+// #define printf2(fmt, ...) printf(fmt "\n", ##__VA_ARGS__)
+// #define printf2(fmt, ...) printf(fmt " ", ##__VA_ARGS__)
+//
+// work with:
+//      printf2();
+//      printf2("foo");
+//      printf2("%s, %f, %d", "foo", 3.14, 10);
+
+//---
+
+// #define printf2(fmt, ...) printf(fmt, __VA_ARGS__)
+//
+// does not work with:
+//      printf2();
+//      printf2("foo");
+
+//---
+
+// #define printf2(...) printf(__VA_ARGS__)
+// #define printf2(fmt, ...) printf(fmt, ##__VA_ARGS__)
+//
+// do not work with:
+//      printf2();
+
+
+---
+
+
 // log with printf, va args,
 if use __VA_ARGS__ without ## ,
 use the first way to print empty content:
