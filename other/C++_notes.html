@@ -1561,7 +1561,7 @@ int main() {
 ---
 
 
-// print log with source location
+// print log with source location in c
 
 #define printf2(fmt, ...) printf("%s:%d: " fmt "\n", __FILE__, __LINE__, ##__VA_ARGS__)
 // #define printf2(fmt, ...) printf(fmt "\n", ##__VA_ARGS__)
@@ -1587,6 +1587,40 @@ int main() {
 //
 // do not work with:
 //      printf2();
+
+
+---
+
+
+// log with source location in c++
+
+// c++11, gcc-14.2
+template <typename... Args>
+std::string expand(Args&&... args) {
+    std::ostringstream oss;
+    ((oss << args << ' ') , ...);
+    return oss.str();
+}
+
+// c++20, gcc-14.2
+template <typename... Args>
+std::string expand2(Args&&... args) {
+    return (std::string{} + ... + std::format("{} ", args));
+}
+
+#define LOG(...) std::cout << __FILE__ << ":" << __LINE__ << ": " << expand(__VA_ARGS__) << "\n"
+
+int main() {
+    LOG(3.14, "abc", 10, 'a');
+    LOG(3.14e2, "abc", 10 + 20);
+    LOG(3.14);
+    LOG("abc");
+    LOG(10);
+    LOG('a');
+    LOG("");
+    LOG();
+    return 0;
+}
 
 
 ---
