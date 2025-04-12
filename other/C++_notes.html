@@ -1675,22 +1675,30 @@ void g(Ts... args)
     // parameter pack, with initializer list
     // auto dummy = { (std::cout << args << '\n', 0)... };
 
+
     // unary left fold
     // (... , (std::cout << args));
     // (... , (std::cout << args << '\n'));
+    // int sum = (... + args);
+
 
     // unary right fold
     // ((std::cout << args) , ...);
     // ((std::cout << args << '\n') , ...);
+    // int sum = (args + ...);
+
 
     // binary left fold
     // (std::cout << ... << args);
     // (std::cout << ... << ( std::cout << '\n', args )) << '\n';
+    // int sum = (0 + ... + args);  // 0 is the initial value
+
 
     // binary right fold:
     // Some operators are more naturally suited
     // to one direction of folding over the other.
     // (args >> ... >> std::cout);  // Syntax error: `>>` is input, not output!
+    // int sum = (args + ... + 0);  // 0 is the initial value
 
 }
 
