@@ -1666,6 +1666,46 @@ int main() {
 ---
 
 
+// https://en.cppreference.com/w/cpp/language/pack ,
+// Pack (since C++11) / Pack expansion,
+
+template<class... Ts>
+void g(Ts... args)
+{
+    // parameter pack, with initializer list
+    // auto dummy = { (std::cout << args << '\n', 0)... };
+
+    // unary left fold
+    // (... , (std::cout << args));
+    // (... , (std::cout << args << '\n'));
+
+    // unary right fold
+    // ((std::cout << args) , ...);
+    // ((std::cout << args << '\n') , ...);
+
+    // binary left fold
+    // (std::cout << ... << args);
+    // (std::cout << ... << ( std::cout << '\n', args )) << '\n';
+
+    // binary right fold:
+    // Some operators are more naturally suited
+    // to one direction of folding over the other.
+    // (args >> ... >> std::cout);  // Syntax error: `>>` is input, not output!
+
+}
+
+int main() {
+    g(1, 0.2, "a");
+    g(10);
+    g(3.14);
+    g("b");
+
+}
+
+
+---
+
+
 // log with printf, va args,
 if use __VA_ARGS__ without ## ,
 use the first way to print empty content:
