@@ -1656,26 +1656,26 @@ void g(Ts... args)
     // unary left fold
     // (... , (std::cout << args));
     // (... , (std::cout << args << '\n'));
-    // int sum = (... + args); // addition: g(10+ 20);
+    // int sum = (... + args); // addition: g(10 + 20);
 
 
     // unary right fold
     // ((std::cout << args) , ...);
     // ((std::cout << args << '\n') , ...);
-    // int sum = (args + ...); // addition: g(10+ 20);
+    // int sum = (args + ...); // addition: g(10 + 20);
 
 
     // binary left fold
     // (std::cout << ... << args);
     // (std::cout << ... << ( std::cout << '\n', args )) << '\n';
-    // int sum = (0 + ... + args); // addition: g(10+ 20);
+    // int sum = (0 + ... + args); // addition: g(10 + 20);
 
 
     // binary right fold:
     // Some operators are more naturally suited
     // to one direction of folding over the other.
     // (args >> ... >> std::cout);  // Syntax error: `>>` is input, not output!
-    // int sum = (args + ... + 0);  // addition: g(10+ 20);
+    // int sum = (args + ... + 0);  // addition: g(10 + 20);
 
 }
 
