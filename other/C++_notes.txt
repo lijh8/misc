@@ -3161,8 +3161,17 @@ template <typename T>
 T sum4(T a, T b) requires std::is_arithmetic_v<T>
 { return a + b; }
 
+
 template <typename T>
-T concat(T a, T b) requires std::convertible_to<decltype(a + b), T>
+T concat(T a, T b) requires std::invocable<std::plus<>, T, T>
+{ return a + b; }
+
+template <typename T>
+T concat2(T a, T b) requires requires { a + b; }
+{ return a + b; }
+
+template <typename T>
+T concat3(T a, T b) requires std::convertible_to<decltype(a + b), T>
 { return a + b; }
 
 
