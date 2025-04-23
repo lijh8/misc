@@ -3145,6 +3145,29 @@ $
 ---
 
 
+#include <concepts>
+#include <iostream>
+
+template <std::integral T>
+T sum1(T a, T b) { return a + b; }
+
+template <typename T> requires std::is_integral_v<T> || std::is_floating_point_v<T>
+T sum2(T a, T b) { return a + b; }
+
+template <typename T> requires std::is_arithmetic_v<T>
+T sum3(T a, T b) { return a + b; }
+
+int main()
+{
+    std::cout << sum1(1, 2) << "\n";
+    // std::cout << sum1(1.0, 3.14) << "\n";
+    // std::cout << sum1("abc", "efg") << "\n";
+}
+
+
+---
+
+
 
 
 
