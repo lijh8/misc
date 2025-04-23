@@ -3148,22 +3148,31 @@ $
 #include <concepts>
 #include <iostream>
 
+auto sum1(auto a, auto b) requires requires { a + b; }
+{ return a + b; }
+
+auto sum2(auto a, auto b) requires std::invocable<std::plus<>, decltype(a), decltype(b)>
+{ return a + b; }
+
+auto sum3(std::integral auto a, std::integral auto b)
+{return a + b;}
+
 template <std::integral T>
-T sum1(T a, T b) { return a + b; }
+T sum4(T a, T b) { return a + b; }
 
 template <typename T> requires std::integral<T>
-T sum2(T a, T b) { return a + b; }
+T sum5(T a, T b) { return a + b; }
 
 template <typename T> requires std::is_integral_v<T> || std::is_floating_point_v<T>
-T sum3(T a, T b) { return a + b; }
+T sum6(T a, T b) { return a + b; }
 
 template <typename T>
-T sum4(T a, T b) requires std::is_arithmetic_v<T>
+T sum7(T a, T b) requires std::is_arithmetic_v<T>
 { return a + b; }
 
 
 template <typename T>
-T concat(T a, T b) requires std::invocable<std::plus<>, T, T>
+T concat1(T a, T b) requires std::invocable<std::plus<>, T, T>
 { return a + b; }
 
 template <typename T>
@@ -3187,7 +3196,7 @@ int main()
 
     // std::cout << sum1("abc", "efg") << "\n";
 
-    std::cout << concat(std::string("abc"), std::string("efg")) << "\n";
+    std::cout << concat1(std::string("abc"), std::string("efg")) << "\n";
 
 }
 
