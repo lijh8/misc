@@ -2443,7 +2443,7 @@ CPPFLAGS += -I/home/ljh/app/GSL/include/
 CPPFLAGS += -I/home/ljh/app/boost_1_86_0/
 LDFLAGS  += -L/home/ljh/app/boost_1_86_0/stage/lib
 
-CXXFLAGS += -std=c++2a -Wall -Wextra
+CXXFLAGS += -std=c++2a -Wall -Wextra -Wpedantic
 
 # https://github.com/google/sanitizers/issues/1039#issuecomment-453607726 ,
 #   "asan+lsan+ubsan is fine, the rest should run separately."  --kcc, Jan 12, 2019
