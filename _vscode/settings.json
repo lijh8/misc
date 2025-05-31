@@ -13,6 +13,7 @@
   "C_Cpp.errorSquiggles": "Disabled",
   // "C_Cpp.formatting": "clangFormat",
   "C_Cpp.formatting": "none",
+  "chat.agent.enabled": false,
   "chat.commandCenter.enabled": false,
   "clangd.arguments": [
     // "--background-index",
@@ -118,6 +119,7 @@
   "rust-analyzer.inlayHints.typeHints.enable": false,
   "rust-analyzer.lens.enable": false,
   "terminal.integrated.copyOnSelection": true,
+  "terminal.integrated.initialHint": false,
   "terminal.integrated.persistentSessionReviveProcess": "never",
   "terminal.integrated.shellIntegration.decorationsEnabled": "never",
   "vim.hlsearch": true,
