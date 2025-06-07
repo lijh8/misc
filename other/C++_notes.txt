@@ -344,6 +344,26 @@ by providing a braced list of member initializers:
   Data val1 = { 0, "Anna" };
 
 
+// 11.1 Using an Associative Container:
+A map is a collection of key–value pairs.
+The map type is often referred to as an associative array.
+It uses each word to subscript word_count.
+If word is not already in the map,
+the subscript operator creates a new element whose key is word
+and whose value is 0.
+
+
+// https://en.cppreference.com/w/cpp/container/map/operator_at.html :
+Inserts value_type(key, T()) if the key does not exist.
+
+
+// 11.3.4 Subscripting a map:
+the map subscript takes an index (that is, a key),
+if the key is not already present,
+a new element is created and inserted into the map for that key.
+The associated value is value initialized.
+
+
 ---
 
 
