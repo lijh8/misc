@@ -933,6 +933,23 @@ notes:
 ---
 
 
+// initialization:
+// create new object
+// the value on right hand side is initializer
+// invoke copy or move constructors
+Foo newObj = old;
+Foo newObj(old);
+Foo newObj{old};
+
+// assignment:
+// assign value on right to left
+// invoke copy or move assignment operators
+old2 = old2;
+
+
+---
+
+
 // c++11 rvalue reference, move operation semantics,
 // bind rvalue reference to element in container,
 // move element out of container,
