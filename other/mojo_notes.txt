@@ -1,0 +1,137 @@
+mojo lang
+
+
+---
+
+
+// like c++ class with virtual function
+https://docs.modular.com/mojo/manual/traits/#using-traits ,
+Traits solve this problem by letting you define a shared set of behaviors that types can implement.
+Then you can write a function that depends on the trait, rather than individual types.
+
+
+// like c++ template
+https://docs.modular.com/mojo/manual/traits/#generic-structs-with-traits ,
+You can also use traits when defining a generic container.
+A generic container is a container (for example, an array or hashmap) that can hold different data types.
+
+
+---
+
+
+https://docs.modular.com/mojo/manual/lifecycle/life#constructors-and-implicit-conversion ,
+Implicit conversion can happen when one of the following occurs:
+You assign a value of one type to a variable with a different type.
+You pass a value of one type to a function that requires a different type.
+You return a value of one type from a function that specifies a different return type.
+
+
+---
+
+
+// mojo use init for both creating an instance with initialization, and assignment.
+// it does not need separate assignment operator methods like c++.
+
+https://docs.modular.com/mojo/manual/lifecycle/life#copy-constructor ,
+When Mojo encounters an assignment statement that doesn't use the transfer sigil (^),
+it tries to make a copy of the right-side value by calling upon that type's copy constructor,
+
+Mojo also calls upon the copy constructor when a value is passed to a function that takes the argument as owned
+and when the lifetime of the given value does not end at that point.
+
+If the lifetime of the value does end there (usually indicated with the transfer sigil ^),
+then Mojo instead invokes the move constructor.
+
+
+---
+
+
+https://docs.modular.com/mojo/manual/lifecycle/life#move-constructor ,
+the only catch is that you must use the ^ transfer sigil to end the lifetime of a move-only type
+when assigning it to a new variable or when passing it as an owned argument.
+
+
+---
+
+
+https://docs.modular.com/mojo/manual/lifecycle/life#value-decorator ,
+even if it's not used with self.name = name^, the Mojo compiler will notice
+that name is last used here and convert this assignment into a move, instead of a copy+delete.
+
+
+---
+
+
+
+// file handle, network and database connection, are non-memory (eg. variables) resources.
+// it is like using a custom deleter with c++ smart pointer.
+https://docs.modular.com/mojo/manual/errors#use-a-context-manager ,
+A context manager is an object that manages resources such as files, network connections,
+and database connections.
+
+
+---
+
+
+https://docs.modular.com/mojo/manual/packages#mojo-modules ,
+import MyPair into a file named main.mojo that's in the same directory as mymodule.mojo:
+  from mymodule import MyPair
+
+it only works when mymodule.mojo is in the same directory as main.mojo.
+Currently, you can't import .mojo files as modules if they reside in other directories.
+That is, unless you treat the directory as a Mojo package, as described in the next section.
+
+
+---
+
+
+struct T:
+    var name: String
+    fn __init__(out self, name: String):
+        self.name = name
+        print("init", self.name)
+    fn __copyinit__(out self, existing: Self):
+        self.name = existing.name
+        print("copyinit", self.name)
+    fn __moveinit__(out self, owned existing: Self):
+        self.name = existing.name
+        print("moveinit", self.name)
+    fn __del__(owned self):
+        print("del", self.name)
+fn f1(t: T):
+    print("f1")
+fn f2(owned t: T):
+    print("f2")
+fn main():
+    var a = T("a")  # init
+    var b = a       # copyinit
+    var c = b^      # moveinit
+    b = a           # moveinit
+    a = b^
+    f2(a)
+    f2(a^)
+    f2(c)
+
+
+'''
+
+# OUTPUT
+
+init a
+copyinit a
+moveinit a
+moveinit a
+moveinit a
+copyinit a
+del a
+f2
+del a
+f2
+del a
+f2
+
+'''
+
+
+---
+
