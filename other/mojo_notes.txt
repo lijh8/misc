@@ -29,8 +29,25 @@ You return a value of one type from a function that specifies a different return
 ---
 
 
+// __init__:
+//      create a new instance not from another existing instance;
+//
+// __copyinit__, __moveinit__:
+//      create a new instance from another existing instance;
+//      assignment;
+//      function argument passing;
+
 // mojo use init for both creating an instance with initialization, and assignment.
 // it does not need separate assignment operator methods like c++.
+
+https://docs.modular.com/mojo/manual/structs ,
+
+So here it is with a constructor to initialize the two fields,
+The __init__() method is one of many special methods
+(also known as "dunder methods" because they have double underscores) with pre-determined names.
+
+Once you have a constructor, you can create an instance of MyPair and set the fields.
+
 
 https://docs.modular.com/mojo/manual/lifecycle/life#copy-constructor ,
 When Mojo encounters an assignment statement that doesn't use the transfer sigil (^),
@@ -87,30 +104,52 @@ That is, unless you treat the directory as a Mojo package, as described in the n
 
 struct T:
     var name: String
+
     fn __init__(out self, name: String):
         self.name = name
         print("init", self.name)
+
     fn __copyinit__(out self, existing: Self):
         self.name = existing.name
         print("copyinit", self.name)
+
     fn __moveinit__(out self, owned existing: Self):
         self.name = existing.name
         print("moveinit", self.name)
+
     fn __del__(owned self):
         print("del", self.name)
+
+
 fn f1(t: T):
     print("f1")
+
+
 fn f2(owned t: T):
     print("f2")
-fn main():
-    var a = T("a")  # init
-    var b = a       # copyinit
-    var c = b^      # moveinit
-    b = a           # moveinit
-    a = b^
+
+
+fn main() raises:
+    a = T("a")  # init, create new instance
+    b = a  # copy
+    c = a^  # move
+    a = c  # copy, assignment
+
+    # ref
+    f1(a)
+    f1(a)
+
+    # copy
     f2(a)
-    f2(a^)
-    f2(c)
+    f2(a)
+
+    # move
+    # f2(a^)
+    # f2(a^)
+
+    #
+    f1(b)
+    f1(c)
 
 
 '''
@@ -120,15 +159,18 @@ fn main():
 init a
 copyinit a
 moveinit a
-moveinit a
-moveinit a
+copyinit a
+f1
+f1
 copyinit a
 del a
 f2
 del a
 f2
+f1
 del a
-f2
+f1
+del a
 
 '''
 
