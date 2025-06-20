@@ -4,6 +4,53 @@ mojo lang
 ---
 
 
+Install
+
+install pixi first
+$ curl -fsSL https://pixi.sh/install.sh | sh
+The 'pixi' binary is installed into '/Users/ljh/.pixi/bin'
+Updating '/Users/ljh/.zshrc'
+Please restart or source your shell.
+$
+
+Then restart your terminal for the changes to take effect.
+
+Navigate to the directory in which you want to create the project and execute:
+
+$ mkdir ~/hello && cd ~/hello
+
+$ pixi init example-project \
+  -c https://conda.modular.com/max-nightly/ -c conda-forge \
+  && cd example-project
+$
+
+Install the Modular Platform from the modular package (which includes Mojo):
+$ pixi add modular
+
+checking the version of Mojo:
+$ pixi run mojo --version
+
+Start the virtual environment:
+$ pixi shell
+
+$ mojo hello.mojo
+
+$ mojo build hello.mojo
+
+$ ./hello
+
+To deactivate your virtual environment:
+$ exit
+
+
+Uninstall
+
+$ pixi remove modular
+
+
+---
+
+
 // like c++ class with virtual function
 https://docs.modular.com/mojo/manual/traits/#using-traits ,
 Traits solve this problem by letting you define a shared set of behaviors that types can implement.
