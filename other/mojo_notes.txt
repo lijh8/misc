@@ -51,6 +51,24 @@ $ pixi remove modular
 ---
 
 
+vscode
+
+extension: mojo by Modular,
+
+when accept input, use internal terminal instead of debug console.
+launch.json:
+    "runInTerminal": true,
+
+this is similar to golang extension:
+    "console": "integratedTerminal",
+
+When install mojo extension in vscode, it will also install MAX SDK from Modular.
+It seems taht this is not required for build and run mojo at command terminal.
+
+
+---
+
+
 // like c++ class with virtual function
 https://docs.modular.com/mojo/manual/traits/#using-traits ,
 Traits solve this problem by letting you define a shared set of behaviors that types can implement.
