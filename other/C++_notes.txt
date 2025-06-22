@@ -3241,6 +3241,30 @@ int main()
 ---
 
 
+// use assert to make assumption on program invariant and pre/postcondition which always hold true.
+// do not use assert on conditions vary on user input or between debug and release builds.
+// fix the assertion failure and turn off assert for release build in makefile: CPPFLAGS += -DNDEBUG
+//
+
+int main() {
+  int arr[] = {1, 2, 3};
+  int *ptr = arr + 1; // ptr points to 2
+  int offset = -5;
+
+  // sizeof only works for array.
+  // use the specified size for malloc'ed buffer.
+  int len = sizeof(arr) / sizeof(*arr);
+
+  // CPPFLAGS += -DNDEBUG  # turn off assert in release build
+  assert(ptr + offset >= arr && ptr + offset < arr + len);
+
+  printf("%d\n", ptr[offset]); // valid
+}
+
+
+---
+
+
 
 
 
