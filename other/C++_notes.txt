@@ -3241,15 +3241,17 @@ int main()
 ---
 
 
-// use assert to make assumption on program invariant and pre/postcondition which always hold true.
-// do not use assert on conditions vary on user input or between debug and release builds.
-// fix the assertion failure and turn off assert for release build in makefile: CPPFLAGS += -DNDEBUG
+// Use assert() to verify program invariants and pre/post-conditions that must always hold true.
+// Avoid assert() for conditions that depend on user input or differ between debug/release builds.
+// To disable assertions in release builds, add CPPFLAGS += -DNDEBUG in your Makefile.
 //
+// For example, in debug builds, use assert() to catch buffer overflows and array index out-of-bounds errors.
+// Omit these runtime checks in release builds for better performance.
 
 int main() {
   int arr[] = {1, 2, 3};
-  int *ptr = arr + 1; // ptr points to 2
-  int offset = -5;
+  int *ptr = arr + 1; // address arithmetic with pointer can take negative offset.
+  int offset = -5; // offset -1 will be fine.
 
   // sizeof only works for array.
   // use the specified size for malloc'ed buffer.
