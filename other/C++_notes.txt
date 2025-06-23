@@ -3269,22 +3269,30 @@ strncpy, strcpy,
 snprintf,
 strcmp,
 strncat,
-memcpy, memmove, memcmp,
+memcpy, memmove, memcmp, memset,
 fgets, std::getline,
 
 // Linux manpages changed those description.
 // keep the following from macOS manpages.
 
+1.
 char *strcpy(char *restrict dst, const char *restrict src);
 strcpy(): copy the string src to dst (including the terminating ‘\0’ character.)
 The programmer is responsible for allocating a destination buffer large enough, that is, strlen(src) + 1.
 // Or, the src buffer should be 1 letter shorter than dst.
 
+2.
 char *strncpy(char * dst, const char * src, size_t len);
 strncpy(): copy at most len characters from src into dst.
 If src is less than len characters long, the remainder of dst is filled with ‘\0’ characters.
 Otherwise, dst is not terminated.
 // make sure destination buffer large enough too.
+
+Because strncpy() does not guarantee to NUL terminate the string itself, this must be done explicitly.
+
+  char buf[1024];
+  strncpy(buf, input, sizeof(buf) - 1);
+  buf[sizeof(buf) - 1] = '\0';
 
 
 ---
