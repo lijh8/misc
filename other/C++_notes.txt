@@ -3241,12 +3241,10 @@ int main()
 ---
 
 
-// Use assert() to verify program invariants and pre/post-conditions that must always hold true.
-// Avoid assert() for conditions that depend on user input or differ between debug/release builds.
-// To disable assertions in release builds, add CPPFLAGS += -DNDEBUG in your Makefile.
-//
-// For example, in debug builds, use assert() to catch buffer overflows and array index out-of-bounds errors.
-// Omit these runtime checks in release builds for better performance.
+// Use `assert()` to check correctness in debug builds.
+// Omit these checks in release builds for performance using `CPPFLAGS += -DNDEBUG`.
+// Use assert() to check issues like buffer overflows and array index out-of-bounds,
+// but not for specific values like if `user_input_name == "tom"`.
 
 int main() {
   int arr[] = {1, 2, 3};
