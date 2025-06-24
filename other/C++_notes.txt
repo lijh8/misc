@@ -3298,6 +3298,37 @@ Because strncpy() does not guarantee to NUL terminate the string itself, this mu
 ---
 
 
+#include <iostream>
+#include <vector>
+
+int main() {
+  std::vector v = {10,20,30,};
+
+  // range for
+  for (auto i: v){
+    std::cout << i << "\n";
+  }
+
+  // classic for
+  for (size_t i = 0; i < std::size(v); i++) {
+    assert(i >= 0 && i < std::size(v));
+    std::cout << v[i] << "\n";
+  }
+
+  // reverse
+  for (auto i = std::size(v); i > 0;) {
+    i--;
+    assert(i >= 0 && i < std::size(v));
+    std::cout << v[i] << "\n";
+  }
+
+  return 0;
+}
+
+
+---
+
+
 
 
 
