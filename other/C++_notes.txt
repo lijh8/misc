@@ -3316,10 +3316,9 @@ int main() {
   }
 
   // reverse
-  for (auto i = std::size(v); i > 0;) {
-    i--;
-    assert(i >= 0 && i < std::size(v));
-    std::cout << v[i] << "\n";
+  for (auto i = std::size(v); i > 0; i--) {
+    assert(i - 1 >= 0 && i - 1 < std::size(v));
+    std::cout << v[i - 1] << "\n";
   }
 
   return 0;
