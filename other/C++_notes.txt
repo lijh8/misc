@@ -3299,26 +3299,29 @@ Because strncpy() does not guarantee to NUL terminate the string itself, this mu
 
 
 #include <iostream>
-#include <vector>
 
 int main() {
-  std::vector v = {10,20,30,};
+  int arr[] = {10,20,30,};
 
   // range for
-  for (auto i: v){
-    std::cout << i << "\n";
+  for (auto i: arr){
+    std::cout << __LINE__ << ": " << i << "\n";
   }
 
   // classic for
-  for (size_t i = 0; i < std::size(v); i++) {
-    assert(i >= 0 && i < std::size(v));
-    std::cout << v[i] << "\n";
+  for (size_t i = 0; i < sizeof(arr)/sizeof(*arr); i++) {
+    assert(i >= 0 && i < sizeof(arr)/sizeof(*arr));
+    std::cout << __LINE__ << ": " << arr[i] << "\n";
   }
 
   // reverse
-  for (auto i = std::size(v); i > 0; i--) {
-    assert(i - 1 >= 0 && i - 1 < std::size(v));
-    std::cout << v[i - 1] << "\n";
+  for (auto i = sizeof(arr)/sizeof(*arr); i > 0; i--) {
+    assert(i - 1 >= 0 && i - 1 < sizeof(arr)/sizeof(*arr));
+    std::cout << __LINE__ << ": " << arr[i - 1] << "\n";
+  }
+
+  for (auto p = arr + sizeof(arr)/sizeof(*arr) - 1; p >= arr; p--) {
+    std::cout << __LINE__ << ": " << *p << "\n";
   }
 
   return 0;
