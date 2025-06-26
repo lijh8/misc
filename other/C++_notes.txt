@@ -3331,6 +3331,49 @@ int main() {
 ---
 
 
+#include <iostream>
+
+// an array decays to a pointer when passed as argument.
+// array can not be copied, assigned or returned.
+void foo1(int *arr, int n){
+  for (auto i = 0; i < n; i++){
+    if (arr[i]) std::cout << arr[i] << ", ";
+  }
+  std::cout << "\n";
+}
+
+void foo2(int (*arr)[10]){
+  for (size_t i = 0; i < sizeof(*arr)/sizeof(**arr); i++){
+    if ((*arr)[i]) std::cout << (*arr)[i] << ", ";
+  }
+  std::cout << "\n";
+}
+
+// return p; // NO
+// When foo3() returns, the stack unwinds (destroying arr) before the
+// std::string constructor runs. The std::string constructor then reads
+// invalid memory (p is now a dangling pointer). It is Undefined Behavior.
+std::string foo3(){
+  char arr[] = "abc";
+  char *p = arr;
+  // return p; // NO
+  return std::string(p); // OK
+}
+
+int main() {
+  int arr[10] = {10,20,30,};
+  foo1(arr, sizeof(arr)/sizeof(*arr));
+  foo2(&arr);
+
+  std::cout << foo3() << "\n";
+
+  return 0;
+}
+
+
+---
+
+
 
 
 
