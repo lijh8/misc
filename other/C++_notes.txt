@@ -3449,6 +3449,46 @@ int main() {
 ---
 
 
+5.7 Recursive Use of make
+https://www.gnu.org/software/make/manual/html_node/Recursion.html ,
+
+Projects containing source code are under the src directory;
+One project - one directory - one Makefile;
+The top src/Makefile will call the src/main/Makefile, src/foo/Makefile, etc;
+Each project has its own directory;
+No necessary to make extra nested directories under individual project;
+
+// This is similar to IDE like Visual Studio.
+// Each project has its own directory.
+// Multiple projects are organized in a solution.
+
+
+$ pwd
+/home/user1/project/hello_cpp
+$
+$ ls
+doc  src
+$
+$ tree
+.
+├── doc
+│   └── Readme.txt
+└── src
+    ├── foo
+    │   ├── foo.cpp
+    │   ├── foo.h
+    │   └── Makefile
+    ├── main
+    │   ├── main.cpp
+    │   └── Makefile
+    └── Makefile
+
+$
+
+
+---
+
+
 
 
 
