@@ -7,6 +7,79 @@ May 8, 2025
 ---
 
 
+Abstract
+
+The guidelines are focused on relatively high-level issues, such as interfaces,
+resource management, memory management, and concurrency. Such rules affect
+application architecture and library design. Following the rules will lead to
+code that is statically type safe, has no resource leaks, and catches many more
+programming logic errors than is common in code today. And it will run fast –
+you can afford to do things right.
+
+You will find some of the rules contrary to your expectations or even contrary
+to your experience. If we haven’t suggested you change your coding style in any
+way, we have failed! Please try to verify or disprove rules! In particular, we’d
+really like to have some of our rules backed up with measurements or better examples.
+
+You will find some of the rules obvious or even trivial. Please remember that
+one purpose of a guideline is to help someone who is less experienced or coming
+from a different background or language to get up to speed.
+
+Many of the rules are designed to be supported by an analysis tool. Violations
+of rules will be flagged with references (or links) to the relevant rule. We do
+not expect you to memorize all the rules before trying to write code. One way of
+thinking about these guidelines is as a specification for tools that happens to
+be readable by humans.
+
+The rules are meant for gradual introduction into a code base. We plan to build
+tools for that and hope others will too.
+
+
+---
+
+
+In: Introduction
+
+
+---
+
+
+In.0: Don’t panic!
+
+The rules emphasize static type safety and resource safety.
+For that reason, they emphasize possibilities
+for range checking,
+for avoiding dereferencing nullptr,
+for avoiding dangling pointers, and the systematic use of exceptions (via RAII).
+
+
+---
+
+
+In.force: Enforcement
+
+For a start, we have a few profiles corresponding to common needs (desires, ideals):
+
+type:
+    No type violations (reinterpreting a T as a U through casts, unions, or varargs)
+
+bounds:
+    No bounds violations (accessing beyond the range of an array)
+
+lifetime:
+    No leaks (failing to delete or multiple delete) and no access to invalid
+    objects (dereferencing nullptr, using a dangling reference).
+
+
+---
+
+
+P: Philosophy
+
+
+---
+
+
 P.4: Ideally, a program should be statically type safe
 
 unions – use variant (in C++17)
@@ -168,3 +241,282 @@ it’s better to cache the length outside the loop and not incur that cost each 
 
 ---
 
+
+I: Interfaces
+
+
+---
+
+
+I.11: Never transfer ownership by a raw pointer (T*) or reference (T&)
+
+Example Consider:
+X* compute(args)    // don't
+{
+    X* res = new X{};
+    // ...
+    return res;
+}
+
+Who deletes the returned X? The problem would be harder to spot if compute returned a reference.
+Consider returning the result by value (use move semantics if the result is large):
+
+vector<double> compute(args)  // good
+{
+    vector<double> res(10000);
+    // ...
+    return res;
+}
+
+
+---
+
+
+I.13: Do not pass an array as a single pointer
+
+Reason: (pointer, size)-style interfaces are error-prone.
+Also, a plain pointer (to array) must rely on some convention to allow the callee to determine the size.
+
+bad:
+void copy_n(const T* p, T* q, int n); // copy from [p:p+n) to [q:q+n)
+
+better:
+void copy(span<const T> r, span<T> r2); // copy r to r2
+
+Use zstring and czstring to represent C-style, zero-terminated strings.
+But when doing so, use std::string_view or span<char> from the GSL to prevent range errors.
+
+
+---
+
+
+I.22: Avoid complex initialization of global objects
+
+Flag initializers of globals that call non-constexpr functions
+Flag initializers of globals that access extern objects
+
+
+---
+
+
+I.26: If you want a cross-compiler ABI, use a C-style subset
+
+
+---
+
+
+F: Functions
+
+
+---
+
+
+F.4: If a function might have to be evaluated at compile time, declare it constexpr
+
+constexpr does not guarantee compile-time evaluation;
+it just guarantees that the function can be evaluated at compile time for constant
+expression arguments if the programmer requires it or the compiler decides to do so to optimize.
+
+Don’t try to make all functions constexpr. Most computation is best done at run time.
+
+
+---
+
+
+F.6: If your function must not throw, declare it noexcept
+
+Destructors, swap functions, move operations, and default constructors should never throw.
+
+
+---
+
+
+F.7: For general use, take T* or T& arguments rather than smart pointers
+
+Passing a smart pointer transfers or shares ownership and should only be used
+when ownership semantics are intended. A function that does not manipulate
+lifetime should take raw pointers or references instead.
+
+
+---
+
+
+F.8: Prefer pure functions
+
+template<class T>
+auto square(T t) { return t * t; }
+
+Has no side effects
+    – It does not modify any external state (e.g., global variables,
+        static variables, or reference/pointer parameters).
+
+Is deterministic
+    – Given the same input, it always produces the same output.
+
+
+---
+
+
+F.10: If an operation can be reused, give it a name
+
+Documentation, readability, opportunity for reuse.
+
+
+---
+
+
+F.11: Use an unnamed lambda if you need a simple function object in one place only
+
+That makes the code concise and gives better locality than alternatives.
+
+auto earlyUsersEnd = std::remove_if(users.begin(), users.end(),
+                                    [](const User &a) { return a.id > 100; });
+
+
+---
+
+
+F.16: For “in” parameters, pass cheaply-copied types by value and others by reference to const
+
+What is “cheap to copy” depends on the machine architecture,
+but two or three words (doubles, pointers, references) are usually best passed by value.
+
+Example
+void f1(const string& s);  // OK: pass by reference to const; always cheap
+void f2(string s);         // bad: potentially expensive
+void f3(int x);            // OK: Unbeatable
+void f4(const int& x);     // bad: overhead on access in f4()
+
+int multiply(int, int); // just input ints, pass by value
+
+// suffix is input-only but not as cheap as an int, pass by const&
+string& concatenate(string&, const string& suffix);
+
+void sink(unique_ptr<widget>);  // input only, and moves ownership of the widget
+
+
+---
+
+
+F.17: For “in-out” parameters, pass by reference to non-const
+
+void update(Record& r);  // assume that update writes to r
+
+Some user-defined and standard library types,
+such as span<T> or the iterators are cheap to copy and may be passed by value,
+while doing so has mutable (in-out) reference semantics:
+
+void increment_all(span<int> a)
+{
+  for (auto&& e : a)
+    ++e;
+}
+
+
+---
+
+
+F.18: For “will-move-from” parameters, pass by X&& and std::move the parameter
+
+It’s efficient and eliminates bugs at the call site: X&& binds to rvalues,
+which requires an explicit std::move at the call site if passing an lvalue.
+
+
+---
+
+
+F.19: For “forward” parameters, pass by TP&& and only std::forward the parameter
+
+If the object is to be passed onward to other code and not directly used by this function,
+we want to make this function agnostic to the argument const-ness and rvalue-ness.
+
+template<class F, class... Args>
+inline decltype(auto) invoke(F&& f, Args&&... args)
+{
+    return forward<F>(f)(forward<Args>(args)...);
+}
+
+
+---
+
+
+F.20: For “out” output values, prefer return values to output parameters
+
+A return value is self-documenting, whereas a & could be either in-out or out-only
+and is liable to be misused.
+
+If you have multiple values to return, use a tuple or similar multi-member type.
+
+Assuming that Matrix has move operations (possibly by keeping its elements in a std::vector):
+
+Matrix operator+(const Matrix& a, const Matrix& b)
+{
+    Matrix res;
+    // ... fill res with the sum ...
+    return res;
+}
+
+Matrix x = m1 + m2;  // move constructor
+y = m3 + m3;         // move assignment
+
+The return value optimization doesn’t handle the assignment case, but the move assignment does.
+
+
+---
+
+
+F.22: Use T* or owner<T*> to designate a single object
+
+In traditional C and C++ code, plain T* is used for many weakly-related purposes, such as:
+Identify a (single) object (not to be deleted by this function)
+Point to an object allocated on the free store (and delete it later)
+Hold the nullptr
+Identify a C-style string (zero-terminated array of characters)
+Identify an array with a length specified separately
+Identify a location in an array
+
+
+---
+
+
+F.24: Use a span<T> or a span_p<T> to designate a half-open sequence
+
+Informal/non-explicit ranges are a source of errors.
+
+X* find(span<X> r, const X& v);    // find v in r
+
+vector<X> vec;
+// ...
+auto p = find({vec.begin(), vec.end()}, X{});  // find X{} in vec
+
+Ranges are extremely common in C++ code.
+
+Typically, they are implicit and their correct use is very hard to ensure.
+In particular, given a pair of arguments (p, n) designating an array [p:p+n),
+it is in general impossible to know if there really are n elements to access following *p.
+
+span<T> and span_p<T> are simple helper classes designating a [p:q) range
+and a range starting with p and ending with the first element for which
+a predicate is true, respectively.
+
+A span represents a range of elements, but how do we manipulate elements of that range?
+
+void f(span<int> s)
+{
+    // range traversal (guaranteed correct)
+    for (int x : s) cout << x << '\n';
+
+    // C-style traversal (potentially checked)
+    for (gsl::index i = 0; i < s.size(); ++i) cout << s[i] << '\n';
+
+    // random access (potentially checked)
+    s[7] = 9;
+
+    // extract pointers (potentially checked)
+    std::sort(&s[0], &s[s.size() / 2]);
+}
+
+A span<T> object does not own its elements and is so small that it can be passed by value.
+
+
+---
