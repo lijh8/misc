@@ -1,0 +1,170 @@
+C++ Core Guidelines
+https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#c-core-guidelines ,
+
+May 8, 2025
+
+
+---
+
+
+P.4: Ideally, a program should be statically type safe
+
+unions – use variant (in C++17)
+
+casts – minimize their use; templates can help
+
+array decay – use span (from the GSL)
+
+range errors – use span
+
+narrowing conversions
+    – minimize their use and use narrow or narrow_cast (from the GSL)
+        where they are necessary
+
+
+---
+
+
+P.5: Prefer compile-time checking to run-time checking
+
+static_assert can not be turned off by CPPFLAGS += NDEBUG like assert does.
+
+Example
+void read(int* p, int n);   // read max n integers into *p
+int a[100];
+read(a, 1000);    // bad, off the end
+
+void read(span<int> r); // read into the range of integers r
+int a[100];
+read(a);        // better: let the compiler figure out the number of elements
+
+
+---
+
+
+P.6: What cannot be checked at compile time should be checkable at run time
+
+Example, bad
+extern void f(int* p);
+void g(int n)
+{
+    // bad: the number of elements is not passed to f()
+    f(new int[n]);
+}
+
+Example, bad
+We can of course pass the number of elements along with the pointer:
+a simple typo can introduce a serious error.
+
+extern void f2(int* p, int n);
+void g2(int n)
+{
+    f2(new int[n], m);  // bad: a wrong number of elements can be passed to f()
+}
+
+Example
+We need to pass the pointer and the number of elements as an integral object:
+extern void f4(vector<int>&);   // separately compiled, possibly dynamically loaded
+extern void f4(span<int>);      // separately compiled, possibly dynamically loaded
+                                // NB: this assumes the calling code is ABI-compatible, using a
+                                // compatible C++ compiler and the same stdlib implementation
+
+void g3(int n)
+{
+    vector<int> v(n);
+    f4(v);                     // pass a reference, retain ownership
+    f4(span<int>{v});          // pass a view, retain ownership
+}
+
+Example
+How do we transfer both ownership and all information needed for validating use?
+vector<int> f5(int n)    // OK: move
+{
+    vector<int> v(n);
+    // ... initialize v ...
+    return v;
+}
+
+
+---
+
+
+P.7: Catch run-time errors early
+
+Example
+void increment1(int* p, int n)    // bad: error-prone
+{
+    for (int i = 0; i < n; ++i) ++p[i];
+}
+
+void use1(int m)
+{
+    const int n = 10;
+    int a[n] = {};
+    // ...
+    increment1(a, m);   // maybe typo, maybe m <= n is supposed
+                        // but assume that m == 20
+    // ...
+}
+
+
+void increment2(span<int> p)
+{
+    for (int& x : p) ++x;
+}
+
+void use3(int m)
+{
+    const int n = 10;
+    int a[n] = {};
+    // ...
+    increment2(a);   // the number of elements of a need not be repeated
+    // ...
+}
+
+
+---
+
+
+P.8: Don’t leak any resources
+
+Example, bad
+void f(char* name)
+{
+    FILE* input = fopen(name, "r");
+    // ...
+    if (something) return;   // bad: if something == true, a file handle is leaked
+    // ...
+    fclose(input);
+}
+
+Prefer RAII:
+
+void f(char* name)
+{
+    ifstream input {name};
+    // ...
+    if (something) return;   // OK: no leak
+    // ...
+}
+
+
+---
+
+
+P.9: Don’t waste time or space
+
+Example, bad
+void lower(zstring s)
+{
+    for (int i = 0; i < strlen(s); ++i) s[i] = tolower(s[i]);
+}
+
+it’s better to cache the length outside the loop and not incur that cost each iteration.
+
+    const auto len = strlen(s);
+    for (int i = 0; i < len; ++i) s[i] = tolower(s[i]);
+
+
+---
+
