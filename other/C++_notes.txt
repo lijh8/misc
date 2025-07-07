@@ -3489,6 +3489,18 @@ $
 ---
 
 
+in c, static variables and file scope global variables are default initialized with zero.
+If initializers are provided, they must be compile-time constant expressions.
+static variable is initialized only once.
+local variables are default initialized with random value.
+
+in c++, static variables and file scope variables can be initialized with non constant values,
+eg. results of function calls.
+
+
+---
+
+
 
 
 
