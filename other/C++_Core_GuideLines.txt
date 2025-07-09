@@ -2,7 +2,7 @@ C++ Core Guidelines
 
 https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#c-core-guidelines ,
 
-May 8, 2025
+Jul 8, 2025
 
 Editors:
 Bjarne Stroustrup
@@ -1579,6 +1579,430 @@ it has zero or near zero run-time cost.
 
 
 ES.32: Use ALL_CAPS for all macro names
+
+
+---
+
+
+ES.40: Avoid complicated expressions
+
+// bad: undefined behavior
+x = x++ + x++ + ++x;
+
+C++17 tightens up the rules for the order of evaluation
+(left-to-right except right-to-left in assignments,
+and the order of evaluation of function arguments is unspecified;)
+
+
+---
+
+
+ES.42: Keep use of pointers simple and straightforward
+
+Use gsl::span instead. Pointers should only refer to single objects.
+
+void f(span<int> a) // BETTER: use span in the function declaration
+{
+    if (a.size() < 2) return;
+    int n = a[0];      // OK
+
+}
+
+If you want to pass an array, say so:
+
+void g(int* p, size_t length);  // old (dangerous) code
+
+void g1(span<int> av); // BETTER: get g() changed.
+
+void f2()
+{
+    int a[5];
+    span<int> av = a;
+
+    g(av.data(), av.size());   // OK, if you have no choice
+    g1(a);                     // OK -- no decay here, instead use implicit span ctor
+}
+
+
+---
+
+
+ES.43: Avoid expressions with undefined order of evaluation
+
+v[i] = ++i;   //  the result is undefined
+
+A good rule of thumb is that you should not read a value twice in an expression
+where you write to it.
+
+
+---
+
+
+ES.55: Avoid the need for range checking
+
+Constructs that cannot overflow do not overflow (and usually run faster):
+
+for (auto& x : v)      // print all elements of v
+    cout << x << '\n';
+
+// or, check with assert in debug build.
+// turn off the check with CPPFLAGS += NDEBUG in release build.
+
+
+---
+
+
+ES.56: Write std::move() only when you need to explicitly move an object
+       to another scope
+
+We move, rather than copy, to avoid duplication and for improved performance.
+A move typically leaves behind an empty object (C.64), which can be surprising
+or even dangerous, so we try to avoid moving from lvalues (they might be
+accessed later).
+
+Moving is done implicitly when the source is an rvalue (e.g., value in a return
+treatment or a function result), so don’t pointlessly complicate code in those
+cases by writing move explicitly.
+Instead, write short functions that return values, and both the function’s
+return and the caller’s accepting of the return will be optimized naturally.
+
+In general, following the guidelines in this document (including not making
+variables’ scopes needlessly large, writing short functions that return values,
+returning local variables) help eliminate most need for explicit std::move.
+
+Usually, a std::move() is used as an argument to a && parameter. And after you
+do that, assume the object has been moved from (see C.64) and don’t read its
+state again until you first set it to a new value.
+
+std::move() is a cast to && in disguise; it doesn’t itself move anything, but
+marks a named object as a candidate that can be moved from. The language already
+knows the common cases where objects can be moved from, especially when
+returning values from functions,
+so don’t complicate code with redundant std::move()’s.
+
+Never write return move(local_variable);, because the language already knows the
+variable is a move candidate. Writing move in this code won’t help, and can
+actually be detrimental because on some compilers it interferes with RVO (the
+return value optimization) by creating an additional reference alias to the
+local variable.
+
+Never write move on a returned value such as x = move(f());
+where f returns by value. The language already knows that a returned value is a
+temporary object that can be moved from.
+
+
+---
+
+
+ES.87: Don’t add redundant == or != to conditions
+
+if (p) { ... }            // good
+if (p != 0) { ... }       // redundant !=0, bad: don't use 0 for pointers
+if (p != nullptr) { ... } // redundant !=nullptr, not recommended
+
+
+---
+
+
+ES.101: Use unsigned types for bit manipulation
+
+unsigned char x = 0b1010'1010;
+unsigned char y = ~x;   // y == 0b0101'0101;
+
+
+---
+
+
+ES.102: Use signed types for arithmetic
+
+Because most arithmetic is assumed to be signed; x - y yields a negative number.
+
+
+---
+
+
+ES.103: Don’t overflow
+
+For critical applications that can afford some overhead,
+use a range-checked integer and/or floating-point type.
+
+
+---
+
+
+ES.104: Don’t underflow
+
+
+---
+
+
+ES.107: Don’t use unsigned for subscripts, prefer gsl::index
+
+// maybe better to use size_t, size_type, etc.
+
+#include <iostream>
+
+int main() {
+  int arr[] = {10,20,30,};
+
+  // range for
+  for (auto i: arr){
+    std::cout << __LINE__ << ": " << i << "\n";
+  }
+
+  // classic for
+  for (size_t i = 0; i < sizeof(arr)/sizeof(*arr); i++) {
+    assert(i >= 0 && i < sizeof(arr)/sizeof(*arr));
+    std::cout << __LINE__ << ": " << arr[i] << "\n";
+  }
+
+  // reverse
+  for (auto i = sizeof(arr)/sizeof(*arr); i > 0; i--) {
+    assert(i - 1 >= 0 && i - 1 < sizeof(arr)/sizeof(*arr));
+    std::cout << __LINE__ << ": " << arr[i - 1] << "\n";
+  }
+
+  for (auto p = arr + sizeof(arr)/sizeof(*arr) - 1; p >= arr; p--) {
+    std::cout << __LINE__ << ": " << *p << "\n";
+  }
+
+  return 0;
+}
+
+
+---
+
+
+Per.19: Access memory predictably
+
+Performance is very sensitive to cache performance,
+and cache algorithms favor simple (usually linear) access to adjacent data.
+
+int matrix[rows][cols];
+
+// bad
+for (int c = 0; c < cols; ++c)
+    for (int r = 0; r < rows; ++r)
+        sum += matrix[r][c];
+
+// good
+for (int r = 0; r < rows; ++r)
+    for (int c = 0; c < cols; ++c)
+        sum += matrix[r][c];
+
+
+---
+
+
+CP.4: Think in terms of tasks, rather than threads
+
+
+---
+
+
+CP.9: Whenever feasible use tools to validate your concurrent code
+
+dynamic enforcement tools:
+Clang’s Thread Sanitizer (aka TSAN) is a powerful example of dynamic tools,
+
+
+---
+
+
+CP.20: Use RAII, never plain lock()/unlock()
+
+
+---
+
+
+CP.32: To share ownership between unrelated threads use shared_ptr
+
+
+---
+
+
+CP.51: Do not use capturing lambdas that are coroutines
+
+Example, Bad
+
+int value = get_value();
+std::shared_ptr<Foo> sharedFoo = get_foo();
+{
+  const auto lambda = [value, sharedFoo]() -> std::future<void>
+  {
+    co_await something();
+    // "sharedFoo" and "value" have already been destroyed
+    // the "shared" pointer didn't accomplish anything
+  };
+  lambda();
+} // the lambda closure object has now gone out of scope
+
+Example, Better
+
+int value = get_value();
+std::shared_ptr<Foo> sharedFoo = get_foo();
+{
+  // take as by-value parameter instead of as a capture
+  const auto lambda = [](auto sharedFoo, auto value) -> std::future<void>
+  {
+    co_await something();
+    // sharedFoo and value are still valid at this point
+  };
+  lambda(sharedFoo, value);
+} // the lambda closure object has now gone out of scope
+
+Example, Best Use a function for coroutines.
+
+std::future<void> Class::do_something(int value, std::shared_ptr<Foo> sharedFoo)
+{
+  co_await something();
+  // sharedFoo and value are still valid at this point
+}
+
+void SomeOtherFunction()
+{
+  int value = get_value();
+  std::shared_ptr<Foo> sharedFoo = get_foo();
+  do_something(value, sharedFoo);
+}
+
+
+---
+
+
+CP.53: Parameters to coroutines should not be passed by reference
+
+
+---
+
+
+CP.par: Parallelism
+
+By “parallelism” we refer to performing a task (more or less) simultaneously
+(“in parallel with”) on many data items.
+
+
+---
+
+
+CP.mess: Message passing
+
+The standard-library facilities are quite low-level, focused on the needs of
+close-to the hardware critical programming using threads, mutexes, atomic types,
+etc. Most people shouldn’t work at this level: it’s error-prone and development
+is slow.
+
+If possible, use a higher level facility: messaging libraries, parallel
+algorithms, and vectorization.
+
+This section looks at passing messages so that a programmer doesn’t have to do
+explicit synchronization.
+
+Message passing rules summary:
+
+CP.60: Use a future to return a value from a concurrent task
+CP.61: Use async() to spawn concurrent tasks
+message queues
+messaging libraries
+
+
+---
+
+
+CP.free: Lock-free programming
+
+Synchronization using mutexes and condition_variables can be relatively
+expensive. Furthermore, it can lead to deadlock. For performance and to
+eliminate the possibility of deadlock, we sometimes have to use the tricky
+low-level “lock-free” facilities that rely on briefly gaining exclusive
+(“atomic”) access to memory. Lock-free programming is also used to implement
+higher-level concurrency mechanisms, such as threads and mutexes.
+
+
+---
+
+
+CP.100: Don’t use lock-free programming unless you absolutely have to
+
+It’s error-prone and requires expert level knowledge of language features,
+machine architecture, and data structures.
+
+
+---
+
+
+Con.4: Use const to define objects with values that do not change
+       after construction
+
+// const means readonly, means can not change it after initialized.
+
+
+---
+
+
+Con.5: Use constexpr for values that can be computed at compile time
+
+// constexpr means constant is known at compile time.
+// some feature requires constant at compile time,
+// eg. non vla array: int arr[10];
+
+
+---
+
+
+T.13: Prefer the shorthand notation for simple, single-type argument concepts
+
+template<typename T>       // Correct but verbose: "The parameter is
+    requires sortable<T>   // of type T which is the name of a type
+void sort(T&);             // that is sortable"
+
+template<sortable T>       // Better: "The parameter is of type T
+void sort(T&);             // which is Sortable"
+
+void sort(sortable auto&); // Best: "The parameter is Sortable"
+
+
+---
+
+
+T.48: If your compiler does not support concepts, fake them with enable_if
+
+
+---
+
+
+SL.con.3: Avoid bounds errors
+
+Ideally, the in-bounds guarantee should be statically enforced.
+
+a range-for cannot loop beyond the range of the container to which it is applied
+a v.begin(),v.end() is easily determined to be bounds safe
+
+Such loops are as fast as any unchecked/unsafe equivalent.
+
+Often a simple pre-check can eliminate the need for checking of individual
+indices.
+
+for v.begin(),v.begin()+i the i can easily be checked against v.size()
+
+Such loops can be much faster than individually checked element accesses.
+
+
+---
+
+
+SL.io.1: Use character-level input only when you have to
+SL.io.10: Unless you use printf-family functions call ios_base::sync_with_stdio(false)
+SL.io.50: Avoid endl
+
+
+---
+
+
+NR.1: Don’t insist that all declarations should be at the top of a function
+NR.2: Don’t insist on having only a single return-statement in a function
+NR.3: Don’t avoid exceptions
+NR.5: Don’t use two-phase initialization
 
 
 ---
