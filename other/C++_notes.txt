@@ -3501,6 +3501,61 @@ eg. results of function calls.
 ---
 
 
+how not to use exception in C++?
+
+"We do not use C++ exceptions" -- google c++ style guide.
+
+
+https://stackoverflow.com/questions/7249378/disabling-c-exceptions-how-can-i-make-any-std-throw-immediately-terminate ,
+
+Option #1: Simply never catch exceptions.
+
+Exceptions don't have much overhead when they're not thrown or caught;
+if you're throwing and not prepared to catch, well, you're doing to die anyway,
+so the performance impact at that point is trivial.
+Note also that stack unwinding will not be performed if an exception is not handled;
+the program will simply terminate without performing stack unwinding.
+
+It's important to note that, in G++, exceptions have almost no overhead when not
+actually thrown. G++ generates extra information sufficient to trace back the
+execution of the program through the stack, and some extra code to invoke
+destructors, etc - however none of this extra code or data is ever used until an
+exception is actually thrown. So you should not see a performance difference
+between code with exceptions enabled but not used and code with exceptions
+disabled (through whatever mechanism).
+
+Option #2: Pass -fno-exceptions.
+
+- bdonlan, Aug 30, 2011 at 20:32
+
+
++1; just don't catch exceptions. That's one of the reasons they're there for.
+– Seth Carnegie CommentedAug 30, 2011 at 20:36
+
+
+yes, all of my advice is G++-specific. After all, the standard doesn't specify
+any method to completely neuter exceptions :)
+– bdonlan CommentedAug 30, 2011 at 22:32
+
+
+use -fno-exceptions turns all standard library throw's into a call to std::abort().
+That handles the part you can't modify directly, the rest is to not use them at
+all in your code.
+
+Of course, I really doubt your justification in doing this. You only "lose"
+performance when you actually throw, and you're throwing out a significant and
+helpful bit of the language.
+- GManNickG, Aug 30, 2011 at 20:34
+
+
+Just don't catch them anywhere in your code.
+In that case, a termination handler will be called and your program will "crash".
+- user405725, answered Aug 30, 2011 at 20:31
+
+
+---
+
+
 
 
 
