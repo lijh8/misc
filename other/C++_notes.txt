@@ -3503,7 +3503,14 @@ eg. results of function calls.
 
 how not to use exception in C++?
 
+
 "We do not use C++ exceptions" -- google c++ style guide.
+
+
+// 1. do not catch them! let the program stop.
+// 2. do not throw in your own code.
+// 3. figure out why the other code throws.
+// 4. try to negotiate or meet the condition to avoid throwing.
 
 
 https://stackoverflow.com/questions/7249378/disabling-c-exceptions-how-can-i-make-any-std-throw-immediately-terminate ,

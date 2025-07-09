@@ -323,6 +323,8 @@ Passing a smart pointer transfers or shares ownership and should only be used
 when ownership semantics are intended. A function that does not manipulate
 lifetime should take raw pointers or references instead.
 
+// R.30: Take smart pointers as parameters only to explicitly express lifetime semantics
+
 
 ---
 
@@ -1340,6 +1342,243 @@ void send(unique_ptr<X> x, string_view destination)  // x owns the X
 
 Where a resource is “ill-behaved” in that it isn’t represented as a class with a
 destructor, wrap it in a class or use finally.
+
+
+---
+
+
+R.2: In interfaces, use raw pointers to denote individual objects (only)
+
+void f(int* p, int n)   // n is the number of elements in p[]
+{
+    // ...
+    p[2] = 7;   // bad: subscript raw pointer
+    // ...
+}
+
+void g(int* p, int fmt)   // print *p using format #fmt
+{
+    // ... uses *p and p[0] only ...
+}
+
+
+---
+
+
+R.3: A raw pointer (a T*) is non-owning
+
+We want owning pointers identified so that we can reliably and
+efficiently delete the objects pointed to by owning pointers.
+
+void f()
+{
+    int* p1 = new int{7};           // bad: raw owning pointer
+    auto p2 = make_unique<int>(7);  // OK: the int is owned by a unique pointer
+    // ...
+}
+
+The unique_ptr protects against leaks by guaranteeing the deletion of its object
+(even in the presence of exceptions). The T* does not.
+
+
+---
+
+
+R.10: Avoid malloc() and free()
+
+malloc() and free() do not support construction and destruction,
+
+
+---
+
+
+R.11: Avoid calling new and delete explicitly
+
+The pointer returned by new should belong to a resource handle (that can call
+delete). If the pointer returned by new is assigned to a plain/naked pointer,
+the object can be leaked.
+
+
+---
+
+
+R.14: Avoid [] parameters, prefer span
+
+An array decays to a pointer, thereby losing its size, opening the opportunity
+for range errors. Use span to preserve size information.
+
+
+void f(int[]);          // not recommended
+
+void f(int*);           // not recommended for multiple objects
+                        // (a pointer should point to a single object, do not subscript)
+
+void f(gsl::span<int>); // good, recommended
+
+
+---
+
+
+R.20: Use unique_ptr or shared_ptr to represent ownership
+
+
+---
+
+
+R.22: Use make_shared() to make shared_ptrs
+
+shared_ptr<X> p1 { new X{2} }; // bad
+auto p = make_shared<X>(2);    // good
+
+
+---
+
+
+R.23: Use make_unique() to make unique_ptrs
+
+unique_ptr<Foo> p {new Foo{7}};    // OK: but repetitive
+auto q = make_unique<Foo>(7);      // Better: no repetition of Foo
+
+
+---
+
+
+R.24: Use std::weak_ptr to break cycles of shared_ptrs
+
+
+---
+
+
+R.30: Take smart pointers as parameters only to
+      explicitly express lifetime semantics
+
+// F.7: For general use, take T* or T& arguments rather than smart pointers
+
+
+---
+
+
+ES.5: Keep scopes small
+
+Readability. Minimize resource retention. Avoid accidental misuse of value.
+Don’t declare a name in an unnecessarily large scope.
+
+
+void use()
+{
+    int i;    // bad: i is needlessly accessible after loop
+    for (i = 0; i < 20; ++i) { /* ... */ }
+
+    for (int i = 0; i < 20; ++i) { /* ... */ }  // good: i is local to for-loop
+}
+
+
+---
+
+
+ES.7: Keep common and local names short,
+      and keep uncommon and non-local names longer
+
+template<typename T>    // good
+void print(ostream& os, const vector<T>& v)
+{
+    for (gsl::index i = 0; i < v.size(); ++i)
+        os << v[i] << '\n';
+}
+
+template<typename Element_type>   // bad: verbose, hard to read
+void print(ostream& target_stream, const vector<Element_type>& current_vector)
+{
+    for (gsl::index current_element_index = 0;
+         current_element_index < current_vector.size();
+         ++current_element_index
+    )
+    target_stream << current_vector[current_element_index] << '\n';
+}
+
+
+---
+
+
+ES.11: Use auto to avoid redundant repetition of type names
+ES.20: Always initialize an object
+ES.21: Don’t introduce a variable (or constant) before you need to use it
+ES.22: Don’t declare a variable until you have a value to initialize it with
+
+
+---
+
+
+ES.23: Prefer the {}-initializer syntax
+
+For built-in arithmetic types, use = only with auto.
+
+Avoid () initialization, which allows parsing ambiguities.
+
+// use () with class constructor.
+
+For containers, there is a tradition for using
+{...} for a list of elements and
+(...) for sizes:
+
+vector<int> v1(10);    // vector of 10 elements with the default value 0
+vector<int> v2{10};    // vector of 1 element with the value 10
+
+vector<int> v3(1, 2);  // vector of 1 element with the value 2
+vector<int> v4{1, 2};  // vector of 2 elements with the values 1 and 2
+
+{} initialization can be used for nearly all initialization;
+other forms of initialization can’t:
+
+For that reason, {}-initialization is often called “uniform initialization”
+(though there unfortunately are a few irregularities left).
+
+Initialization of a variable declared using auto with a single value, e.g., {v},
+had surprising results until C++17. The C++17 rules are somewhat less surprising:
+
+auto x1 {7};        // x1 is an int with the value 7
+auto x2 = {7};      // x2 is an initializer_list<int> with an element 7
+
+auto x11 {7, 8};    // error: two initializers
+auto x22 = {7, 8};  // x22 is an initializer_list<int> with elements 7 and 8
+Use ={...} if you really want an initializer_list<T>
+
+auto fib10 = {1, 1, 2, 3, 5, 8, 13, 21, 34, 55};   // fib10 is a list
+
+={} gives copy initialization, whereas
+{} gives direct initialization.
+
+Like the distinction between copy-initialization and direct-initialization
+itself, this can lead to surprises.
+
+{} accepts explicit constructors;
+={} does not.
+
+struct Z { explicit Z() {} };
+
+Z z1{};     // OK: direct initialization, so we use explicit constructor
+Z z2 = {};  // error: copy initialization, so we cannot use the explicit constructor
+
+Use plain {}-initialization unless you specifically want to disable explicit
+constructors.
+
+
+---
+
+
+ES.24: Use a unique_ptr<T> to hold pointers
+
+Using std::unique_ptr is the simplest way to avoid leaks.
+It is reliable,
+it makes the type system do much of the work to validate ownership safety,
+it increases readability, and
+it has zero or near zero run-time cost.
+
+
+---
+
+
+ES.32: Use ALL_CAPS for all macro names
 
 
 ---
