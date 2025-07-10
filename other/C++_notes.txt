@@ -3606,10 +3606,12 @@ default member initialization (in-class initializer) should not use parentheses 
 
 // https://en.cppreference.com/w/cpp/language/rule_of_three.html ,
 // https://en.cppreference.com/w/cpp/language/operators.html#Assignment_operator ,
+// https://isocpp.org/wiki/faq/assignment-operators ,
+// https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#c62-make-copy-assignment-safe-for-self-assignment
 
 // rule of five.
-// avoid self assignment for copy assignment operator.
-// if they are in same size, reuse heap to avoid an allocation.
+// handle self assignment properly for copy assignment operator.
+// if two sides are in same size in copy assignment, reuse heap to avoid an allocation.
 
 #include <cstring>
 #include <iostream>
@@ -3635,13 +3637,15 @@ public:
   T &operator=(const T &other) {
     // return *this = T(other);
     auto size = strlen(other.cstring);
-    if (size != std::strlen(cstring)) { // storage cannot be reused
-      delete[] cstring;                 // destroy storage in this
-      cstring = nullptr; // preserve invariants in case next line throws
-      cstring = new char[size + 1]; // create storage in this
+    if (size != std::strlen(cstring)) {
+      auto tmp = new char[size + 1];
+      std::copy(other.cstring, other.cstring + size, tmp);
+      tmp[size] = 0;
+      delete[] cstring;
+      cstring = tmp;
+    } else {
+      std::copy(other.cstring, other.cstring + size, cstring);
     }
-    std::copy(other.cstring, other.cstring + size, cstring);
-    cstring[size] = 0;
 
     return *this;
   }
@@ -3662,11 +3666,13 @@ public:
 
 int main() {
   T a("abc");
-  T b("efgefgefgefgefgefgefgefgefgefg");
+  T b("efg"); // "efg efg efg efg"
+  a = b;
   // a = a;
   // a = std::move(b);
+  // a = std::move(a);
   a = std::move(a);
-  std::cout << b.cstring << "\n";
+  std::cout << a.cstring << "\n";
 }
 
 
