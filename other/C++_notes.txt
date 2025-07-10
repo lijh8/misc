@@ -3573,6 +3573,23 @@ array parameter decays into pointer, void f(int *arr, int size); better to use s
 
 use assert to check for array bounds at debug build, turn off with CPPFLAGS += NDEBUG ;
 
+```
+  int arr[] = {1, 2, 3};
+  int size = sizeof(arr) / sizeof(*arr);
+  int index = 1;
+  int *ptr = arr + 1;
+  int offset = -5; // offset -1 will be fine.
+  int value;
+
+  // check array index bound
+  assert(index >=0 && index < size);
+  value = arr[index];
+
+  // check pointer with offset
+  assert(ptr + offset >= arr && ptr + offset < arr + size);
+  value = *ptr;
+```
+
 use shared_ptr for reference count ;
 
 initialize with equal sign = for builtin types: int, char, etc. ;
@@ -3582,6 +3599,75 @@ initialize with equal sign and curly braces ={} for array, struct, vector ;
 initialize with just parentheses () for class object constructor, T obj(args); or , T obj = T(args) ;
 
 default member initialization (in-class initializer) should not use parentheses () ;
+
+
+---
+
+
+// https://en.cppreference.com/w/cpp/language/rule_of_three.html ,
+// https://en.cppreference.com/w/cpp/language/operators.html#Assignment_operator ,
+
+// rule of five.
+// avoid self assignment for copy assignment operator.
+// if they are in same size, reuse heap to avoid an allocation.
+
+#include <cstring>
+#include <iostream>
+#include <utility>
+
+struct T {
+  char *cstring;
+
+public:
+  explicit T(const char *s = "") : cstring(nullptr) {
+    if (s) {
+      cstring = new char[std::strlen(s) + 1];
+      std::strcpy(cstring, s);
+    }
+  }
+
+  ~T() { delete[] cstring; }
+
+  T(const T &other) : T(other.cstring) {}
+
+  T(T &&other) noexcept : cstring(std::exchange(other.cstring, nullptr)) {}
+
+  T &operator=(const T &other) {
+    // return *this = T(other);
+    auto size = strlen(other.cstring);
+    if (size != std::strlen(cstring)) { // storage cannot be reused
+      delete[] cstring;                 // destroy storage in this
+      cstring = nullptr; // preserve invariants in case next line throws
+      cstring = new char[size + 1]; // create storage in this
+    }
+    std::copy(other.cstring, other.cstring + size, cstring);
+    cstring[size] = 0;
+
+    return *this;
+  }
+
+  T &operator=(T &&other) noexcept {
+    std::swap(cstring, other.cstring);
+    return *this;
+  }
+
+  // alternatively, replace both assignment operators with copy-and-swap
+  // implementation, which also fails to reuse storage in copy-assignment.
+  //  T& operator=(T other) noexcept
+  //  {
+  //      std::swap(cstring, other.cstring);
+  //      return *this;
+  //  }
+};
+
+int main() {
+  T a("abc");
+  T b("efgefgefgefgefgefgefgefgefgefg");
+  // a = a;
+  // a = std::move(b);
+  a = std::move(a);
+  std::cout << b.cstring << "\n";
+}
 
 
 ---
