@@ -3565,14 +3565,14 @@ In that case, a termination handler will be called and your program will "crash"
 
 passing function argument by reference (or pointer) ;
 return by value (return value optimization) ;
-if the parameter is read-only, passing by const reference (or pointer) ;
-array decay into pointer, void f(int *arr, int size); better to use span ;
+if the argument is read-only, passing by const reference (or pointer) ;
+array parameter decay into pointer, void f(int *arr, int size); better to use span ;
 use assert to check for array bounds at debug build, turn off with CPPFLAGS += NDEBUG ;
 use shared_ptr for reference count ;
 
 initialize with equal sign = for builtin types: int, char, etc. ;
-initialize with curly braces {} for array, struct, vector ;
-initialize with parentheses () for class object constructor ;
+initialize with equal sign and curly braces ={} for array, struct, vector ;
+initialize with just parentheses () for class object constructor ;
 default member initialization (in-class initializer) should not use parentheses () ;
 
 
