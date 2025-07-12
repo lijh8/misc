@@ -3592,6 +3592,8 @@ use assert to check for array bounds at debug build, turn off with CPPFLAGS += N
 
 use shared_ptr for reference count ;
 
+do not return pointer or reference to local variable ;
+
 initialize with equal sign = for builtin types: int, char, etc. ;
 
 initialize with equal sign and curly braces ={} for array, struct, vector ;
