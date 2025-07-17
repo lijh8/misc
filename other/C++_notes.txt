@@ -3680,6 +3680,37 @@ int main() {
 ---
 
 
+# manual makefile
+
+- both foo and bar are shared libraries;
+- foo links to bar;
+- main links to foo, main is only required to link to foo;
+- output of ldd main will show both runtime dependencies foo and bar;
+
+$ LD_LIBRARY_PATH=../bar:../foo make
+g++ -g   -MMD -MP -I../foo  -c -o main.o main.cpp
+g++  -L../foo    main.o  -lfoo -o main
+$
+$ LD_LIBRARY_PATH=../bar:../foo ./main
+main
+foo
+bar
+$
+$ LD_LIBRARY_PATH=../bar:../foo ldd ./main
+        linux-vdso.so.1 (0x00007fd7f7eae000)
+        libfoo.so => ../foo/libfoo.so (0x00007fd7f7e89000)
+        libstdc++.so.6 => /lib/x86_64-linux-gnu/libstdc++.so.6 (0x00007fd7f7200000)
+        libm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007fd7f7d99000)
+        libgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x00007fd7f7d6a000)
+        libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007fd7f680a000)
+        libbar.so => ../bar/libbar.so (0x00007fd7f7d65000)
+        /lib64/ld-linux-x86-64.so.2 (0x00007fd7f7eb0000)
+$
+
+
+---
+
+
 
 
 
