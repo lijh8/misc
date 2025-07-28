@@ -398,6 +398,34 @@ struct T{ int a; int b; int c; } t = {1};
 ---
 
 
+1. default member initializer (in-class initialization)
+  ok: {} , = ,
+  no: () ,
+
+2. initialization with value/size or with values:
+  different: () , {} ,
+
+3. constructor initializer-list:
+  both: () , {} ,
+
+struct T {
+  T(std::string name = "", int num = 0) : name(name), num{num} {} // () , {} ,
+  std::string name{""}; // {} , = ,  no () ,
+  int num;
+};
+
+int main() {
+  std::vector v1(3, 3);    // 3,3,3, (size, value), constructor ,
+  std::vector v2{3, 3};    // 3,3    {values,...}, construct with {initializer_list,...} ,
+  std::vector v3{3, 3, 3}; // 3,3,3,
+
+  return 0;
+}
+
+
+---
+
+
 // string and array
 
 /* const*/ char *ptr = "hello"; // pointer to const string literal
