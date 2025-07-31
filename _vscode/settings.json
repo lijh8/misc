@@ -15,7 +15,7 @@
   "C_Cpp.formatting": "none",
   "chat.agent.enabled": false,
   "chat.commandCenter.enabled": false,
-  "chat.mcp.enabled": true,
+  "chat.mcp.enabled": false,
   "chat.mcp.discovery.enabled": false,
   "clangd.arguments": [
     // "--background-index",
