@@ -15,6 +15,8 @@
   "C_Cpp.formatting": "none",
   "chat.agent.enabled": false,
   "chat.commandCenter.enabled": false,
+  "chat.mcp.enabled": true,
+  "chat.mcp.discovery.enabled": false,
   "clangd.arguments": [
     // "--background-index",
     // "--compile-commands-dir=/path/to/compile_commands/", // path to compile_commands.json,
@@ -83,9 +85,14 @@
   "git.enableSmartCommit": true,
   "git.ignoreRebaseWarning": true,
   "git.openRepositoryInParentFolders": "never",
+  "github.copilot.chat.agent.autoFix": false,
+  "github.copilot.chat.agent.runTasks": false,
+  "github.copilot.editor.enableCodeActions": false,
   "github.copilot.enable": {
     "*": false,
   },
+  "github.copilot.nextEditSuggestions.enabled": false,
+  "github.copilot.nextEditSuggestions.fixes": false,
   "go.enableCodeLens": {
     "references": false,
     "runtest": false,
@@ -98,6 +105,7 @@
   "http.proxySupport": "off",
   "lldb.evaluateForHovers": false,
   "outline.icons": false,
+  "outline.showTypeParameters": false,
   "[python]": {
     "editor.defaultFormatter": "ms-python.autopep8",
   },
@@ -129,7 +137,6 @@
   "window.commandCenter": false,
   "window.title": "${activeEditorLong}",
   "window.zoomPerWindow": false,
-  "workbench.activityBar.location": "hidden",
   "workbench.editor.editorActionsLocation": "hidden",
   "workbench.editor.empty.hint": "hidden",
   "workbench.editor.enablePreview": false,
@@ -138,6 +145,7 @@
   "workbench.editor.tabSizing": "fixed",
   "workbench.iconTheme": null,
   "workbench.layoutControl.type": "toggles",
+  "workbench.secondarySideBar.defaultVisibility": "hidden",
   "workbench.settings.editor": "json", // ui
   "workbench.settings.useSplitJSON": true,
   "workbench.startupEditor": "newUntitledFile",
