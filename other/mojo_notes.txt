@@ -167,6 +167,32 @@ That is, unless you treat the directory as a Mojo package, as described in the n
 ---
 
 
+https://docs.modular.com/mojo/manual/pointers/ ,
+
+Pointer,        C++ std::weak_ptr;
+OwnedPointer,   C++ std::unique_ptr;
+ArcPointer,     C++ std::shared_ptr;
+UnsafePointer,  C, C++ low-level raw pointer, char *p1, int *p2, void *p3;
+
+Using UnsafePointer:
+- Building array-like structure, such as List;
+- Interacting with external libraries including C++;
+
+
+https://docs.modular.com/mojo/manual/pointers/unsafe-pointers#dereferencing-pointers ,
+
+ptr[] = newValue
+
+https://docs.modular.com/mojo/manual/functions/#variadic-keyword-arguments ,
+https://docs.python.org/3/tutorial/controlflow.html#unpacking-argument-lists ,
+
+mojo use the square bracket operator ptr[] for dereferencing pointer, it is unlike c,c++.
+because the star operator *ptr is used for unpack in python and mojo.
+
+
+---
+
+
 struct T:
     var name: String
 
