@@ -69,26 +69,145 @@ It seems taht this is not required for build and run mojo at command terminal.
 ---
 
 
+https://docs.modular.com/mojo/manual/values/value-semantics#intro-to-value-semantics ,
+
+// assignment is copy by value semantic.
+// assignment could also be reference if the type supports it.
+
+sharing a value-semantic type means that you create a copy of the value.
+This is also known as "pass by value."
+
+def main():
+    var x = 1
+    var y = x
+    y += 1
+
+    print("x:", x)
+    print("y:", y)
+
+# OUTPUT
+# x: 1
+# y: 2
+
+We assigned the value of x to y, which creates the value for y by
+making a copy of x. When we increment y, the value of x doesn't change.
+Each variable has exclusive ownership of a value.
+
+Whereas, if a type instead uses reference semantics,
+then y would point to the same value as x, and incrementing either one would
+affect the value for both. Neither x nor y would "own" the value,
+and any variable would be allowed to reference it and mutate it.
+
+Numeric values in Mojo are value semantic because they're trivial types,
+which are cheap to copy.
+
+
+---
+
+
+https://docs.modular.com/mojo/manual/values/value-semantics#value-semantics-in-mojo-functions ,
+
+// function argument pass by reference semantic
+
+Value semantics also apply to function arguments in Mojo by default.
+in the following function, the y argument is immutable by default,
+so if the function wants to modify the value in the local scope,
+it needs to make a local copy:
+
+fn add_two(y: Int):
+    # y += 2  # This would cause a compiler error because `y` is immutable
+    # We can instead make an explicit copy:
+    var z = y
+    z += 2
+    print("z:", z)
+
+def main():
+    var x = 1
+    add_two(x)
+    print("x:", x)
+
+# OUTPUT
+# z: 3
+# x: 1
+
+Thus, the default behavior for function arguments is fully value semantic:
+arguments are immutable references,
+and any living variable from the callee is not affected by the function.
+
+
+---
+
+
+from memory import ArcPointer
+
+# a reference type
+
+@fieldwise_init
+struct T(Copyable, Movable):
+    fn __init__(out self, value: Int):
+        self.ptr = ArcPointer(value)
+    fn __copyinit__(out self, existing: Self):
+        self.ptr = existing.ptr
+    fn __moveinit__(out self, owned existing: Self):
+        self.ptr = existing.ptr^
+    var ptr: ArcPointer[Int]
+
+def main():
+    var x = T(10)
+    var y = x
+    y.ptr[] += 1
+
+    print("x.value:", x.ptr[])
+    print("y.value:", y.ptr[])
+
+# OUTPUT
+# x.value: 11
+# y.value: 11
+
+---
+
+
+https://docs.modular.com/mojo/manual/types ,
+
+Most of the types are nominal types, defined by a struct.
+
+There are some types that aren't defined as structs: Functions, NoneType.
+
+These standard types aren't privileged.
+Each of the standard library types is defined just like user-defined types—
+even basic types like Int and String.
+
+
+---
+
+
 // like c++ class with virtual function
 https://docs.modular.com/mojo/manual/traits/#using-traits ,
-Traits solve this problem by letting you define a shared set of behaviors that types can implement.
-Then you can write a function that depends on the trait, rather than individual types.
+
+Traits solve this problem by letting you define a shared set of behaviors that
+types can implement.
+
+Then you can write a function that depends on the trait, rather than individual
+types.
 
 
 // like c++ template
 https://docs.modular.com/mojo/manual/traits/#generic-structs-with-traits ,
 You can also use traits when defining a generic container.
-A generic container is a container (for example, an array or hashmap) that can hold different data types.
+A generic container is a container (for example, an array or hashmap) that can
+hold different data types.
 
 
 ---
 
 
 https://docs.modular.com/mojo/manual/lifecycle/life#constructors-and-implicit-conversion ,
+
 Implicit conversion can happen when one of the following occurs:
 You assign a value of one type to a variable with a different type.
 You pass a value of one type to a function that requires a different type.
-You return a value of one type from a function that specifies a different return type.
+You return a value of one type from a function that specifies a different return
+type.
 
 
 ---
@@ -102,26 +221,35 @@ You return a value of one type from a function that specifies a different return
 //      assignment;
 //      function argument passing;
 
-// mojo use init for both creating an instance with initialization, and assignment.
+// mojo use init for both creating an instance with initialization,
+//   and assignment.
 // it does not need separate assignment operator methods like c++.
 
 https://docs.modular.com/mojo/manual/structs ,
 
 So here it is with a constructor to initialize the two fields,
 The __init__() method is one of many special methods
-(also known as "dunder methods" because they have double underscores) with pre-determined names.
+(also known as "dunder methods" because they have double underscores) with
+pre-determined names.
 
-Once you have a constructor, you can create an instance of MyPair and set the fields.
+Once you have a constructor, you can create an instance of MyPair and set the
+fields.
 
 
 https://docs.modular.com/mojo/manual/lifecycle/life#copy-constructor ,
-When Mojo encounters an assignment statement that doesn't use the transfer sigil (^),
-it tries to make a copy of the right-side value by calling upon that type's copy constructor,
+When Mojo encounters an assignment statement that doesn't use the transfer
+sigil (^),
 
-Mojo also calls upon the copy constructor when a value is passed to a function that takes the argument as owned
+it tries to make a copy of the right-side value by calling upon that type's
+copy constructor,
+
+Mojo also calls upon the copy constructor when a value is passed to a function
+that takes the argument as owned
+
 and when the lifetime of the given value does not end at that point.
 
-If the lifetime of the value does end there (usually indicated with the transfer sigil ^),
+If the lifetime of the value does end there (usually indicated with the
+transfer sigil ^),
 then Mojo instead invokes the move constructor.
 
 
@@ -129,7 +257,8 @@ then Mojo instead invokes the move constructor.
 
 
 https://docs.modular.com/mojo/manual/lifecycle/life#move-constructor ,
-the only catch is that you must use the ^ transfer sigil to end the lifetime of a move-only type
+the only catch is that you must use the ^ transfer sigil to end the lifetime of
+a move-only type
 when assigning it to a new variable or when passing it as an owned argument.
 
 
@@ -138,30 +267,36 @@ when assigning it to a new variable or when passing it as an owned argument.
 
 https://docs.modular.com/mojo/manual/lifecycle/life#value-decorator ,
 even if it's not used with self.name = name^, the Mojo compiler will notice
-that name is last used here and convert this assignment into a move, instead of a copy+delete.
+that name is last used here and convert this assignment into a move,
+instead of a copy+delete.
 
 
 ---
 
 
 
-// file handle, network and database connection, are non-memory (eg. variables) resources.
+// file handle, network and database connection, are non-memory (eg. variables)
+//   resources.
 // it is like using a custom deleter with c++ smart pointer.
 https://docs.modular.com/mojo/manual/errors#use-a-context-manager ,
-A context manager is an object that manages resources such as files, network connections,
-and database connections.
+A context manager is an object that manages resources such as files,
+network connections, and database connections.
 
 
 ---
 
 
 https://docs.modular.com/mojo/manual/packages#mojo-modules ,
-import MyPair into a file named main.mojo that's in the same directory as mymodule.mojo:
+import MyPair into a file named main.mojo that's
+in the same directory as mymodule.mojo:
+
   from mymodule import MyPair
 
 it only works when mymodule.mojo is in the same directory as main.mojo.
-Currently, you can't import .mojo files as modules if they reside in other directories.
-That is, unless you treat the directory as a Mojo package, as described in the next section.
+Currently, you can't import .mojo files as modules if they reside in other
+directories.
+That is, unless you treat the directory as a Mojo package, as described in the
+next section.
 
 
 ---
@@ -186,7 +321,8 @@ ptr[] = newValue
 https://docs.modular.com/mojo/manual/functions/#variadic-keyword-arguments ,
 https://docs.python.org/3/tutorial/controlflow.html#unpacking-argument-lists ,
 
-mojo use the square bracket operator ptr[] for dereferencing pointer, it is unlike c,c++.
+mojo use the square bracket operator ptr[] for dereferencing pointer,
+it is unlike c,c++.
 because the star operator *ptr is used for unpack in python and mojo.
 
 
