@@ -72,7 +72,6 @@ It seems taht this is not required for build and run mojo at command terminal.
 https://docs.modular.com/mojo/manual/values/value-semantics#intro-to-value-semantics ,
 
 // assignment is copy by value semantic.
-// assignment could also be reference if the type supports it.
 
 sharing a value-semantic type means that you create a copy of the value.
 This is also known as "pass by value."
@@ -107,7 +106,7 @@ which are cheap to copy.
 
 https://docs.modular.com/mojo/manual/values/value-semantics#value-semantics-in-mojo-functions ,
 
-// function argument pass by reference semantic
+// function argument pass by reference semantic.
 
 Value semantics also apply to function arguments in Mojo by default.
 in the following function, the y argument is immutable by default,
@@ -140,29 +139,40 @@ and any living variable from the callee is not affected by the function.
 
 from memory import ArcPointer
 
-# a reference type
-
 @fieldwise_init
 struct T(Copyable, Movable):
-    fn __init__(out self, value: Int):
+    fn __init__(out self, value: Int, num: Int):
         self.ptr = ArcPointer(value)
+        self.num = num
+
     fn __copyinit__(out self, existing: Self):
         self.ptr = existing.ptr
+        self.num = existing.num
+
     fn __moveinit__(out self, owned existing: Self):
         self.ptr = existing.ptr^
+        self.num = existing.num
+
     var ptr: ArcPointer[Int]
+    var num: Int
+
 
 def main():
-    var x = T(10)
+    var x = T(10, 20)
     var y = x
     y.ptr[] += 1
+    y.num += 1
 
-    print("x.value:", x.ptr[])
-    print("y.value:", y.ptr[])
+    print("x.value:", x.ptr[], x.num)
+    print("y.value:", y.ptr[], y.num)
 
 # OUTPUT
-# x.value: 11
-# y.value: 11
+x.value: 11 20
+y.value: 11 21
+
+// reference and share value by pointer member.
+// but member of numeric is still value semantic.
+
 
 ---
 
