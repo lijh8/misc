@@ -1014,7 +1014,7 @@ int main() {
 }
 
 
-//---
+---
 
 
 // Converting from Iterator to Reverse Iterator.
@@ -1055,7 +1055,7 @@ int main2() {
 }
 
 
-//---
+---
 
 
 // reserve:
@@ -1076,7 +1076,7 @@ int main2() {
 // std::vector<int> v(100);   // size == 100
 
 
-//---
+---
 
 
 #include <iostream>
@@ -1183,7 +1183,7 @@ int main() {
 }
 
 
-//---
+---
 
 
 // sort, search, find, algorithms
@@ -1211,7 +1211,7 @@ std::partition_point(); // on sorted or partitioned sequence;
 std::search(first, last, sub_first, sub_last);
 
 
-//---
+---
 
 
 binary search, lower_bound, upper_bound, partition_point.
@@ -1278,7 +1278,7 @@ int main() {
 }
 
 
-//---
+---
 
 
 // cppreference.com, html-book-20240610/reference/en/cpp/algorithm/search_n.html:
@@ -2066,7 +2066,9 @@ when it comes to unicode:
 be specific about size, use std::u8string, char8_t instead of std::string, char;
 be certain about the file encoding before parse it, utf-8, chinese gbk, etc.;
 
+
 ---
+
 
 UTF-8:
 1 to 4 bytes;
@@ -2254,6 +2256,7 @@ $ LD_LIBRARY_PATH=../boost_1_82_0/stage/lib  /path/to/a.out
 # PYTHONPATH=/path/to/imported/module  python3 foo.py
 # PYTHONPATH=/path/to/imported/module  python3 /path/to/foo.py
 #
+
 
 ---
 
@@ -2744,7 +2747,6 @@ int main() {
 ---
 
 
-
 ```
 C++ priemr 5th:
 
@@ -2901,25 +2903,37 @@ void strcpy(char *s, char *t) {
 ---
 
 
-// if the pivot selection does not evenly partition the elements every time,
-// the recursion goes deeper which makes the quick sort perform worse.
-// this is similar to unbalanced tree vs. a balanced search tree.
+Quick Sort:
 
-// for cases like already sorted elements, reverse sorted elements,
-// all equal elements, it is better to check all elements in an iteration
-// which is O(n) before perform quick sort to avoid falling into the worst O(n^2).
-// this is why the C qsort and c++ std::sort are both not just quick sort,
-// they both are combination of hybrid methods.
-//
+K&R C 2nd, 4.10:
+"quicksort, a sorting algorithm developed by C. A. R. Hoare in 1962. Given an
+array, one element is chosen and the others are partitioned into two subsets-
+those less than the partition element and those greater than or equal to it."
 
-// quick sort, K&R C, chapter 4.10 ,
-// how to understand the qsort implementation in K&R C 2nd:
-// 1. it seems that it only handles the smaller elements explicitly,
-//    it puts the smaller elements at the beginning.
-//    but this also naturally causes the equal and larger elements are following the smaller elements.
-// 2. the restore swap puts the partition element after the smaller elements.
-//    this restore the elements relationship,
-//    but not necessary the original index of the partition element.
+Note: Just place elements smaller than the pivot to its left — this implies
+elements equal to or larger than the pivot end up on the right.
+
+Both the K&R C version and the one with partition-function achieve this by just
+moving the smaller elements left, so equal and larger elements end up on the
+right. Both versions move smaller elements left by swapping array elements.
+
+In the naive version, the c++ std::vector supports insert and erase and it
+follow exactly: put the smaller ones to the left, larger ones to the right. but
+insert and erase cause shifting the subsequent elements, which is not efficient.
+
+if the pivot selection does not evenly partition the elements every time, the
+recursion goes deeper which makes the quick sort perform worse. this is similar
+to unbalanced tree vs. a balanced search tree.
+
+for cases like already sorted elements, reverse sorted elements, all equal
+elements, it is better to check all elements in an iteration which is O(n)
+before perform quick sort to avoid falling into the worst O(n^2). this is why
+the C qsort and c++ std::sort are both not just quick sort, they both are
+combination of hybrid methods.
+
+
+// version 1:
+// k&r c 2nd, 4.10.
 
 #include <stdio.h>
 
@@ -2957,42 +2971,8 @@ int main() {
 }
 
 
----
-
-
-// sort the vector in ascending order
-void qsort2(std::vector<int> &v, int left, int right) {
-  if (left >= right) {
-    return;
-  }
-
-  auto mid = (left + right) / 2;
-
-  for (auto i = left; i < mid;) {
-    if (v[i] > v[mid]) {
-      v.insert(begin(v) + mid + 1, v[i]);
-      v.erase(begin(v) + i);
-      mid--;
-    } else {
-      i++;
-    }
-  }
-
-  for (auto i = mid + 1; i <= right; i++) {
-    if (v[i] < v[mid]) {
-      v.insert(begin(v) + mid, v[i]);
-      v.erase(begin(v) + i + 1);
-      mid++;
-    }
-  }
-
-  qsort2(v, left, mid - 1);
-  qsort2(v, mid + 1, right);
-}
-
-
----
-
+// version 2:
+// with a partition function.
 
 #include <cstdio>
 #include <iostream>
@@ -3007,7 +2987,7 @@ int partition(int arr[], int left, int right) {
   int i = left - 1;
 
   for (int j = left; j < right; j++) {
-    if (arr[j] <= pivot) {
+    if (arr[j] < pivot) {
       std::swap(arr[++i], arr[j]);
     }
   }
@@ -3015,11 +2995,11 @@ int partition(int arr[], int left, int right) {
   return i;
 }
 
-void quickSort(int arr[], int left, int right) {
+void qsort2(int arr[], int left, int right) {
   if (left < right) {
     int i = partition(arr, left, right);
-    quickSort(arr, left, i - 1);
-    quickSort(arr, i + 1, right);
+    qsort2(arr, left, i - 1);
+    qsort2(arr, i + 1, right);
   }
 }
 
@@ -3034,7 +3014,7 @@ int main() {
   auto test = [](const std::vector<int> &input,
                  const std::vector<int> &expected) {
     std::vector<int> arr = input;
-    quickSort(arr.data(), 0, arr.size() - 1);
+    qsort2(arr.data(), 0, arr.size() - 1);
     if (arr != expected) {
       std::cerr << "Test failed!\n";
       std::cerr << "Input: ";
@@ -3072,6 +3052,39 @@ int main() {
 }
 
 
+// version 3:
+// naive version
+
+void qsort3(std::vector<int> &v, int left, int right) {
+  if (left >= right) {
+    return;
+  }
+
+  auto mid = (left + right) / 2;
+
+  for (auto i = left; i < mid;) {
+    if (v[i] > v[mid]) {
+      v.insert(begin(v) + mid + 1, v[i]);
+      v.erase(begin(v) + i);
+      mid--;
+    } else {
+      i++;
+    }
+  }
+
+  for (auto i = mid + 1; i <= right; i++) {
+    if (v[i] < v[mid]) {
+      v.insert(begin(v) + mid, v[i]);
+      v.erase(begin(v) + i + 1);
+      mid++;
+    }
+  }
+
+  qsort3(v, left, mid - 1);
+  qsort3(v, mid + 1, right);
+}
+
+
 ---
 
 
@@ -3092,7 +3105,9 @@ int binary_search(int arr[], int left, int right, int target) {
   return -1;
 }
 
+
 ---
+
 
 // fibonacci, https://leetcode.cn/problems/fibonacci-number/ ,
 
@@ -3103,7 +3118,9 @@ int fib(int n) {
   return fib(n-1) + fib(n-2);
 }
 
+
 ---
+
 
 // reverse linked list, https://leetcode.cn/problems/reverse-linked-list/ ,
 
@@ -3187,12 +3204,16 @@ usr/include/boost/align.hpp
 usr/lib/libboost_atomic.so
 ...
 
+
 ---
+
 
 if vi open file in wrong character encoding,
 use vim, neovim instead,
 
+
 ---
+
 
 //man pages wrong characters
 
