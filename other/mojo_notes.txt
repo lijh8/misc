@@ -163,12 +163,12 @@ def main():
     y.ptr[] += 1
     y.num += 1
 
-    print("x.value:", x.ptr[], x.num)
-    print("y.value:", y.ptr[], y.num)
+    print("x.ptr:", x.ptr[], x.num, x.ptr.unsafe_ptr())
+    print("y.ptr:", y.ptr[], y.num, y.ptr.unsafe_ptr())
 
 # OUTPUT
-x.value: 11 20
-y.value: 11 21
+# x.ptr: 11 20 0x511c3fe00008
+# y.ptr: 11 21 0x511c3fe00008
 
 // reference and share value by pointer member.
 // but member of numeric is still value semantic.
