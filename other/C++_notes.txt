@@ -2914,7 +2914,7 @@ those less than the partition element and those greater than or equal to it."
 
 2. Partitioning:
   - All elements smaller than the pivot are moved to its left.
-  - All elements equal to or larger than the pivot end up on its right.
+  - All elements equal to or larger than the pivot end up on its right naturally.
 
 3. Pivot placement: The pivot is then moved into its correct position,
   immediately after the last smaller element.
