@@ -2910,26 +2910,18 @@ K&R C 2nd, 4.10:
 array, one element is chosen and the others are partitioned into two subsets-
 those less than the partition element and those greater than or equal to it."
 
-Note: Just place elements smaller than the pivot to its left — this implies
-elements equal to or larger than the pivot end up on the right.
+1. Pivot selection: One element (the "pivot") is chosen.
 
-Both the K&R C version and the one with partition-function achieve this by just
-moving the smaller elements left, so equal and larger elements end up on the
-right. Both versions move smaller elements left by swapping array elements.
+2. Partitioning:
+  - All elements smaller than the pivot are moved to its left.
+  - All elements equal to or larger than the pivot are left on its right.
 
-In the naive version, the c++ std::vector supports insert and erase and it
-follow exactly: put the smaller ones to the left, larger ones to the right. but
-insert and erase cause shifting the subsequent elements, which is not efficient.
+3. Pivot placement: The pivot is then moved into its correct position,
+  immediately after the last smaller element.
 
-if the pivot selection does not evenly partition the elements every time, the
-recursion goes deeper which makes the quick sort perform worse. this is similar
-to unbalanced tree vs. a balanced search tree.
+4. Recursion: The process repeats recursively for the left and right subarrays.
 
-for cases like already sorted elements, reverse sorted elements, all equal
-elements, it is better to check all elements in an iteration which is O(n)
-before perform quick sort to avoid falling into the worst O(n^2). this is why
-the C qsort and c++ std::sort are both not just quick sort, they both are
-combination of hybrid methods.
+The array elements are move by swapping.
 
 
 // version 1:
@@ -3053,7 +3045,8 @@ int main() {
 
 
 // version 3:
-// naive version
+// naive version.
+// insert and erase cause shifting the subsequent elements, which is inefficient.
 
 void qsort3(std::vector<int> &v, int left, int right) {
   if (left >= right) {
