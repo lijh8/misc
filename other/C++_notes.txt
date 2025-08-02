@@ -2921,7 +2921,7 @@ those less than the partition element and those greater than or equal to it."
 
 4. Recursion: The process repeats recursively for the left and right subarrays.
 
-The array elements are move by swapping.
+The array elements are moved by swapping.
 
 
 // version 1:
