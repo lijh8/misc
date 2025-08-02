@@ -2910,18 +2910,23 @@ K&R C 2nd, 4.10:
 array, one element is chosen and the others are partitioned into two subsets-
 those less than the partition element and those greater than or equal to it."
 
-1. Pivot selection: One element (the "pivot") is chosen.
+1. Choose a pivot element (typically from the middle, first, last,
+  or random position).
 
-2. Partitioning:
-  - All elements smaller than the pivot are moved to its left.
-  - All elements equal to or larger than the pivot end up on its right naturally.
+2. Partition the array by moving elements smaller than pivot to the left of
+  pivot using swapping.
 
-3. Pivot placement: The pivot is then moved into its correct position,
+3. Move pivot to its correct position,
   immediately after the last smaller element.
 
-4. Recursion: The process repeats recursively for the left and right subarrays.
+4. Elements equal to or larger than the pivot are automatically stayed on the
+  right of pivot.
 
-The array elements are moved by swapping.
+5. Recursively apply the same process to the subarrays.
+
+Note: qsort in C, std::sort in C++ are not just pure quick sort;
+they use hybrid algorithms to avoid the worst cases of quick sort
+(eg. already sorted arry or reverse sorted array)
 
 
 // version 1:
