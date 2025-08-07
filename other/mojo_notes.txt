@@ -6,6 +6,8 @@ mojo lang
 
 Install
 
+https://docs.modular.com/mojo/manual/get-started ,
+
 install pixi first
 $ curl -fsSL https://pixi.sh/install.sh | sh
 The 'pixi' binary is installed into '/Users/ljh/.pixi/bin'
@@ -17,15 +19,13 @@ Then restart your terminal for the changes to take effect.
 
 Navigate to the directory in which you want to create the project and execute:
 
-$ mkdir ~/hello && cd ~/hello
-
-$ pixi init example-project \
+$ pixi init hello \
   -c https://conda.modular.com/max-nightly/ -c conda-forge \
-  && cd example-project
+  && cd hello
 $
 
 Install the Modular Platform from the modular package (which includes Mojo):
-$ pixi add modular
+$ pixi add mojo
 
 checking the version of Mojo:
 $ pixi run mojo --version
@@ -54,6 +54,11 @@ $ pixi remove modular
 vscode
 
 extension: mojo by Modular,
+
+1. open the mojo source code file with main entry function as current file /
+    then press F5 to start debugging;
+2. or, activity bar / run and debug / create a launch.json file / Mojo:
+    .vscode/launch.json;
 
 when accept input, use internal terminal instead of debug console.
 launch.json:
@@ -334,6 +339,45 @@ https://docs.python.org/3/tutorial/controlflow.html#unpacking-argument-lists ,
 mojo use the square bracket operator ptr[] for dereferencing pointer,
 it is unlike c,c++.
 because the star operator *ptr is used for unpack in python and mojo.
+
+
+---
+
+
+https://docs.modular.com/mojo/changelog#v244-2024-06-07 ,
+```
+v24.4, 2024-06-07:
+Added a new Span type for taking slices of contiguous collections. (PR 595)
+```
+
+https://github.com/modular/modular/pull/2595 ,
+Another motivation for this change is to reduce unnecessary copies on methods
+such as slicing a List, which currently allocates a new list.
+Ideally, we would just return a Span without making a copy.
+
+
+---
+
+
+https://docs.modular.com/mojo/manual/types ,
+
+At compile time, the literal types are arbitrary-precision (also called
+infinite-precision) values, so the compiler can perform compile-time
+calculations without overflow or rounding errors.
+
+At runtime the values are converted to finite-precision types—Int for integer
+values, and Float64 for floating-point values. (This process of converting a
+value that can only exist at compile time into a runtime value is called
+materialization.)
+
+
+---
+
+
+https://docs.modular.com/mojo/changelog#v255-2025-08-05 ,
+
+alias comptime_string = String("foo" + "bar")  # .unsafe_ptr()
+var runtime_string = comptime_string
 
 
 ---
