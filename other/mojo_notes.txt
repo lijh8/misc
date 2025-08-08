@@ -33,6 +33,7 @@ $ pixi run mojo --version
 Start the virtual environment:
 $ pixi shell
 
+$ vi hello.mojo
 $ mojo hello.mojo
 
 $ mojo build hello.mojo
@@ -458,3 +459,60 @@ del a
 
 ---
 
+
+https://docs.modular.com/mojo/manual/packages ,
+https://docs.modular.com/mojo/cli/run ,
+
+1. a module is a file, a file is a module,
+    module name is basename of the file without suffix extension;
+
+2. the init file is required in mojo `__init__.mojo`,
+    the __init__.py is not required in namespace package in python;
+
+3. specify the parent dir with `mojo build -I <dir>`
+    to foo_dir in import statement like `from foo_dir import foo_module`:
+
+    $ mojo build -I <dir>
+    $ mojo run   -I <dir>
+
+    which is similar to:
+    $ PYTHONPATH=<dir> python3 main.py
+
+
+$ pwd
+/home/ljh/Documents/hello_mojo/foo/src
+$ ls
+foo_dir  main
+$ tree
+.
+├── foo_dir
+│   ├── foo_module.mojo
+│   └── __init__.mojo
+└── main
+    └── main.mojo
+
+$
+$ cat foo_dir/foo_module.mojo
+def foo_fun():
+    print("foo")
+$
+$ cat foo_dir/__init__.mojo
+$
+$ cat main/main.mojo
+from foo_dir import foo_module
+def main():
+    print("main")
+    foo_module.foo_fun()
+$
+$ pixi run mojo run -I . main/main.mojo
+main
+foo
+$
+$ cd main/
+$ pixi run mojo run -I .. main.mojo
+main
+foo
+$
+
+
+---
