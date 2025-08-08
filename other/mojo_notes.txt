@@ -5,7 +5,6 @@ mojo lang
 
 
 Install
-
 https://docs.modular.com/mojo/manual/get-started ,
 
 install pixi first
@@ -24,8 +23,14 @@ $ pixi init hello \
   && cd hello
 $
 
-Install the Modular Platform from the modular package (which includes Mojo):
+Install Mojo:
 $ pixi add mojo
+
+always want the latest version, you can use the wildcard specifier:
+$ pixi add "mojo=*"
+
+optionally specify the version with a version specifier:
+$ pixi add "mojo~=25.4" "mojo<2.0"
 
 checking the version of Mojo:
 $ pixi run mojo --version
@@ -44,9 +49,20 @@ To deactivate your virtual environment:
 $ exit
 
 
+Update and upgrade
+https://docs.modular.com/pixi/ ,
+
+Update pixi:
+$ pixi self-update
+
+Update and upgrade packages:
+$ pixi upgrade
+$ pixi update
+
+
 Uninstall
 
-$ pixi remove modular
+$ pixi remove mojo
 
 
 ---
