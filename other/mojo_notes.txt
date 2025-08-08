@@ -461,6 +461,7 @@ del a
 
 
 https://docs.modular.com/mojo/manual/packages ,
+https://docs.modular.com/mojo/cli/build/ ,
 https://docs.modular.com/mojo/cli/run ,
 
 1. a module is a file, a file is a module,
@@ -480,7 +481,7 @@ https://docs.modular.com/mojo/cli/run ,
 
 
 $ pwd
-/home/ljh/Documents/hello_mojo/foo/src
+/home/ljh/Documents/hello_mojo/src
 $ ls
 foo_dir  main
 $ tree
@@ -509,6 +510,8 @@ main
 foo
 $
 $ cd main/
+$ pwd
+/home/ljh/Documents/hello_mojo/src/main
 $ pixi run mojo run -I .. main.mojo
 main
 foo
