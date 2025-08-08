@@ -87,6 +87,8 @@
   "git.openRepositoryInParentFolders": "never",
   "github.copilot.chat.agent.autoFix": false,
   "github.copilot.chat.agent.runTasks": false,
+  "github.copilot.chat.copilotDebugCommand.enabled": false,
+  "github.copilot.chat.startDebugging.enabled": false,
   "github.copilot.editor.enableCodeActions": false,
   "github.copilot.enable": {
     "*": false,
@@ -103,6 +105,7 @@
     "DYLD_LIBRARY_PATH": "/path/to/lib",
   },
   "http.proxySupport": "off",
+  "inlineChat.lineNaturalLanguageHint": false,
   "lldb.evaluateForHovers": false,
   "outline.icons": false,
   "outline.showTypeParameters": false,
@@ -146,7 +149,7 @@
   "workbench.iconTheme": null,
   "workbench.layoutControl.type": "toggles",
   "workbench.secondarySideBar.defaultVisibility": "hidden",
-  "workbench.settings.editor": "json", // ui
+  "workbench.settings.editor": "json", // "json", "ui",
   "workbench.settings.useSplitJSON": true,
   "workbench.startupEditor": "newUntitledFile",
   "workbench.tree.enableStickyScroll": false,
