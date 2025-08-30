@@ -1,11 +1,9 @@
-- Put text after its node or link.
-- No spaces between text and its node or link.
-- Link may have multi-directional arrows but its text is always after it.
-- end can be text, but use alternatives like End, END, endnode as id.
-- Avoid id or text -o-, -x-; capitalize O or X, or add space between it and dash.
-- Chain sequential links on one line; place parallel links on separate lines.
-
-- Alternatives: yED, visio, graphviz (dot), draw.io .
+- Put text after its node or link, with no spaces.
+- end can be text; use alternatives like End, END, endnode as id.
+- No id or text like -o-, -x-; use capital or spaces like -O-, -X-, - o -, - x -.
+- Link with arrow on only left is invalid.
+- Chain sequential links on one line; put parallel links on separate lines.
+- Similar tools: graphviz (dot), yED, draw.io, visio.
 
 ```mermaid
 flowchart TD
