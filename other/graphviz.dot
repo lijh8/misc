@@ -1,30 +1,44 @@
-/**
- * https://graphviz.org/about/ ,
- * https://magjac.com/graphviz-visual-editor/ ,
- * https://dreampuf.github.io/GraphvizOnline/ ,
- * vscode extension: tintinweb.graphviz-interactive-preview
- * $ dot -Tpng input.dot -o output.png
- * similar tools: mermaid chart
- */
+/*
+https://graphviz.org/about/ ,
+https://magjac.com/graphviz-visual-editor/ ,
+https://dreampuf.github.io/GraphvizOnline/ ,
+similar tools: mermaid chart, yED
+
+An attribute cannot be combined with an edge operation;
+an attribute must be applied separately.
+
+  ok: A -> B -> C
+  no: A -> B [color=red] -> C;
+
+generate image using command:
+  $ dot -Tpng example.dot -o example.png
+
+use image in markdown example.md:
+  ![](example.png)
+
+then preview markdown in vscode
+
+*/
 
 // example.dot
 
 digraph {
-    start -> input -> check;
+  start -> input -> check;
 
-    check -> foo [label = "foo";];
-    check -> err [label = "err";];
-    check -> finish [label = "no";];
-    check -> bar [label = "bar";];
+  check -> foo [label=foo]
+  check -> err [label=err]
+  check -> finish [label=no]
+  check -> bar [label=bar]
 
-    foo -> finish;
-    err -> finish;
-    bar -> finish;
+  foo -> finish
+  err -> finish
+  bar -> finish
 
-    conf -> bar -> output;
-    deps -> bar;
+  conf -> bar
+  deps -> bar
+  bar -> output
 
-    bar [label = "do something";];
+  bar [label="do something"]
 
-    label = "flow chart";
+  label = "flow chart"
 }
