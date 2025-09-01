@@ -1,0 +1,30 @@
+/**
+ * https://graphviz.org/about/ ,
+ * https://magjac.com/graphviz-visual-editor/ ,
+ * https://dreampuf.github.io/GraphvizOnline/ ,
+ * vscode extension: tintinweb.graphviz-interactive-preview
+ * $ dot -Tpng input.dot -o output.png
+ * similar tools: mermaid chart
+ */
+
+// example.dot
+
+digraph {
+    start -> input -> check;
+
+    check -> foo [label = "foo";];
+    check -> err [label = "err";];
+    check -> finish [label = "no";];
+    check -> bar [label = "bar";];
+
+    foo -> finish;
+    err -> finish;
+    bar -> finish;
+
+    conf -> bar -> output;
+    deps -> bar;
+
+    bar [label = "do something";];
+
+    label = "flow chart";
+}

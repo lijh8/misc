@@ -3,7 +3,7 @@
 - No id or text like -o-, -x-; use capital -O-, -X-, or spaces - o -, - x -.
 - Arrow on single left side of a link is invalid.
 - Chain sequential links on one line; put parallel links on separate lines.
-- Similar tools: graphviz (dot), yED, draw.io, visio.
+- Similar diagram tools: graphviz (dot), yED, draw.io, visio.
 
 ```mermaid
 ---
@@ -22,12 +22,13 @@ flowchart
     conf --> bar --> output
     deps --> bar
 
-    %% use a separate node for adding text lines
-    classDef c1 text-align:left
-    note1["
-    (1) drop the input foo
-    (2) config it before start
-    (3) fully static deps
+    %% use an unconnected node for adding text lines
+    d1["
+    Note:
+    . drop the input foo which is unplanned right now
+    . config it before start
+    . fully static deps
     "]:::c1
+    classDef c1 text-align:left
 
 ```
