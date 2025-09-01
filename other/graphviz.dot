@@ -4,8 +4,8 @@ https://magjac.com/graphviz-visual-editor/ ,
 https://dreampuf.github.io/GraphvizOnline/ ,
 similar tools: mermaid chart, yED
 
-An attribute cannot be combined with an edge operation;
-an attribute must be applied separately.
+Attributes cannot be combined with edge operations;
+attributes must be applied separately.
 
   ok: A -> B -> C
   no: A -> B [color=red] -> C;
@@ -26,17 +26,18 @@ digraph {
   start -> input -> check;
 
   check -> foo [label=foo]
-  check -> err [label=err]
-  check -> finish [label=no]
-  check -> bar [label=bar]
-
   foo -> finish
+
+  check -> err [label=err]
   err -> finish
+
+  check -> finish [label=no]
+
+  check -> bar [label=bar]
   bar -> finish
 
-  conf -> bar
+  conf -> bar -> output
   deps -> bar
-  bar -> output
 
   bar [label="do something"]
 
