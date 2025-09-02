@@ -3,44 +3,33 @@ https://graphviz.org/about/ ,
 https://magjac.com/graphviz-visual-editor/ ,
 https://dreampuf.github.io/GraphvizOnline/ ,
 
-Edge cannot follow attribute in same statement.
-
-  no: start [label=foo] -> input
-  ok: start [label=foo]; start -> input
-
-  no: start -> input [label=foo] -> check
-  ok: start -> input [label=foo]; input -> check
+edge cannot follow attribute in same statement.
+multiple edge statements can be on one line.
+semi-colon is optional between edge statements.
+comma is optional between nodes.
 
 generate image using command:
   $ apt install graphviz
-  $ dot -Tpng example.dot -o example.png
+  $ dot -Tsvg example.dot -o example.svg
 
 use image in markdown example.md:
-  ![](example.png)
+  ![](example.svg)
 
-then preview markdown in vscode
+then preview markdown in vscode.
 
-similar tools: mermaid chart, yED
+similar tools: mermaid chart, yED.
 */
 
 // example.dot
 
 digraph {
-  start -> input -> check
+  start->input->check
 
-  check -> foo [label=foo]
-  foo -> finish
+  check->foo foo->finish
+  check->err err->finish
+  check->finish
+  check->bar bar->finish
 
-  check -> err [label=err]
-  err -> finish
-
-  check -> finish [label=no]
-
-  check -> bar [label=bar]
-  bar -> finish
-
-  conf -> bar -> output
-  deps -> bar
-
-  label="flow chart"
+  conf->bar->output
+  deps->bar
 }
