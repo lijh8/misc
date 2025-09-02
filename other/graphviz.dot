@@ -2,13 +2,14 @@
 https://graphviz.org/about/ ,
 https://magjac.com/graphviz-visual-editor/ ,
 https://dreampuf.github.io/GraphvizOnline/ ,
-similar tools: mermaid chart, yED
 
-Attributes cannot be combined with edge operations;
-attributes must be applied separately.
+Edge cannot follow attribute in same statement.
 
-  ok: A -> B -> C
-  no: A -> B [color=red] -> C;
+  no: start [label=foo] -> input
+  ok: start [label=foo]; start -> input
+
+  no: start -> input [label=foo] -> check
+  ok: start -> input [label=foo]; input -> check
 
 generate image using command:
   $ apt install graphviz
@@ -19,6 +20,7 @@ use image in markdown example.md:
 
 then preview markdown in vscode
 
+similar tools: mermaid chart, yED
 */
 
 // example.dot
@@ -39,8 +41,6 @@ digraph {
 
   conf -> bar -> output
   deps -> bar
-
-  bar [label="do something"]
 
   label="flow chart"
 }
