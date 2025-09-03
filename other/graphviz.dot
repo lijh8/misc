@@ -1,35 +1,30 @@
-/*
-https://graphviz.org/about/ ,
-https://magjac.com/graphviz-visual-editor/ ,
-https://dreampuf.github.io/GraphvizOnline/ ,
-
-edge cannot follow attribute in same statement.
-multiple edge statements can be on one line.
-semi-colon is optional between edge statements.
-comma is optional between nodes.
-
-generate image using command:
-  $ apt install graphviz
-  $ dot -Tsvg example.dot -o example.svg
-
-use image in markdown example.md:
-  ![](example.svg)
-
-then preview markdown in vscode.
-
-similar tools: mermaid chart, yED.
-*/
-
+/**
+ * https://graphviz.org/about/ ,
+ * https://magjac.com/graphviz-visual-editor/ ,
+ * https://dreampuf.github.io/GraphvizOnline/ ,
+ * 
+ * edge cannot follow attribute in same statement.
+ * multiple edge statements can be on one line.
+ * semi-colon is optional between edge statements.
+ * 
+ * generate image using command:
+ *   $ apt install graphviz
+ *   $ dot -Tpng example.dot -o example.png
+ * 
+ * use image in markdown example.md:
+ *   ![](example.png)
+ * 
+ * then preview markdown in vscode.
+ * 
+ * similar tools: mermaid chart, yED.
+ */
 // example.dot
-
 digraph {
-  start->input->check
-
-  check->foo foo->finish
-  check->err err->finish
-  check->finish
-  check->bar bar->finish
-
-  conf->bar->output
-  deps->bar
+    start -> input -> check -> foo -> end;
+    check -> bar -> end;
+    check -> err -> end;
+    check -> end;
+    
+    conf -> bar -> output;
+    deps -> bar;
 }
