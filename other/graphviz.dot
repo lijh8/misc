@@ -5,8 +5,8 @@
  * 
  * - Put edges with lower rank nodes first.
  * - Put edges with same rank nodes adjacent.
- * - Do not chain two edges in one statement,
- *     easier to add attributes after the edge.
+ * - Do not chain two edges in a single statement;
+ *     it is easier to add attributes after an edge.
  * 
  * generate image using command:
  *   $ apt install graphviz
