@@ -2,39 +2,41 @@
  * https://graphviz.org/about/ ,
  * https://magjac.com/graphviz-visual-editor/ ,
  * https://dreampuf.github.io/GraphvizOnline/ ,
- *
+ * 
  * One edgeop per line; easier to add attributes after the edge.
  * Do not chain more than one edges in one statement.
  * Chaining disallowed if prior node or edge has attributes.
  * Group edges from same source node first.
  * Group edges to same destination node.
- *
+ * 
  * generate image using command:
  *   $ apt install graphviz
  *   $ dot -Tpng example.dot -o example.png
- *
+ * 
  * use image in markdown example.md:
  *   ![](example.png)
- *
+ * 
  * then preview markdown in vscode.
- *
+ * 
  * similar flow chart diagram tools:
  *   mermaid chart, yED, visio.
  */
 // example.dot
 digraph {
+    start -> input;
+    input -> check;
+    
     // group edges from same source node first
-    a1 -> b1;
-    a1 -> e1;
-    a1 -> c1;
-    a1 -> d1;
-
-    // also group edges to same destination node
-    b1 -> e1;
-    c1 -> e1;
-    d1 -> e1;
-
-    d1 -> h1;
-    f1 -> d1;
-    g1 -> d1;
+    check -> foo;
+    check -> finish;
+    check -> err;
+    check -> bar;
+    
+    foo -> finish;
+    err -> finish;
+    bar -> finish;
+    
+    conf -> bar;
+    bar -> output;
+    deps -> bar;
 }
