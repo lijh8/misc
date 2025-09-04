@@ -4,7 +4,7 @@
  * https://dreampuf.github.io/GraphvizOnline/ ,
  * 
  * edge cannot follow attribute in same statement.
- * one edgeop per statement, do not chain sequential edges.
+ * one edgeop per statement per line, do not chain sequential edges.
  * group edges from same source node first.
  * also group edges to same destination node.
  * 
@@ -17,25 +17,23 @@
  * 
  * then preview markdown in vscode.
  * 
- * similar tools: mermaid chart, yED.
+ * similar flow chart diagram tools:
+ *   mermaid chart, yED, visio.
  */
 // example.dot
 digraph {
-    subgraph cluster_1 {
-        // do not chain sequential edges
-        // group edges from same source node first
-        a1 -> b1;
-        a1 -> e1;
-        a1 -> c1;
-        a1 -> d1;
-        
-        // also group edges to same destination node
-        b1 -> e1;
-        c1 -> e1;
-        d1 -> e1;
-        
-        d1 -> h1;
-        f1 -> d1;
-        g1 -> d1;
-    }
+    // group edges from same source node first
+    a1 -> b1;
+    a1 -> e1;
+    a1 -> c1;
+    a1 -> d1;
+    
+    // also group edges to same destination node
+    b1 -> e1;
+    c1 -> e1;
+    d1 -> e1;
+    
+    d1 -> h1;
+    f1 -> d1;
+    g1 -> d1;
 }
