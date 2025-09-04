@@ -28,13 +28,14 @@ digraph {
     check -> foo;
     check -> err;
     check -> bar;
-    check -> finish;
     
+    conf -> bar;
+    deps -> bar;
+    
+    check -> finish;
     foo -> finish;
     err -> finish;
     bar -> finish;
     
     bar -> output;
-    conf -> bar;
-    deps -> bar;
 }
