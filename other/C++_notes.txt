@@ -3848,6 +3848,29 @@ $
 ---
 
 
+c++ primer 5th, 9.4 How a vector Grows
+
+the container must allocate new memory to hold the existing elements plus the
+new one, move the elements from the old location into the new space, add the new
+element, and deallocate the old memory.
+
+Note:
+
+template<typename T>
+class vector {
+    T*      m_data;      // Pointer to the dynamic array of elements (on the heap)
+    size_t  m_size;      // Number of elements currently in the vector
+    size_t  m_capacity;  // Total capacity of the dynamic array
+};
+
+The member data on stack on is copied (if it is not new'ed object),
+The elements on heap (pointed by the m_data) are moved if the type supports move operation.
+The vector is contiguous always.
+
+
+---
+
+
 
 
 
