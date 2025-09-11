@@ -3862,12 +3862,12 @@ class my_vector {
   size_t capacity; // Total capacity of the dynamic array
 };
 
-The "move" means that the elements on heap (pointed by the data pointer)
+The "move" means that the elements on heap (pointed to by the data pointer)
 are moved if the type supports move operation.
 This is the main part and usually much longer than the sizeof(my_vector)
 which consists of only three fixed member: data, size, capacity.
 
-But the members data, size, capacity on stack on is still copied
+But the members data, size, capacity on stack is still copied
 (if it is not new'ed object), so the vector is contiguous always.
 
 
