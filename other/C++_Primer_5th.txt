@@ -150,6 +150,30 @@ Sales_data obj; // ok: obj is a default-initialized object
 The library containers almost certainly perform as well as (and
 usually better than) even the most carefully crafted alternatives.
 
+9.4
+
+How a vector Grows
+
+the container must allocate new memory to hold the existing elements plus the
+new one, move the elements from the old location into the new space, add the new
+element, and deallocate the old memory.
+
+Note:
+
+class my_vector {
+  char*  data;     // Pointer to the dynamic array of elements (on the heap)
+  size_t size;     // Number of elements currently in the vector
+  size_t capacity; // Total capacity of the dynamic array
+};
+
+The "move" means that the elements on heap (pointed by the data pointer)
+are moved if the type supports move operation.
+This is the main part and usually much longer than the sizeof(my_vector)
+which consists of only three fixed member: data, size, capacity.
+
+But the members data, size, capacity on stack on is still copied
+(if it is not new'ed object), so the vector is contiguous always.
+
 10.1
 
 int ia[] = {27, 210, 12, 47, 109, 83};
