@@ -91,6 +91,16 @@ It seems taht this is not required for build and run mojo at command terminal.
 ---
 
 
+https://docs.modular.com/mojo/manual/variables ,
+
+All variables in Mojo are mutable—their value can be changed.
+(If you want to define a constant value that can't change at runtime,
+see the alias keyword.)
+
+
+---
+
+
 https://docs.modular.com/mojo/manual/values/value-semantics#intro-to-value-semantics ,
 
 // assignment is copy by value semantic.
@@ -126,6 +136,21 @@ which are cheap to copy.
 ---
 
 
+https://docs.modular.com/mojo/manual/variables ,
+
+To hold on to reference, use the ref keyword to create a reference binding:
+
+    ref item_ref = items[1] # item_ref is a reference to item[1]
+    item_ref += 1 # increments items[1]
+
+# this is similar to reference in c++:
+    int x = 10;
+    int &r = x;
+
+
+---
+
+
 https://docs.modular.com/mojo/manual/values/value-semantics#value-semantics-in-mojo-functions ,
 
 // function argument pass by reference semantic.
@@ -136,6 +161,7 @@ so if the function wants to modify the value in the local scope,
 it needs to make a local copy:
 
 fn add_two(y: Int):
+# fn add_two(read y: Int): # immutable ref
     # y += 2  # This would cause a compiler error because `y` is immutable
     # We can instead make an explicit copy:
     var z = y
@@ -154,6 +180,18 @@ def main():
 Thus, the default behavior for function arguments is fully value semantic:
 arguments are immutable references,
 and any living variable from the callee is not affected by the function.
+
+
+---
+
+
+https://docs.modular.com/mojo/manual/values/ownership ,
+
+Mojo references are created when you call a function:
+function arguments can be passed as mutable or immutable references.
+
+A function can also return a reference instead of returning a value.
+(c+ idiom: argument pass by reference, return by value)
 
 
 ---
