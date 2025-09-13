@@ -15,8 +15,7 @@
   "C_Cpp.formatting": "none",
   "chat.agent.enabled": false,
   "chat.commandCenter.enabled": false,
-  "chat.mcp.enabled": false,
-  "chat.mcp.discovery.enabled": false,
+  "chat.mcp.access": "none",
   "clangd.arguments": [
     // "--background-index",
     // "--compile-commands-dir=/path/to/compile_commands/", // path to compile_commands.json,
@@ -107,6 +106,9 @@
   "http.proxySupport": "off",
   "inlineChat.lineNaturalLanguageHint": false,
   "lldb.evaluateForHovers": false,
+  "mojo.lsp.includeDirs": [
+    "${workspaceFolder}/src",
+  ],
   "outline.icons": false,
   "outline.showTypeParameters": false,
   "[python]": {
@@ -133,6 +135,7 @@
   "terminal.integrated.initialHint": false,
   "terminal.integrated.persistentSessionReviveProcess": "never",
   "terminal.integrated.shellIntegration.decorationsEnabled": "never",
+  "terminal.integrated.stickyScroll.enabled": false,
   "vim.hlsearch": true,
   "vim.overrideCopy": false,
   "vim.wrapscan": false,
