@@ -97,6 +97,23 @@ All variables in Mojo are mutable—their value can be changed.
 (If you want to define a constant value that can't change at runtime,
 see the alias keyword.)
 
+# the mut keyword is for reference argument only,
+# others including: ref, read, var, out, deinit.
+
+
+---
+
+
+https://docs.modular.com/mojo/manual/values/ownership/ ,
+
+ref: parametric mutability, argument and variable.
+mut: mutable reference, argument.
+read: immutable reference, argument.
+
+var: takes ownership like var keyword in variable declaration, move or its own copy.
+out: constructors and for named results.
+deinit: destructor and consuming-move.
+
 
 ---
 
@@ -191,7 +208,8 @@ Mojo references are created when you call a function:
 function arguments can be passed as mutable or immutable references.
 
 A function can also return a reference instead of returning a value.
-(c+ idiom: argument pass by reference, return by value)
+
+(c++ idiom: argument pass by reference, return by value)
 
 
 ---
