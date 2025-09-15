@@ -122,6 +122,14 @@
   "python.analysis.inlayHints.functionReturnTypes": false,
   "python.analysis.inlayHints.pytestParameters": false,
   "python.analysis.inlayHints.variableTypes": false,
+  "python.testing.unittestArgs": [
+    "-v",
+    "-s",
+    "./src/main", // -s: directory to test files
+    "-p",
+    "test_*.py" // -p: pattern to test files
+  ],
+  "python.testing.unittestEnabled": true,
   "rust-analyzer.completion.autoimport.enable": false,
   "rust-analyzer.completion.autoself.enable": false,
   "rust-analyzer.completion.callable.snippets": "none",
