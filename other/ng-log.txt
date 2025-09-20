@@ -1,0 +1,66 @@
+// use ng-log, google glog is deprecated
+
+#include <ng-log/export.h>
+#include <ng-log/logging.h>
+
+int main(int argc, char* argv[]) {
+    nglog::InitializeLogging(argv[0]);
+    auto num_cookies = 0;
+    LOG(INFO) << "Found " << num_cookies << " cookies";
+    LOG(WARNING) << "Found " << num_cookies << " cookies";
+    LOG(ERROR) << "Found " << num_cookies << " cookies";
+}
+
+/*
+
+https://github.com/ng-log/ng-log ,
+
+
+build ng-log from source:
+
+$ cd ng-log-0.8.2
+$ mkdir build
+$ cd build
+$ cmake ..
+$ make
+
+
+use ng-log:
+
+CPPFLAGS += -I/path/to/ng-log-0.8.2/src -I/path/to/ng-log-0.8.2/build
+LDFLAGS  += -L/path/to/ng-log-0.8.2/build
+LDLIBS   += -lng-log
+
+$ make && LD_LIBRARY_PATH=/home/ljh/Downloads/ng-log-0.8.2/build ./main/main
+make[1]: Entering directory '/home/ljh/Documents/hello_cpp/src/main'
+make[1]: 'main' is up to date.
+make[1]: Leaving directory '/home/ljh/Documents/hello_cpp/src/main'
+E20250920 16:50:06.446493 139780501851776 main.cpp:9] Found 0 cookies
+$
+$ ls /tmp/main.*
+/tmp/main.debian.ljh.log.ERROR.20250920-165004.6157
+/tmp/main.debian.ljh.log.ERROR.20250920-165006.6190
+/tmp/main.debian.ljh.log.INFO.20250920-165004.6157
+/tmp/main.debian.ljh.log.INFO.20250920-165006.6190
+/tmp/main.debian.ljh.log.WARNING.20250920-165004.6157
+/tmp/main.debian.ljh.log.WARNING.20250920-165006.6190
+/tmp/main.ERROR
+/tmp/main.INFO
+/tmp/main.WARNING
+$
+
+
+https://ng-log.github.io/ng-log/stable/flags/ ,
+
+Set flags with gflags:
+  $ ./your_application --logtostderr=1
+
+Set flags with environment variables, without gflags:
+  $ NGLOG_logtostderr=1 ./your_application
+
+Modifying Flags Programmatically.
+  FLAGS_logtostderr = 0;
+
+Set FLAGS_log_dir before calling nglog::InitializeLogging.
+
+*/
