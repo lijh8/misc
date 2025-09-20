@@ -31,12 +31,16 @@ CPPFLAGS += -I/path/to/ng-log-0.8.2/src -I/path/to/ng-log-0.8.2/build
 LDFLAGS  += -L/path/to/ng-log-0.8.2/build
 LDLIBS   += -lng-log
 
-$ make && LD_LIBRARY_PATH=/home/ljh/Downloads/ng-log-0.8.2/build ./main/main
-make[1]: Entering directory '/home/ljh/Documents/hello_cpp/src/main'
-make[1]: 'main' is up to date.
-make[1]: Leaving directory '/home/ljh/Documents/hello_cpp/src/main'
-E20250920 16:50:06.446493 139780501851776 main.cpp:9] Found 0 cookies
+$ make && NGLOG_alsologtostderr=1 LD_LIBRARY_PATH=/path/to/ng-log-0.8.2/build ./main/main
+make[1]: Entering directory '/path/to/hello_cpp/src/main'
+g++ -g  -MMD -MP -I/path/to/ng-log-0.8.2/src -I/path/to/ng-log-0.8.2/build   -c -o main.o main.cpp
+g++  -L/path/to/ng-log-0.8.2/build   main.o  -lng-log -o main
+make[1]: Leaving directory '/path/to/hello_cpp/src/main'
+I20250920 20:27:14.654042 139808449035904 main.cpp:9] Found 0 cookies
+W20250920 20:27:14.654414 139808449035904 main.cpp:10] Found 0 cookies
+E20250920 20:27:14.654725 139808449035904 main.cpp:11] Found 0 cookies
 $
+
 $ ls /tmp/main.*
 /tmp/main.debian.ljh.log.ERROR.20250920-165004.6157
 /tmp/main.debian.ljh.log.ERROR.20250920-165006.6190
