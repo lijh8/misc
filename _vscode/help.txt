@@ -1,0 +1,49 @@
+
+VSCode
+
+
+---
+
+
+Multiple selections (multi-cursor)
+
+https://code.visualstudio.com/shortcuts/keyboard-shortcuts-macos.pdf ,
+
+⌘D Add selection to next Find match
+
+
+---
+
+
+https://code.visualstudio.com/docs/editing/codebasics ,
+
+Multiple selections (multi-cursor)
+VS Code supports multiple cursors for fast simultaneous edits.
+You can add secondary cursors (rendered thinner) with Alt+Click.
+Each cursor operates independently based on the context it sits in.
+
+A common way to add more cursors is with ⌥⌘↓ or ⌥⌘↑ that insert cursors below or above.
+
+⌘D selects the word at the cursor, or the next occurrence of the current selection.
+
+
+---
+
+
+https://code.visualstudio.com/docs/getstarted/tips-and-tricks ,
+
+Multi cursor selection
+To add cursors at arbitrary positions,
+select a position with your mouse and use Alt+Click (Option+Click on macOS).
+
+To set cursors above or below the current position use:
+Keyboard Shortcut: ⌥⌘↑ or ⌥⌘↓
+
+You can add additional cursors to all occurrences of the current selection with ⇧⌘L.
+
+If you do not want to add all occurrences of the current selection, you can use ⌘D instead.
+This only selects the next occurrence after the one you selected so you can add selections one by one.
+
+
+---
+
