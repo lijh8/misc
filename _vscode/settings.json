@@ -3,7 +3,7 @@
   "breadcrumbs.enabled": false,
   "breadcrumbs.icons": false,
   "C_Cpp.autoAddFileAssociations": false,
-  "C_Cpp.clang_format_fallbackStyle": "none",
+  "C_Cpp.clang_format_fallbackStyle": "LLVM",
   "C_Cpp.default.cppStandard": "c++17",
   "C_Cpp.default.cStandard": "c17",
   "C_Cpp.default.includePath": [ // ms-vscode.cpptools: should be in .vscode/c_cpp_properties.json
@@ -11,8 +11,8 @@
   ],
   "C_Cpp.dimInactiveRegions": false,
   "C_Cpp.errorSquiggles": "Disabled",
-  // "C_Cpp.formatting": "clangFormat",
-  "C_Cpp.formatting": "none",
+  "C_Cpp.formatting": "clangFormat",
+  // "C_Cpp.formatting": "none",
   "chat.agent.enabled": false,
   "chat.commandCenter.enabled": false,
   "chat.disableAIFeatures": true,
@@ -20,7 +20,7 @@
   "clangd.arguments": [
     // "--background-index",
     // "--compile-commands-dir=/path/to/compile_commands/", // path to compile_commands.json,
-    // "--fallback-style=none", // https://clang.llvm.org/docs/ClangFormat.html ,
+    // "--fallback-style=none", // LLVM, https://clang.llvm.org/docs/ClangFormat.html ,
     // "--header-insertion=never",
   ],
   "clangd.fallbackFlags": [
