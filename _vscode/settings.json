@@ -3,7 +3,8 @@
   "breadcrumbs.enabled": false,
   "breadcrumbs.icons": false,
   "C_Cpp.autoAddFileAssociations": false,
-  "C_Cpp.clang_format_fallbackStyle": "LLVM",
+  "C_Cpp.clang_format_fallbackStyle": "LLVM", // https://code.visualstudio.com/docs/cpp/cpp-ide
+  // "C_Cpp.clang_format_fallbackStyle": "none",
   "C_Cpp.default.cppStandard": "c++17",
   "C_Cpp.default.cStandard": "c17",
   "C_Cpp.default.includePath": [ // ms-vscode.cpptools: should be in .vscode/c_cpp_properties.json
@@ -20,7 +21,8 @@
   "clangd.arguments": [
     // "--background-index",
     // "--compile-commands-dir=/path/to/compile_commands/", // path to compile_commands.json,
-    // "--fallback-style=none", // LLVM, https://clang.llvm.org/docs/ClangFormat.html ,
+    // "--fallback-style=LLVM", // default: LLVM, https://clang.llvm.org/docs/ClangFormat.html ,
+    // "--fallback-style=none",
     // "--header-insertion=never",
   ],
   "clangd.fallbackFlags": [
