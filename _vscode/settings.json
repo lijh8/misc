@@ -25,13 +25,13 @@
   ],
   "clangd.fallbackFlags": [
     "-std=c++2a", // all with this: .clangd, compile_commands.json, compile_flags.txt
-    "-DGLOG_USE_GLOG_EXPORT",
+    "-DNGLOG_USE_EXPORT", // CPPFLAGS += -DNGLOG_USE_EXPORT
     "-I../foo",
     "-I${workspaceFolder}/src/foo",
     "-I/home/ljh/Downloads/boost_1_86_0/",
     "-I/home/ljh/Downloads/asio-1.30.2/include",
-    "-I/home/ljh/Downloads/glog/src",
-    "-I/home/ljh/Downloads/glog/build",
+    "-I/home/ljh/Downloads/ng-log-0.8.2/src",
+    "-I/home/ljh/Downloads/ng-log-0.8.2/build",
     "-I/home/ljh/Downloads/utfcpp-4.0.5/source",
   ],
   "clangd.semanticHighlighting": false,
@@ -102,11 +102,14 @@
   "go.testExplorer.enable": false,
   "go.toolsEnvVars": {
     "LD_LIBRARY_PATH": "/path/to/lib",
-    "DYLD_LIBRARY_PATH": "/path/to/lib",
   },
   "http.proxySupport": "off",
   "inlineChat.lineNaturalLanguageHint": false,
   "lldb.evaluateForHovers": false,
+  "lldb.launch.env": { // env variables in launch.json override variables with same name here
+    "LD_LIBRARY_PATH": "$LD_LIBRARY_PATH:${workspaceFolder}/src/foo:/home/ljh/Downloads/ng-log-0.8.2/build",
+    "NGLOG_alsologtostderr": "1", // ng-log is successor to Google's glog
+  },
   "mojo.lsp.includeDirs": [
     "${workspaceFolder}/src",
   ],
