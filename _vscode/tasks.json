@@ -1,4 +1,5 @@
 {
+  // https://code.visualstudio.com/docs/debugtest/tasks
   "tasks": [
     {
       "type": "shell",

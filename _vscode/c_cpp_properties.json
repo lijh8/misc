@@ -1,0 +1,20 @@
+{
+  // ms-vscode.cpptools
+  // https://code.visualstudio.com/docs/cpp/customize-cpp-settings
+  "configurations": [
+    {
+      "name": "Linux",
+      "compilerPath": "/usr/bin/gcc",
+      "intelliSenseMode": "linux-gcc-x64",
+      "includePath": [
+        "${workspaceFolder}/**",
+        "${workspaceFolder}/src/foo",
+        "/home/ljh/Downloads/ng-log-0.8.2/src",
+        "/home/ljh/Downloads/ng-log-0.8.2/build",
+      ],
+      "cStandard": "c17",
+      "cppStandard": "c++20",
+    }
+  ],
+  "version": 4,
+}
