@@ -1,0 +1,30 @@
+
+Sublimetext
+
+---
+
+The release builds are free;
+The dev builds are for paid subscribers.
+
+---
+
+⌘+D is used to select the next occurrence of the current word.
+⌘+K, ⌘+D will skip an occurence.
+⌘+click multi cursor.
+
+---
+
+Split editor side-by-side or new pane
+
+View / Layout / Columns 2: Option Cmd 2
+View / Groups / New Group: Cmd K, Shift Cmd ArrowUP
+
+---
+
+Find, Find in Files
+
+Wrap: Off
+Highlight matches: On
+Use Buffer: Off
+
+---
