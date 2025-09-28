@@ -28,3 +28,10 @@ Highlight matches: On
 Use Buffer: Off
 
 ---
+
+Packages
+
+Tools / Install Package Control
+Preferences / Package Control: Install package
+
+---
