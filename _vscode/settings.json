@@ -5,10 +5,16 @@
   "C_Cpp.autoAddFileAssociations": false,
   "C_Cpp.clang_format_fallbackStyle": "LLVM", // https://code.visualstudio.com/docs/cpp/cpp-ide
   // "C_Cpp.clang_format_fallbackStyle": "none",
-  "C_Cpp.default.cppStandard": "c++17",
-  "C_Cpp.default.cStandard": "c17",
-  "C_Cpp.default.includePath": [ // ms-vscode.cpptools: should be in .vscode/c_cpp_properties.json
-    // "${workspaceFolder}/**",
+  "C_Cpp.default.compilerArgs": [
+    // "-DNDEBUG",
+    "-DNGLOG_USE_EXPORT", // CPPFLAGS += -DNGLOG_USE_EXPORT
+    "-std=c++17",
+    "-Wall",
+    "-Wextra",
+    "-I../foo",
+    "-I${workspaceFolder}/src/foo",
+    "-I/home/ljh/Downloads/ng-log-0.8.2/src",
+    "-I/home/ljh/Downloads/ng-log-0.8.2/build",
   ],
   "C_Cpp.dimInactiveRegions": false,
   "C_Cpp.errorSquiggles": "disabled",
@@ -27,15 +33,15 @@
     // "--header-insertion=never",
   ],
   "clangd.fallbackFlags": [
-    "-std=c++2a", // all with this: .clangd, compile_commands.json, compile_flags.txt
+    // "-DNDEBUG",
     "-DNGLOG_USE_EXPORT", // CPPFLAGS += -DNGLOG_USE_EXPORT
+    "-std=c++17", // all with this: .clangd, compile_commands.json, compile_flags.txt
+    "-Wall",
+    "-Wextra",
     "-I../foo", // llvm-vs-code-extensions.vscode-clangd
     "-I${workspaceFolder}/src/foo",
-    "-I/home/ljh/Downloads/boost_1_86_0/",
-    "-I/home/ljh/Downloads/asio-1.30.2/include",
     "-I/home/ljh/Downloads/ng-log-0.8.2/src",
     "-I/home/ljh/Downloads/ng-log-0.8.2/build",
-    "-I/home/ljh/Downloads/utfcpp-4.0.5/source",
   ],
   "clangd.semanticHighlighting": false,
   "debug.internalConsoleOptions": "neverOpen",
