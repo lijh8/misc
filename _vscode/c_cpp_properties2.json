@@ -6,15 +6,15 @@
       "name": "Linux",
       "compilerPath": "/usr/bin/gcc",
       "intelliSenseMode": "linux-gcc-x64",
-      "includePath": [
-        "${default}", // if includePath here is enabled, it is for adding settings.json: C_Cpp.default.includePath
-        "${workspaceFolder}/**",
-        "${workspaceFolder}/src/foo",
-        "/home/ljh/Downloads/ng-log-0.8.2/src",
-        "/home/ljh/Downloads/ng-log-0.8.2/build",
-      ],
-      "cStandard": "c17",
-      "cppStandard": "c++17",
+      // "includePath": [ // use compilerArgs or settings.json: C_Cpp.default.compilerArgs instead
+      //   "${default}", // if includePath here is enabled, it is for adding settings.json: C_Cpp.default.includePath
+      //   "${workspaceFolder}/**",
+      //   "${workspaceFolder}/src/foo",
+      //   "/home/ljh/Downloads/ng-log-0.8.2/src",
+      //   "/home/ljh/Downloads/ng-log-0.8.2/build",
+      // ],
+      "cStandard": "c17", // compilerArgs: -std=c17
+      "cppStandard": "c++17", // compilerArgs: -std=c++17
     }
   ],
   "version": 4,

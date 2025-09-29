@@ -5,7 +5,10 @@
   "C_Cpp.autoAddFileAssociations": false,
   "C_Cpp.clang_format_fallbackStyle": "LLVM", // https://code.visualstudio.com/docs/cpp/cpp-ide
   // "C_Cpp.clang_format_fallbackStyle": "none",
-  "C_Cpp.default.compilerArgs": [
+  "C_Cpp.default.compilerArgs": [ // if no compile_commands.json database found in workspace root directory
+    // https://code.visualstudio.com/docs/cpp/customize-cpp-settings
+    // compilerArgs: Compiler arguments to modify the includes paths or defines used
+    //
     // "-DNDEBUG",
     "-DNGLOG_USE_EXPORT", // CPPFLAGS += -DNGLOG_USE_EXPORT
     "-std=c++17",
@@ -32,7 +35,7 @@
     // "--fallback-style=none",
     // "--header-insertion=never",
   ],
-  "clangd.fallbackFlags": [
+  "clangd.fallbackFlags": [ // if no compile_commands.json database found in workspace root directory
     // "-DNDEBUG",
     "-DNGLOG_USE_EXPORT", // CPPFLAGS += -DNGLOG_USE_EXPORT
     "-std=c++17", // all with this: .clangd, compile_commands.json, compile_flags.txt
