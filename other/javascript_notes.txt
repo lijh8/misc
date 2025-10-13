@@ -227,6 +227,39 @@ https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Using_classes ,
 ---
 
 
+https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Language_overview ,
+
+可以将 JavaScript 对象当作是键值对的集合。
+
+类似于：Python 中的字典。
+
+对象总是引用，所以除非显式地复制对象，否则改变对象将会对外部可见。
+
+这也意味着分别创建的两个对象永不可能相等（!==），因为它们是不同的引用。
+如果你有同一个对象的两个引用，修改其中一个将能通过另一个观察到。
+
+越界索引不会抛出异常。如果你查询的是不存在数组索引，你得到的返回值是 undefined。
+
+
+---
+
+
+https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Data_structures ,
+
+除了 Object 以外，所有的类型都定义了不可变的、在语言最底层直接表示的值。
+
+// 不可变意思是：
+// string，number，等，原始内置类型之间的赋值是拷贝语义，修改其中一个不会影响另一个。
+
+undefined 表示值缺失，null 表示对象缺失。
+
+
+
+
+
+---
+
+
 https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Closures ,
 
 嵌套函数能访问在其外部作用域中声明的变量。
@@ -327,32 +360,6 @@ https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Memory_management 
 这个方法的直接好处就是循环不再是一个问题。在上面的示例中，在函数调用返回之后，
 从全局对象可达的任何资源都将不再引用这两个对象。
 因此，垃圾回收器会认为它们不可达并回收为它们分配的内存。
-
-
----
-
-
-https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Data_structures ,
-
-除了 Object 以外，所有的类型都定义了不可变的、在语言最底层直接表示的值。
-
-// 不可变意思是：
-// string，number，等，原始内置类型之间的赋值是拷贝语义，修改其中一个不会影响另一个。
-
-
----
-
-
-https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Language_overview ,
-
-可以将 JavaScript 对象当作是键值对的集合。
-
-类似于：Python 中的字典。
-
-对象总是引用，所以除非显式地复制对象，否则改变对象将会对外部可见。
-
-这也意味着分别创建的两个对象永不可能相等（!==），因为它们是不同的引用。
-如果你有同一个对象的两个引用，修改其中一个将能通过另一个观察到。
 
 
 ---
