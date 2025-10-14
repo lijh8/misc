@@ -2,73 +2,6 @@
 javascript notes
 
 
-https://code.visualstudio.com/docs/languages/javascript#_debugging ,
-
-Debug client side
-
-You can debug your client-side code using a browser debugger such as our
-built-in debugger for Edge and Chrome, or the Debugger for Firefox.
-
-
----
-
-
-https://developer.mozilla.org/zh-CN/docs/Web/HTML/How_to/Add_JavaScript_to_your_web_page ,
-
-在 HTML 中调用 JavaScript 代码，需要使用 <script> 元素。
-使用 script 有两种方法：链接到外部脚本，在 HTML 中撰写 JavaScript。
-
-    $ cat index.html
-    <script src="path/to/my/script.js"></script>
-
-    <script>
-        window.addEventListener("load", () => {
-            console.log("一旦页面完全加载完毕，此函数就会执行一次。");
-        });
-    </script>
-    $
-
-    $ cat script.js
-        console.log('hello');
-    $
-
-
----
-
-
-    // example 1
-
-    // 总是使用 === 进行相等比较，如果类型不一致，直接返回false
-    // == 会转换类型，。
-
-    let a = 10;
-    let b; // = undefined;
-    let c = null;
-
-    a === 10 && console.log(typeof (a), a);
-    b === undefined && console.log(typeof (b), b);
-    c === null && console.log(typeof (c), c);
-
-
-    // example 2
-
-    // python tuple
-    return (a.name, a.age, a.grade) == (b.name, b.age, b.grade);
-
-    // 1. javascript Array every
-    return ['name', 'age', 'grade'].every(prop => a[prop] === b[prop]);
-
-    // 2. javascript for of
-    for (const prop of ['name', 'age', 'grade']) {
-        if (a[prop] !== b[prop]) return false;
-    }
-    return true;
-
-    // 3. javascript
-    return a.name === b.name &&
-        a.age === b.age &&
-        a.grade === b.grade;
-
 
 ---
 
@@ -254,7 +187,12 @@ https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Data_structures ,
 undefined 表示值缺失，null 表示对象缺失。
 
 
+---
 
+
+https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Equality_comparisons_and_sameness ,
+
+使用 === 进行严格相等比较，使用严格相等几乎总是正确的选择。
 
 
 ---
@@ -360,6 +298,198 @@ https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Memory_management 
 这个方法的直接好处就是循环不再是一个问题。在上面的示例中，在函数调用返回之后，
 从全局对象可达的任何资源都将不再引用这两个对象。
 因此，垃圾回收器会认为它们不可达并回收为它们分配的内存。
+
+
+---
+
+
+https://developer.mozilla.org/zh-CN/docs/Learn_web_development/Core/Scripting/What_is_JavaScript ,
+
+内联 JavaScript 处理器
+在 <button> 元素中包含了一个内联的 onclick 处理器，使得函数在按钮被按下时运行。
+
+    <button onclick="createParagraph()">点我！</button>
+
+然而请不要这样做。这将使 JavaScript 污染了 HTML，而且效率低下。
+对于每个需要应用 JavaScript 的按钮，你都得手动添加 onclick="createParagraph()" 属性。
+
+
+---
+
+
+https://developer.mozilla.org/zh-CN/docs/Learn_web_development/Core/Scripting/Events ,
+
+能够触发事件的对象有一个 addEventListener() 方法，这就是推荐的添加事件处理器的机制。
+
+内联事件处理器——不要使用
+
+    <button onclick="bgChange()">按下我</button>
+
+作为一项安全措施，许多常见的服务器配置将禁止内联 JavaScript。
+你永远不应该使用 HTML 事件处理器属性——那些已经过时了，使用它们是不好的做法。
+
+
+---
+
+
+https://developer.mozilla.org/zh-CN/docs/Learn_web_development/Core/Scripting/Object_basics ,
+
+对象是一个包含相关数据和方法的集合（通常由一些变量和函数组成，我们称之为对象里面的属性和方法）
+每一组名字/值必须由逗号分隔开，并且名字和值之间由冒号分隔，
+当对象的成员是函数时，语法会更简单。我们可以写 bio() 来代替 bio: function()
+对象字面量（object literal）——手动的写出对象的内容来创建一个对象。不同于从类实例化一个对象，
+可以用一个对象来做另一个对象成员的值。
+需要访问这些属性，只需要链式的再使用一次点表示法，
+
+另外一种访问对象属性的方式是使用括号表示法（bracket notation），
+这看起来很像访问一个数组的元素，并且基本上是相同的——使用关联了值的名称，而不是索引来选择元素。
+因此对象有时被称为关联数组——对象将字符串映射到值，而数组将数字映射到值。
+点表示法通常优于括号表示法，因为它更简洁且更易于阅读。然而，在某些情况下你必须使用括号。
+例如，如果对象属性名称保存在变量中，则不能使用点表示法访问该值，但可以使用括号表示法访问该值。
+
+
+---
+
+
+https://code.visualstudio.com/docs/languages/javascript#_debugging ,
+
+Debug client side
+
+You can debug your client-side code using a browser debugger such as our
+built-in debugger for Edge and Chrome, or the Debugger for Firefox.
+
+
+---
+
+
+    // 总是使用 === 进行相等比较，如果类型不一致，直接返回false
+
+    let a = 10;
+    let b; // = undefined;
+    let c = null;
+
+    a === 10 && console.log(typeof (a), a);
+    b === undefined && console.log(typeof (b), b);
+    c === null && console.log(typeof (c), c);
+
+
+---
+
+
+    // python tuple
+    return (a.name, a.age, a.grade) < (b.name, b.age, b.grade);
+    retirn (a.name, a.age, a.grade) == (b.name, b.age, b.grade);
+
+    // javascript
+    const isLess = (a, b) => {
+        if (!(a.name < b.name)) return false;
+        else if (!(a.age < b.age)) return false;
+        else if (!(a.grade < b.grade)) return false;
+        return true;
+    }
+
+    const isEqual = (a, b) => {
+        return a.name === b.name &&
+            a.age === b.age &&
+            a.grade === b.grade;
+    }
+
+    const persons = [
+        { name: "alice", age: 9, grade: "3" },
+        { name: "bob", age: 10, grade: "4" },
+        { name: "tom", age: 11, grade: "5" },
+    ];
+
+    console.log(isLess(persons[0], persons[0]));
+    console.log(isEqual(persons[0], persons[0]));
+
+
+---
+
+
+<html>
+
+<body>
+    <input type="file" id="fileInput" />
+    <button id="saveButton">保存文件</button>
+    <pre id="output"></pre>
+    <script>
+        document.querySelector('#fileInput').addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                document.querySelector('#output').textContent = e.target.result;
+            };
+            reader.readAsText(file);
+        });
+
+        document.querySelector('#saveButton').addEventListener('click', function () {
+            const hashes = Array.from({ length: 10 }, (_, i) =>
+                Math.random().toString(36).substring(2) + i
+            ).join('\n');
+
+            const blob = new Blob([hashes], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'hashes.txt';
+            a.click();
+            URL.revokeObjectURL(url);
+        });
+    </script>
+</body>
+
+</html>
+
+
+---
+
+
+https://developer.mozilla.org/zh-CN/docs/Web/HTML/How_to/Add_JavaScript_to_your_web_page ,
+
+在 HTML 中调用 JavaScript 代码，需要使用 <script> 元素。
+使用 script 有两种方法：链接到外部脚本，在 HTML 中撰写 JavaScript。
+
+    $ cat index.html
+    <script src="path/to/my/script.js"></script>
+
+    <script>
+        window.addEventListener("load", () => {
+            console.log("一旦页面完全加载完毕，此函数就会执行一次。");
+        });
+    </script>
+    $
+
+    $ cat script.js
+        console.log('hello');
+    $
+
+
+---
+
+
+WebRTC - 实时视频传输
+WebSocket - 控制信令传输
+Canvas - 视频渲染和坐标映射
+Mouse/Keyboard Events - 输入事件处理
+
+WebRTC 支持的硬件：
+    摄像头 - 通过 getUserMedia({ video: true })
+    麦克风 - 通过 getUserMedia({ audio: true })
+    扬声器/耳机 - 通过 <audio>/<video>元素输出
+    屏幕共享 - 通过 getDisplayMedia()
+
+WebRTC：
+    点对点（P2P） 直接通信
+    使用UDP，延迟更低
+    适合音视频流、文件传输
+    需要信令服务器（通常用WebSocket）来建立连接
+
+WebSocket：
+    客户端与服务器之间的双向通信
+    基于TCP，有连接开销
+    适合实时消息、聊天等场景
+    需要中间服务器中转
 
 
 ---
