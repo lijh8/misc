@@ -403,7 +403,7 @@ built-in debugger for Edge and Chrome, or the Debugger for Firefox.
 
 
 // version 1:
-// 自定义微调亮暗主题背景色和前景色。
+// 自定义亮暗主题背景色和前景色。
 
 <!DOCTYPE html>
 <html>
@@ -411,27 +411,35 @@ built-in debugger for Edge and Chrome, or the Debugger for Firefox.
     <meta name="color-scheme" content="light dark" />
     <title>page1</title>
     <style>
+        /* 浅色主题默认属性 */
         :root {
+            /* 通知浏览器支持浅色和深色主题 */
             color-scheme: light dark;
-            --bg-color: #f8f9fa;
             --fg-color: #212529;
+            --bg-color: #f8f9fa;
+
             --red-piece-color: #d32f2f;
             --path-color: #1565c0;
         }
+        /* 切换深色主题时覆盖浅色属性 */
         @media (prefers-color-scheme: dark) {
             :root {
-                --bg-color: #212529;
                 --fg-color: #f8f9fa;
+                --bg-color: #212529;
+
                 --red-piece-color: #ff5252;
                 --path-color: #64b5f6;
             }
         }
         body {
+            /* 引用属性: var(--variable-name) */
+            color: var(--fg-color);
             background-color: var(--bg-color);
         }
     </style>
 </head>
 <body>
+    <!-- 引用属性: var(--variable-name)  -->
     <input type="text" id="input1">
     <button id="button1">button</button>
     <label id="label1"></label>
@@ -447,7 +455,7 @@ built-in debugger for Edge and Chrome, or the Debugger for Firefox.
 
 
 // version 2:
-// 极简：使用默认亮暗主题背景色和前景色。背景色Canvas太暗，前景色CanvasText太亮。
+// 极简用法。可能背景色Canvas太暗，或者前景色CanvasText太亮。
 
 <!DOCTYPE html>
 <html>
@@ -500,6 +508,7 @@ built-in debugger for Edge and Chrome, or the Debugger for Firefox.
 
         body {
             background-color: var(--bg-color);
+            color: var(--fg-color);
         }
     </style>
 
@@ -508,6 +517,7 @@ built-in debugger for Edge and Chrome, or the Debugger for Firefox.
             riverLayer.appendChild(el('rect', {
                 fill: 'var(--bg-color)'
             }));
+        }
     </script>
 
 
