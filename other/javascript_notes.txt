@@ -408,6 +408,7 @@ built-in debugger for Edge and Chrome, or the Debugger for Firefox.
 <!DOCTYPE html>
 <html>
 <head>
+    <meta name="color-scheme" content="light dark" />
     <title>page1</title>
     <style>
         :root {
@@ -439,11 +440,6 @@ built-in debugger for Edge and Chrome, or the Debugger for Firefox.
             const input = document.getElementById('input1').value;
             document.getElementById('label1').textContent = input;
         });
-        // 支持 svg 自定义绘图
-        function drawGrid() {
-            riverLayer.appendChild(el('rect', {
-                fill: 'var(--bg-color)'
-            }));
     </script>
 </body>
 
@@ -451,11 +447,12 @@ built-in debugger for Edge and Chrome, or the Debugger for Firefox.
 
 
 // version 2:
-// 使用默认亮暗主题背景色和前景色。
+// 极简：使用默认亮暗主题背景色和前景色。背景色Canvas太暗，前景色CanvasText太亮。
 
 <!DOCTYPE html>
 <html>
 <head>
+    <meta name="color-scheme" content="light dark" />
     <title>page1</title>
     <style>
         :root {
@@ -480,6 +477,9 @@ built-in debugger for Edge and Chrome, or the Debugger for Firefox.
 ---
 
 
+// 支持 svg 自定义绘图背景色及前景色
+
+    <meta name="color-scheme" content="light dark" />
     <style>
         :root {
             color-scheme: light dark;
