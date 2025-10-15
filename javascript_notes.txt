@@ -1,0 +1,602 @@
+
+javascript notes
+
+
+https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Grammar_and_types ,
+
+如果一条语句独占一行的话，那么分号是可以省略的。
+但如果一行中有多条语句，那么这些语句必须用分号进行分隔。
+
+在一条语句的末尾总是加上分号被认为是最佳实践，即使是在非严格需要的时候。
+这个习惯可以大大减少代码出问题的可能性。
+
+JavaScript 过去允许给未声明的变量赋值，而这会创建一个**未声明的全局**变量。
+这在严格模式下是一个错误，应该彻底避免使用它。
+
+当你在函数的外部声明变量时，该变量被称作全局变量。
+let 和 const 声明也会被限制在声明所在的块语句中。
+用 var 创建的变量不是块级作用域的，而只是块所在的*函数（或全局作用域）*的。
+let x = 42 等价于 let x; x = 42。
+
+const 仅阻止重新赋值，而不阻止修改。被赋值为常量的对象的属性是不受保护的。
+同样的，数组的元素也是不受保护的。
+
+
+---
+
+
+https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Loops_and_iteration ,
+
+for...in 遍历数组下标，或对象属性名。
+for...of 遍历数组元素。
+
+
+---
+
+
+https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Functions ,
+
+参数本质上是按值传递给函数的——因此，即使函数体的代码为传递给函数的参数赋了新值，
+这个改变也不会反映到全局或调用该函数的代码中。
+如果你将对象作为参数传递，而函数改变了这个对象的属性，这样的改变对函数外部是可见的，
+如果你将数组作为参数传递，而函数改变了这个数组的值，这样的改变对函数外部也同样可见，
+
+可以在一个函数里面嵌套另外一个函数。嵌套（内部）函数对其容器（外部）函数是私有的。
+它可以访问外部函数的参数和变量。
+
+一个闭包必须保存它可见作用域中所有参数和变量。因为每一次调用传入的参数都可能不同，
+每一次对外部函数的调用实际上重新创建了一遍这个闭包。
+没有再被引用时，内存才会被释放。
+
+闭包是 JavaScript 中最强大的特性之一。JavaScript 允许函数嵌套，
+并且内部函数具有定义在外部函数中的所有变量和函数（以及外部函数能访问的所有变量和函数）
+的完全访问权限。
+
+由于内部函数可以访问外部函数的作用域，因此当内部函数生存周期大于外部函数时，
+外部函数中定义的变量和函数的生存周期将比内部函数执行的持续时间要长。
+当内部函数以某一种方式被任何一个外部函数之外的任何作用域访问时，就会创建闭包。
+
+有两个因素会影响对箭头函数的引入：更简洁的函数和 this 的无绑定性。
+
+箭头函数表达式（也称胖箭头，以区分未来 JavaScript 中假设的 -> 语法）
+相比函数表达式具有较短的语法且没有它自己的 this、arguments、super 和 new.target。
+箭头函数总是匿名的。
+
+箭头函数没有自己的 this，而是使用封闭执行上下文的 this 值。
+
+
+---
+
+
+https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Working_with_objects ,
+
+JavaScript 的设计是一个简单的基于对象的范式。
+一个对象就是一系列属性的集合，一个属性包含一个名和一个值。
+一个属性的值可以是函数，这种情况下属性也被称为方法。
+
+一个对象的属性可以被解释成一个附加到对象上的变量。
+对象的属性和普通的 javascript 变量基本没什么区别，仅仅是属性属于某个对象。属性定义了对象的特征。
+可以通过点符号来访问一个对象的属性。
+
+可以在定义一个属性的时候就给它赋值。
+
+    class A {
+        a = 10; // 声明属性
+        b; // 未初始化
+        constructor(c) {
+            this.b = 20; // 构造函数和方法中使用this引用属性
+            this.c = c; // 只在构造函数声明
+        }
+    };
+    let c = 30;
+    const a = new A(c);
+    a.d = 40; // 动态添加属性
+    console.log(a) // A {a: 10, b: 20, c: 30, d: 40}
+
+对象的属性也可以通过方括号访问或者设置。
+对象有时也被叫作关联数组，因为每个属性都有一个用于访问它的字符串值。
+一个对象的属性名可以是任何有效的 JavaScript 字符串。
+方括号中的所有键都将转换为字符串类型，因为 JavaScript 中的对象只能使用 String 类型作为键类型。
+你也可以通过存储在变量中的字符串来访问属性。
+通过使用 this 将传入函数的值赋给对象的属性。
+对象增加新的属性。
+
+myObj.type              = "Dot syntax";
+myObj["date created"]   = "String with space";
+myObj[str]              = "String value";
+
+从 JavaScript 1.2 之后，你可以通过对象初始化器（Object Initializer）创建对象。
+或者你可以创建一个构造函数并使用该函数和 new 操作符初始化对象。
+
+使用对象初始化器也被称作通过字面值创建对象。
+
+一个方法 是关联到某个对象的函数，或者简单地说，一个方法是一个值为某个函数的对象属性。
+定义方法就像定义普通的函数，除了它们必须被赋给对象的某个属性。
+
+通过 this 引用对象
+JavaScript 有一个特殊的关键字 this，它可以在方法中使用以指代当前对象。
+
+
+---
+
+
+https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Using_classes ,
+
+    // 类
+    class A {
+        num = 10;
+        num2;
+        constructor() {
+            this.num2 = 20;
+        }
+        f() {
+            let num3 = 30;
+            console.log(this.num);
+            console.log(this.num2);
+            console.log(num3);
+        }
+    };
+    const a = new A();
+    a.f();
+
+
+    // 对象字面值
+    const a2 = {
+        num: 10,
+        f() {
+            let num2 = 30;
+            console.log(this.num);
+            console.log(num2);
+        },
+    };
+    a2.f();
+
+
+---
+
+
+https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Language_overview ,
+
+可以将 JavaScript 对象当作是键值对的集合。
+
+类似于：Python 中的字典。
+
+对象总是引用，所以除非显式地复制对象，否则改变对象将会对外部可见。
+
+这也意味着分别创建的两个对象永不可能相等（!==），因为它们是不同的引用。
+如果你有同一个对象的两个引用，修改其中一个将能通过另一个观察到。
+
+越界索引不会抛出异常。如果你查询的是不存在数组索引，你得到的返回值是 undefined。
+
+
+---
+
+
+https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Data_structures ,
+
+除了 Object 以外，所有的类型都定义了不可变的、在语言最底层直接表示的值。
+
+// 不可变意思是：
+// string，number，等，原始内置类型之间的赋值是拷贝语义，修改其中一个不会影响另一个。
+
+undefined 表示值缺失，null 表示对象缺失。
+
+
+---
+
+
+https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Equality_comparisons_and_sameness ,
+
+使用 === 进行严格相等比较，使用严格相等几乎总是正确的选择。
+
+
+---
+
+
+https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Closures ,
+
+嵌套函数能访问在其外部作用域中声明的变量。
+// 内层函数访问外层函数中的变量和参数。
+
+    function init() {
+    var name = "Mozilla"; // name 是 init 创建的局部变量
+    function displayName() {
+        // displayName() 是内部函数，它创建了一个闭包
+        console.log(name); // 使用在父函数中声明的变量
+    }
+    displayName();
+    }
+    init();
+
+
+let 和 const 的作用域
+
+一直以来（ES 6 之前），JavaScript 变量仅有两种类型的作用域：函数作用域和全局作用域。
+用 var 声明的变量要么属于函数作用域要么属于全局作用域，
+这取决于变量是在函数内声明的还是在函数外声明的。花括号块不为 var 创建作用域。
+
+在 ES 6 中，JavaScript 引入了 let 和 const 声明，
+这些声明围绕在诸如暂时性死区的其他东西之中，会创建块级作用域的变量。
+
+闭包是由函数以及函数声明所在的词法环境组合而成的。
+该环境包含了这个闭包创建时作用域内的任何局部变量。
+
+
+在循环中创建闭包：一个常见错误
+
+循环遍历这些定义，将 onfocus 事件与显示帮助信息的方法进行关联。
+
+如果你试着运行这段代码，你会发现它没有达到预期的效果。
+无论你聚焦在那个字段上，显示的都是关于年龄的信息。
+
+原因是赋值给 onfocus 的函数创建了闭包。
+这些闭包是由函数定义和从 setupHelp 函数作用域中捕获的环境所组成的。这三个闭包在循环中创建，
+但每个都共享同一个词法环境，这个环境有一个不断改变值的变量（item）。
+这是因为 item 变量用 var 声明，并由于声明提升，因此拥有函数作用域。
+而 item.help 的值是在 onfocus 回调执行时决定。因为循环在事件触发之前早已执行完毕，
+所以 item 变量对象（由三个闭包共享）已经指向了 helpText 的最后一项。
+
+    for (var i = 0; i < helpText.length; i++) {
+        // 罪魁祸首是在这一行使用的 `var`
+        var item = helpText[i];
+        document.getElementById(item.id).onfocus = function () {
+            showHelp(item.help);
+        };
+    }
+
+这个例子的一个解决方案就是使用更多的闭包：特别是使用前面所述的函数工厂。
+另一种方法是使用匿名闭包。
+
+如果你不想使用过多的闭包，你可以使用 let 或 const 关键词。
+这个示例使用 const 而不是 var，因此每个闭包绑定的是块作用域变量，这意味着不再需要额外的闭包。
+
+    for (let i = 0; i < helpText.length; i++) {
+        const item = helpText[i];
+        document.getElementById(item.id).onfocus = () => {
+            showHelp(item.help);
+        };
+    }
+
+
+---
+
+
+https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Memory_management ,
+
+内存管理
+
+引用计数垃圾回收
+
+创建了两个对象，一个对象的属性引用另一个对象，形成了一个循环。
+引用计数算法不会认为它们可以被回收，因为每个对象至少还有一个指向自己的引用，
+这样的结果就是它们两个都不会被标记为可以被垃圾回收。循环引用是内存泄露的常见原因。
+现代 JavaScript 引擎不再使用引用计数进行垃圾回收。
+
+    // 循环引用
+    function f() {
+        const x = {};
+        const y = {};
+        x.a = y; // x 引用 y
+        y.a = x; // y 引用 x
+        return "azerty";
+    }
+    f();
+
+
+标记清除算法
+
+这个算法将“对象不再需要”这个定义简化为“对象不可达”。
+这个算法假定有一组叫做根的对象。在 JavaScript 中，根是全局对象。垃圾回收器将定期从这些根开始，
+找到从这些根能引用到的所有对象，然后找到从这些对象能引用到的所有对象，等等。
+从根开始，垃圾回收器将找到所有可到达的对象并收集所有不能到达的对象。
+
+这个方法的直接好处就是循环不再是一个问题。在上面的示例中，在函数调用返回之后，
+从全局对象可达的任何资源都将不再引用这两个对象。
+因此，垃圾回收器会认为它们不可达并回收为它们分配的内存。
+
+
+---
+
+
+https://developer.mozilla.org/zh-CN/docs/Learn_web_development/Core/Scripting/What_is_JavaScript ,
+
+内联 JavaScript 处理器
+在 <button> 元素中包含了一个内联的 onclick 处理器，使得函数在按钮被按下时运行。
+
+    <button onclick="createParagraph()">点我！</button>
+
+然而请不要这样做。这将使 JavaScript 污染了 HTML，而且效率低下。
+对于每个需要应用 JavaScript 的按钮，你都得手动添加 onclick="createParagraph()" 属性。
+
+
+---
+
+
+https://developer.mozilla.org/zh-CN/docs/Learn_web_development/Core/Scripting/Events ,
+
+能够触发事件的对象有一个 addEventListener() 方法，这就是推荐的添加事件处理器的机制。
+
+内联事件处理器——不要使用
+
+    <button onclick="bgChange()">按下我</button>
+
+作为一项安全措施，许多常见的服务器配置将禁止内联 JavaScript。
+你永远不应该使用 HTML 事件处理器属性——那些已经过时了，使用它们是不好的做法。
+
+
+---
+
+
+https://developer.mozilla.org/zh-CN/docs/Learn_web_development/Core/Scripting/Object_basics ,
+
+对象是一个包含相关数据和方法的集合（通常由一些变量和函数组成，我们称之为对象里面的属性和方法）
+每一组名字/值必须由逗号分隔开，并且名字和值之间由冒号分隔，
+当对象的成员是函数时，语法会更简单。我们可以写 bio() 来代替 bio: function()
+对象字面量（object literal）——手动的写出对象的内容来创建一个对象。不同于从类实例化一个对象，
+可以用一个对象来做另一个对象成员的值。
+需要访问这些属性，只需要链式的再使用一次点表示法，
+
+另外一种访问对象属性的方式是使用括号表示法（bracket notation），
+这看起来很像访问一个数组的元素，并且基本上是相同的——使用关联了值的名称，而不是索引来选择元素。
+因此对象有时被称为关联数组——对象将字符串映射到值，而数组将数字映射到值。
+点表示法通常优于括号表示法，因为它更简洁且更易于阅读。然而，在某些情况下你必须使用括号。
+例如，如果对象属性名称保存在变量中，则不能使用点表示法访问该值，但可以使用括号表示法访问该值。
+
+
+---
+
+
+https://code.visualstudio.com/docs/languages/javascript#_debugging ,
+
+Debug client side
+
+You can debug your client-side code using a browser debugger such as our
+built-in debugger for Edge and Chrome, or the Debugger for Firefox.
+
+
+---
+
+
+    // 总是使用 === 进行相等比较，如果类型不一致，直接返回false
+
+    let a = 10;
+    let b; // = undefined;
+    let c = null;
+
+    a === 10 && console.log(typeof (a), a);
+    b === undefined && console.log(typeof (b), b);
+    c === null && console.log(typeof (c), c);
+
+
+---
+
+
+    // python tuple
+    return (a.name, a.age, a.grade) < (b.name, b.age, b.grade);
+    retirn (a.name, a.age, a.grade) == (b.name, b.age, b.grade);
+
+    // javascript
+    const isLess = (a, b) => {
+        if (!(a.name < b.name)) return false;
+        else if (!(a.age < b.age)) return false;
+        else if (!(a.grade < b.grade)) return false;
+        return true;
+    }
+
+    const isEqual = (a, b) => {
+        return a.name === b.name &&
+            a.age === b.age &&
+            a.grade === b.grade;
+    }
+
+    const persons = [
+        { name: "alice", age: 9, grade: "3" },
+        { name: "bob", age: 10, grade: "4" },
+        { name: "tom", age: 11, grade: "5" },
+    ];
+
+    console.log(isLess(persons[0], persons[0]));
+    console.log(isEqual(persons[0], persons[0]));
+
+
+---
+
+
+// version 1:
+// 自定义微调亮暗主题背景色和前景色。
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="color-scheme" content="light dark" />
+    <title>page1</title>
+    <style>
+        :root {
+            color-scheme: light dark;
+            --bg-color: #f8f9fa;
+            --fg-color: #212529;
+            --red-piece-color: #d32f2f;
+            --path-color: #1565c0;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-color: #212529;
+                --fg-color: #f8f9fa;
+                --red-piece-color: #ff5252;
+                --path-color: #64b5f6;
+            }
+        }
+        body {
+            background-color: var(--bg-color);
+        }
+    </style>
+</head>
+<body>
+    <input type="text" id="input1">
+    <button id="button1">button</button>
+    <label id="label1"></label>
+    <script>
+        document.getElementById('button1').addEventListener('click', function () {
+            const input = document.getElementById('input1').value;
+            document.getElementById('label1').textContent = input;
+        });
+    </script>
+</body>
+
+</html>
+
+
+// version 2:
+// 极简：使用默认亮暗主题背景色和前景色。背景色Canvas太暗，前景色CanvasText太亮。
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="color-scheme" content="light dark" />
+    <title>page1</title>
+    <style>
+        :root {
+            color-scheme: light dark;
+        }
+    </style>
+</head>
+<body>
+    <input type="text" id="input1">
+    <button id="button1">button</button>
+    <label id="label1"></label>
+    <script>
+        document.getElementById('button1').addEventListener('click', function () {
+            const input = document.getElementById('input1').value;
+            document.getElementById('label1').textContent = input;
+        });
+    </script>
+</body>
+</html>
+
+
+---
+
+
+// 支持 svg 自定义绘图背景色及前景色
+
+    <meta name="color-scheme" content="light dark" />
+    <style>
+        :root {
+            color-scheme: light dark;
+            --bg-color: #f8f9fa;
+            --fg-color: #212529;
+            --red-piece-color: #d32f2f;
+            --path-color: #1565c0;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-color: #212529;
+                --fg-color: #f8f9fa;
+                --red-piece-color: #ff5252;
+                --path-color: #64b5f6;
+            }
+        }
+
+        body {
+            background-color: var(--bg-color);
+        }
+    </style>
+
+    <script>
+        function drawGrid() {
+            riverLayer.appendChild(el('rect', {
+                fill: 'var(--bg-color)'
+            }));
+    </script>
+
+
+---
+
+
+<html>
+
+<body>
+    <input type="file" id="fileInput" />
+    <button id="saveButton">保存文件</button>
+    <pre id="output"></pre>
+    <script>
+        document.querySelector('#fileInput').addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                document.querySelector('#output').textContent = e.target.result;
+            };
+            reader.readAsText(file);
+        });
+
+        document.querySelector('#saveButton').addEventListener('click', function () {
+            const hashes = Array.from({ length: 10 }, (_, i) =>
+                Math.random().toString(36).substring(2) + i
+            ).join('\n');
+
+            const blob = new Blob([hashes], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'hashes.txt';
+            a.click();
+            URL.revokeObjectURL(url);
+        });
+    </script>
+</body>
+
+</html>
+
+
+---
+
+
+https://developer.mozilla.org/zh-CN/docs/Web/HTML/How_to/Add_JavaScript_to_your_web_page ,
+
+在 HTML 中调用 JavaScript 代码，需要使用 <script> 元素。
+使用 script 有两种方法：链接到外部脚本，在 HTML 中撰写 JavaScript。
+
+    $ cat index.html
+    <script src="path/to/my/script.js"></script>
+
+    <script>
+        window.addEventListener("load", () => {
+            console.log("一旦页面完全加载完毕，此函数就会执行一次。");
+        });
+    </script>
+    $
+
+    $ cat script.js
+        console.log('hello');
+    $
+
+
+---
+
+
+WebRTC - 实时视频传输
+WebSocket - 控制信令传输
+Canvas - 视频渲染和坐标映射
+Mouse/Keyboard Events - 输入事件处理
+
+WebRTC 支持的硬件：
+    摄像头 - 通过 getUserMedia({ video: true })
+    麦克风 - 通过 getUserMedia({ audio: true })
+    扬声器/耳机 - 通过 <audio>/<video>元素输出
+    屏幕共享 - 通过 getDisplayMedia()
+
+WebRTC：
+    点对点（P2P） 直接通信
+    使用UDP，延迟更低
+    适合音视频流、文件传输
+    需要信令服务器（通常用WebSocket）来建立连接
+
+WebSocket：
+    客户端与服务器之间的双向通信
+    基于TCP，有连接开销
+    适合实时消息、聊天等场景
+    需要中间服务器中转
+
+
+---
