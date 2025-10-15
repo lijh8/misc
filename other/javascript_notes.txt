@@ -427,7 +427,7 @@ built-in debugger for Edge and Chrome, or the Debugger for Firefox.
             }
         }
         body {
-            background-color: var(--background-color);
+            background-color: var(--bg-color);
         }
     </style>
 </head>
