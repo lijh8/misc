@@ -2,10 +2,6 @@
 javascript notes
 
 
-
----
-
-
 https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Grammar_and_types ,
 
 如果一条语句独占一行的话，那么分号是可以省略的。
@@ -401,6 +397,73 @@ built-in debugger for Edge and Chrome, or the Debugger for Firefox.
 
     console.log(isLess(persons[0], persons[0]));
     console.log(isEqual(persons[0], persons[0]));
+
+
+---
+
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>page1</title>
+    <style>
+
+        /* 自动跟随系统切换亮暗主题颜色 */
+
+        :root {
+            color-scheme: light dark;
+        }
+
+        /* 亮色及默认回退颜色 */
+        body {
+            background-color: #f8f9fa;
+        }
+
+        /* 暗色 */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #212529;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <input type="text" id="input1">
+    <button id="button1">button</button>
+    <label id="label1"></label>
+    <script>
+        document.getElementById('button1').addEventListener('click', function () {
+            const input = document.getElementById('input1').value;
+            document.getElementById('label1').textContent = input;
+        });
+    </script>
+</body>
+
+</html>
+
+
+---
+
+
+/* svg绘制时，指定两套填充颜色 */
+
+/* 亮色及默认回退颜色 */
+.my-icon {
+    fill: #f8f9fa;
+}
+
+/* 暗色模式 */
+@media (prefers-color-scheme: dark) {
+  .my-icon {
+    fill: #212529;
+  }
+}
+
+<svg class="my-icon" width="24" height="24" viewBox="0 0 24 24">
+  <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+</svg>
 
 
 ---
