@@ -402,33 +402,67 @@ built-in debugger for Edge and Chrome, or the Debugger for Firefox.
 ---
 
 
+// version 1:
+// 自定义微调亮暗主题背景色和前景色。
+
 <!DOCTYPE html>
 <html>
-
 <head>
     <title>page1</title>
     <style>
-
-        /* 自动跟随系统切换亮暗主题颜色 */
-
         :root {
             color-scheme: light dark;
+            --bg-color: #f8f9fa;
+            --fg-color: #212529;
+            --red-piece-color: #d32f2f;
+            --path-color: #1565c0;
         }
-
-        /* 亮色及默认回退颜色 */
-        body {
-            background-color: #f8f9fa;
-        }
-
-        /* 暗色 */
         @media (prefers-color-scheme: dark) {
-            body {
-                background-color: #212529;
+            :root {
+                --bg-color: #212529;
+                --fg-color: #f8f9fa;
+                --red-piece-color: #ff5252;
+                --path-color: #64b5f6;
             }
+        }
+        body {
+            background-color: var(--background-color);
         }
     </style>
 </head>
+<body>
+    <input type="text" id="input1">
+    <button id="button1">button</button>
+    <label id="label1"></label>
+    <script>
+        document.getElementById('button1').addEventListener('click', function () {
+            const input = document.getElementById('input1').value;
+            document.getElementById('label1').textContent = input;
+        });
+        // 支持 svg 自定义绘图
+        function drawGrid() {
+            riverLayer.appendChild(el('rect', {
+                fill: 'var(--bg-color)'
+            }));
+    </script>
+</body>
 
+</html>
+
+
+// version 2:
+// 使用默认亮暗主题背景色和前景色。
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>page1</title>
+    <style>
+        :root {
+            color-scheme: light dark;
+        }
+    </style>
+</head>
 <body>
     <input type="text" id="input1">
     <button id="button1">button</button>
@@ -440,30 +474,41 @@ built-in debugger for Edge and Chrome, or the Debugger for Firefox.
         });
     </script>
 </body>
-
 </html>
 
 
 ---
 
 
-/* svg绘制时，指定两套填充颜色 */
+    <style>
+        :root {
+            color-scheme: light dark;
+            --bg-color: #f8f9fa;
+            --fg-color: #212529;
+            --red-piece-color: #d32f2f;
+            --path-color: #1565c0;
+        }
 
-/* 亮色及默认回退颜色 */
-.my-icon {
-    fill: #f8f9fa;
-}
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-color: #212529;
+                --fg-color: #f8f9fa;
+                --red-piece-color: #ff5252;
+                --path-color: #64b5f6;
+            }
+        }
 
-/* 暗色模式 */
-@media (prefers-color-scheme: dark) {
-  .my-icon {
-    fill: #212529;
-  }
-}
+        body {
+            background-color: var(--bg-color);
+        }
+    </style>
 
-<svg class="my-icon" width="24" height="24" viewBox="0 0 24 24">
-  <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-</svg>
+    <script>
+        function drawGrid() {
+            riverLayer.appendChild(el('rect', {
+                fill: 'var(--bg-color)'
+            }));
+    </script>
 
 
 ---
