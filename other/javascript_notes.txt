@@ -19,6 +19,8 @@ let 和 const 声明也会被限制在声明所在的块语句中。
 let x = 42 等价于 let x; x = 42。
 
 const 仅阻止重新赋值，而不阻止修改。被赋值为常量的对象的属性是不受保护的。
+(const only prevents re-assignments, but doesn't prevent mutations)
+
 同样的，数组的元素也是不受保护的。
 
 
@@ -176,10 +178,28 @@ https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Data_structures ,
 
 除了 Object 以外，所有的类型都定义了不可变的、在语言最底层直接表示的值。
 
-// 不可变意思是：
-// string，number，等，原始内置类型之间的赋值是拷贝语义，修改其中一个不会影响另一个。
-
 undefined 表示值缺失，null 表示对象缺失。
+
+
+---
+
+
+不可变指：
+
+- 基本类型之间的赋值是拷贝语义，修改其中一个不会影响另一个。
+- 不能引用并修改其属性，比如修改String内的字符元素。
+
+对象类型是可变的，对象是引用类型。
+
+const 仅阻止重新赋值，而不阻止修改。
+
+字符串是不可变，如要修改其中的字符元素，可以转换为数组，修改数组元素，再转回字符串。
+
+    let s = 'abc';
+    const a = [...s];
+    a[0] = 'A';
+    s = a.join('');
+    console.log(s); // 'Abc'
 
 
 ---
