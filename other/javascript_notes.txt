@@ -355,49 +355,38 @@ https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Functions/Arro
 ---
 
 
-ECMAScript 5 引入了 严格模式（strict mode），其目标之一是：
-容易出错的行为抛出错误，而不是静默失败。
-其中一条规则就是：
-在严格模式下，函数或脚本顶层的 this 不再自动绑定到全局对象，而是保持为 undefined。
+// 1.
+// 在对象字面量初始化器中，推荐普通方法，不推荐箭头函数
+// 箭头函数没有自己的 this，而是继承自外层作用域。
 
-编译器不会为箭头函数生成 this，箭头函数没有自己的 this，
-它会词法地捕获定义时所在上下文的 this 值，即外部函数作用域的 this 值。
+    // 'use strict';
+    const obj1 = {
+        myData: '10',
+        myFun() { // 普通
+            console.log(this.myData);
+        },
+        myArrow: () => { // 箭头
+            console.log(this.myData); // undefined
+        }
+    };
+    obj1.myArrow();
+    obj1.myFun();
 
-
-1. 推荐使用：在 class 中使用箭头函数时，该箭头函数是在构造函数执行上下文中被创建的，
-   此时 this 指向当前实例，因此能通过 this 访问属性。
-   因为class关键字构造函数已经形成一个作用域，这时不需要加一个额外的函数作用域。
-
-   在class关键字声明的类中，箭头函数是一个值为函数的实例属性（类字段），而不是定义在原型上的方法。
-   方法是在对象原型上、被所有实例共享的函数、且依赖动态 this 绑定的函数。
-   箭头函数是在构造时赋给实例的普通属性，其值恰好是一个函数，不依赖 this 动态绑定，也不在原型上。
-
-    'use strict';
+// 2.
+// 在class关键字声明类中，默认用普通方法。
+// 箭头函数仅用于回调场景，且不想手动绑定时。
     class User {
-        name = 'Bob';
-        greet = () => {
-            console.log(this.name); // "Bob"
+        myData = '20';
+        myFun() { // 普通
+            console.log(this.myData);
         };
+        myArrow = () => { // 箭头
+            console.log(this.myData);
+        }
     }
-
-    const user = new User();
-    user.greet();
-
-
-2. 避免使用：对象字面量的大括号 {} 不构成函数作用域，因此在对象字面量中定义的箭头函数，
-   其 this 并不指向该对象，而是继承自外层函数或全局作用域。
-   把对象字面值初始化器放到一个额外的函数作用域，更容易重现问题。
-
-    'use strict';
-    (function () {
-        const user = {
-            name: 'Alice',
-            greet: () => {
-                console.log(this.name); // undefined
-            }
-        };
-        user.greet();
-    })();
+    const obj2 = new User();
+    obj2.myArrow();
+    obj2.myFun();
 
 
 ---
