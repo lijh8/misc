@@ -481,12 +481,40 @@ EventTarget.prototype.addEventListener() 等方法时，
 https://developer.mozilla.org/zh-CN/docs/Learn_web_development/Core/Scripting/What_is_JavaScript ,
 
 内联 JavaScript 处理器
+
 在 <button> 元素中包含了一个内联的 onclick 处理器，使得函数在按钮被按下时运行。
 
     <button onclick="createParagraph()">点我！</button>
 
 然而请不要这样做。这将使 JavaScript 污染了 HTML，而且效率低下。
 对于每个需要应用 JavaScript 的按钮，你都得手动添加 onclick="createParagraph()" 属性。
+
+脚本加载策略
+
+页面上的所有 HTML 代码都按其出现的顺序加载。如果使用 JavaScript 去操作页面上的元素
+（更准确的说，是文档对象模型），
+那么如果 JavaScript 在 HTML 之前就被加载和解析了，代码将无法运行。
+
+有几种不同的策略来确保 JavaScript 只在 HTML 解析之后运行：
+
+在上面的内部 JavaScript 示例中，脚本元素放在文档正文的底部，
+因此只能在 HTML 正文的其他部分被解析以后运行。
+
+在上面的外部 JavaScript 实例中，脚本元素放在文档的头部，在解析 HTML 正文之前解析。
+但是由于我们使用了 <script type="module">，代码被视为一个模块，
+并且浏览器在执行 JavaScript 模块之前会等待所有的 HTML 代码都处理完毕
+（也可以把外部脚本放在正文的底部，但是如果 HTML 内容较多且网络较慢，
+在浏览器开始获取并加载脚本之前可能需要大量的时间，因此将外部脚本放在头部通常会更好一些）。
+
+如果仍然想在文档头部使用非模块脚本，可能阻塞整个页面的显示，并且可能出现错误，
+因为脚本在文档解析之前执行：
+
+对于外部脚本，应该在 <script> 元素上添加 defer（或者如果不需要 HTML 解析完成，
+则可以使用 async）属性。
+对于内部脚本，应该将代码封装在 DOMContextLoaded 事件监听器中。
+
+// 内部脚本放在 body 底部，即 </body> 结束标记之前。
+// 外部脚本放在 head，需要用 defer，让 DOM 先解析完成。
 
 
 ---
@@ -839,6 +867,14 @@ https://developer.mozilla.org/zh-CN/docs/Web/HTML/How_to/Add_JavaScript_to_your_
     $ cat script.js
         console.log('hello');
     $
+
+
+---
+
+
+使用 viewport，让 html 页面在小屏幕上不会被缩小。
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 
 ---
