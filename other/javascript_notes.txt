@@ -880,6 +880,43 @@ https://developer.mozilla.org/zh-CN/docs/Web/HTML/How_to/Add_JavaScript_to_your_
 ---
 
 
+- 打开浏览器 Chrome DevTools Console 检查错误。
+    F12,
+    View / Developer / Javascript console
+
+- 防止拼写错误导致全局污染。
+    不使用 let, const, var 关键字，
+    直接对一个不存在的变量赋值，非严格模式下会隐式自动创建全局变量。
+
+    'use strict';
+    let count = 0;
+    counnt = 1; // 拼错了！非严格模式下会隐式自动创建全局变量 counnt
+
+- 防止滥用异常。
+    如果不确定如何处理，不要 catch，让错误冒泡到全局错误处理器。
+
+- 防止“空的 catch 块” 或 “异常吞噬”（exception swallowing）
+    永远不要写空的 catch 块，这是严重反模式。
+
+    // 错误做法：空的 catch 块
+    try {
+        misTypedFunction(); // 拼写错误，会抛出 ReferenceError
+    } catch (e) {
+        // 空的 catch 块，啥也不干 → 错误被“吞掉”
+    }
+
+    // 正确做法：至少应该记录错误，或重新抛出原错误
+    try {
+        misTypedFunction(); // 拼写错误，会抛出 ReferenceError
+    } catch (e) {
+        console.error(e); // 记录错误
+        throw e; // 重新抛出原错误
+    }
+
+
+---
+
+
 WebRTC - 实时视频传输
 WebSocket - 控制信令传输
 Canvas - 视频渲染和坐标映射
