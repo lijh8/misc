@@ -880,6 +880,39 @@ https://developer.mozilla.org/zh-CN/docs/Web/HTML/How_to/Add_JavaScript_to_your_
 ---
 
 
+# 获取 body 样式
+    window.getComputedStyle(document.body).getPropertyValue('background-color');
+    window.getComputedStyle(document.body).backgroundColor
+
+# 获取一个 button 样式
+    const myButton = document.getElementById('myButton');
+    window.getComputedStyle(myButton).backgroundColor
+
+// https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/style ,
+This code example shows how you can read the inline styles of an element.
+In each case it reads the dash-named style properties using getPropertyValue()
+and gets the camel case properties using the dot operator.
+
+    // html
+    <div style="font-weight: bold;">
+        <div style="border-top: 1px solid blue; color: red;" id="elt">
+            An example div
+        </div>
+        <pre id="log"></pre>
+    </div>
+
+    // javascript
+    const element = document.getElementById("elt");
+    const elementStyle = element.style;
+
+    // Longhand styles
+    log(`"border-top" = '${elementStyle.getPropertyValue("border-top")}'`);
+    log(`"borderTop" = '${elementStyle.borderTop}'`);
+
+
+---
+
+
 - 打开浏览器 Chrome DevTools Console 检查错误。
     F12,
     View / Developer / Javascript console
