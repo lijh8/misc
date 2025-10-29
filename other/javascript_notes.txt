@@ -704,29 +704,26 @@ JavaScript 自动将值装入包装对象中，并访问该对象上的属性。
             color-scheme: light dark;
             --fg-color: #212529;
             --bg-color: #f8f9fa;
-
-            --red-piece-color: #d32f2f;
-            --path-color: #1565c0;
         }
         /* 切换深色主题时覆盖浅色属性 */
         @media (prefers-color-scheme: dark) {
             :root {
                 --fg-color: #f8f9fa;
                 --bg-color: #212529;
-
-                --red-piece-color: #ff5252;
-                --path-color: #64b5f6;
             }
         }
         body {
-            /* 引用属性: var(--variable-name) */
+            /* 更柔和的前景和背景颜色 */
             color: var(--fg-color);
             background-color: var(--bg-color);
+
+            /* 默认: 高对比度前景和背景颜色，纯黑和纯白 */
+            /* color: CanvasText; */
+            /* background-color: Canvas; */
         }
     </style>
 </head>
 <body>
-    <!-- 引用属性: var(--variable-name)  -->
     <input type="text" id="input1">
     <button id="button1">button</button>
     <label id="label1"></label>
@@ -945,6 +942,30 @@ and gets the camel case properties using the dot operator.
         console.error(e); // 记录错误
         throw e; // 重新抛出原错误
     }
+
+
+---
+
+
+$ ls
+foo.html
+$
+
+# start web server in the directory of the html file:
+
+$ python3 -m http.server 8000
+
+$ ps -ef | grep -i python3
+  501  1060  1045   0  9:36PM ttys001    0:00.93 python -m http.server 8000
+$
+
+$ ip addr | grep 192
+192.168.1.3
+$
+
+# access html file in browser:
+
+http://192.168.1.3:8000/foo.html
 
 
 ---
