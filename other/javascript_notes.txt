@@ -689,6 +689,88 @@ JavaScript 自动将值装入包装对象中，并访问该对象上的属性。
 ---
 
 
+    // JavaScript 基于原型（prototype-based）
+    // - 没有“类”这个必需概念（ES6 的 class 只是语法糖，底层仍是原型）。
+    // - 对象可以直接创建（例如通过对象字面量 {}）。
+    // - 对象可以有一个原型（prototype），当访问属性时，如果自身没有，就去原型链上查找。
+
+    const animal = { eats: true };
+    const rabbit = { jumps: true };
+    rabbit.__proto__ = animal; // 原型链
+    console.log(rabbit.eats); // true - 通过原型链找到
+
+
+---
+
+
+    // ES6 的 class 只是语法糖，底层还是原型
+    class Animal {
+        constructor() { this.eats = true; }
+    }
+
+
+---
+
+
+    // 运行时可以动态修改对象
+    const obj = { a: 1 };
+    obj.b = 2; // 随时添加属性
+    delete obj.a; // 随时删除属性
+    // 对象可以随时改变类型
+    obj.sayHello = function() { return "Hello!"; };
+
+
+---
+
+
+    // 直接创建对象，无需类
+    const obj1 = {}; // 对象字面量
+    const obj2 = new Object(); // 构造函数
+    const obj3 = Object.create(null); // 指定原型
+    const obj4 = Object.create(obj); // 基于原型继承
+
+
+---
+
+
+    // 函数也是对象
+    function Person() {}
+    Person.age = 30; // 给函数添加属性
+
+
+---
+
+
+    const person = {
+        name: "John",
+        greet() { console.log("Hello"); }
+    };
+    // 可以随时扩展
+    person.sayGoodbye = function() { console.log("Bye"); };
+
+
+---
+
+
+    // 创建原型链
+    const grandParent = { a: 1 };
+    const parent = { b: 2 };
+    const child = { c: 3 };
+
+    // 构建原型链：child -> parent -> grandParent
+    Object.setPrototypeOf(parent, grandParent);
+    Object.setPrototypeOf(child, parent);
+
+    // 查找过程演示
+    console.log(child.c); // 3 - 自身属性，直接返回
+    console.log(child.b); // 2 - 自身没有，去 parent 原型找到
+    console.log(child.a); // 1 - 自身和parent都没有，去 grandParent 找到
+    console.log(child.d); // undefined - 整条链都没有
+
+
+---
+
+
 // version 1:
 // 自定义亮暗主题背景色和前景色。
 
