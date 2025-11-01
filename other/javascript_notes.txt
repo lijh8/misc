@@ -797,6 +797,17 @@ JavaScript 自动将值装入包装对象中，并访问该对象上的属性。
 ---
 
 
+https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise ,
+
+Promise 并发
+
+Promise 类提供了四个静态方法来促进异步任务的并发：
+    Promise.all()
+    Promise.allSettled()
+    Promise.any()
+    Promise.race()
+
+
 <script>
 
     function sleep(ms) {
