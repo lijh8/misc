@@ -610,17 +610,27 @@ JavaScript 自动将值装入包装对象中，并访问该对象上的属性。
 
 
     // python tuple
-    // (a.name, a.age, a.grade) < (b.name, b.age, b.grade);
-    // (a.name, a.age, a.grade) == (b.name, b.age, b.grade);
+    // (a.name, a.age, a.grade) < (b.name, b.age, b.grade)
+    // (a.name, a.age, a.grade) == (b.name, b.age, b.grade)
 
     // javascript
     const lessThan = (a, b) =>
         a.name !== b.name ? a.name < b.name :
             a.age !== b.age ? a.age < b.age :
-                a.grade < b.grade;
+                a.grade < b.grade
 
     const equalTo = (a, b) =>
-        a.name === b.name && a.age === b.age && a.grade === b.grade;
+        a.name === b.name && a.age === b.age && a.grade === b.grade
+
+    // three way comparison
+    const compare = (a, b) => {
+        const keys = ['name', 'age', 'grade']
+        for (k of keys) {
+            if (a[k] < b[k]) return -1
+            if (a[k] > b[k]) return 1
+        }
+        return 0
+    }
 
     const persons = [
         { name: "alice", age: 7, grade: 3 },
@@ -628,14 +638,18 @@ JavaScript 自动将值装入包装对象中，并访问该对象上的属性。
         { name: "charlie", age: 9, grade: 5 },
     ];
 
-    console.log(lessThan(persons[0], persons[0]));
-    console.log(equalTo(persons[0], persons[0]));
+    console.log(lessThan(persons[0], persons[0]))
+    console.log(equalTo(persons[0], persons[0]))
 
-    console.log(lessThan(persons[0], persons[1]));
-    console.log(equalTo(persons[0], persons[1]));
+    console.log(lessThan(persons[0], persons[1]))
+    console.log(equalTo(persons[0], persons[1]))
 
-    console.log(lessThan(persons[1], persons[0]));
-    console.log(equalTo(persons[1], persons[0]));
+    console.log(lessThan(persons[1], persons[0]))
+    console.log(equalTo(persons[1], persons[0]))
+
+    console.log(compare(persons[0], persons[0]))
+    console.log(compare(persons[0], persons[1]))
+    console.log(compare(persons[1], persons[0]))
 
 
 ---
