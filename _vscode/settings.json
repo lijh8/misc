@@ -2,7 +2,7 @@
   "accessibility.verbosity.diffEditor": false,
   "breadcrumbs.enabled": false,
   // "C_Cpp.clang_format_fallbackStyle": "LLVM", // https://code.visualstudio.com/docs/cpp/cpp-ide
-  "C_Cpp.clang_format_fallbackStyle": "none",
+  // "C_Cpp.clang_format_fallbackStyle": "none",
   "C_Cpp.default.compilerArgs": [ // if no compile_commands.json database found in workspace root directory
     // https://code.visualstudio.com/docs/cpp/customize-cpp-settings
     // compilerArgs: Compiler arguments to modify the includes paths or defines used
@@ -19,7 +19,7 @@
   "C_Cpp.dimInactiveRegions": false,
   "C_Cpp.errorSquiggles": "disabled",
   // "C_Cpp.formatting": "clangFormat",
-  "C_Cpp.formatting": "disabled",
+  // "C_Cpp.formatting": "disabled",
   "C_Cpp.hover": "disabled",
   "chat.agent.enabled": false,
   "chat.commandCenter.enabled": false,
@@ -59,7 +59,7 @@
   "editor.dragAndDrop": false,
   "editor.folding": false,
   "editor.fontSize": 15,
-  // "editor.formatOnSave": true, // formatOnPaste conflicts with SortIncludes
+  "editor.formatOnSave": true, // formatOnPaste conflicts with SortIncludes
   "editor.hover.enabled": false,
   "editor.inlayHints.enabled": "off",
   "editor.lightbulb.enabled": "off",
