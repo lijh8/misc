@@ -485,6 +485,50 @@ EventTarget.prototype.addEventListener() 等方法时，
 ---
 
 
+// https://www.typescriptlang.org/docs/handbook/2/classes.html#arrow-functions ,
+
+class MyClass {
+    name = "MyClass";
+    getName = () => {
+        return this.name;
+    };
+    getName2() {
+        return this.name;
+    };
+}
+const c = new MyClass();
+const g = c.getName;
+console.log(g());   // ok
+
+const g2 = c.getName2;
+console.log(g2());  // error
+
+
+this 的绑定方式不同:
+
+箭头函数的 this 是“静态的” → 定义时就绑定了
+普通方法的 this 是“动态的” → 调用时才决定
+当你把方法赋值给变量再调用时，普通方法会丢失 this，而箭头函数不会
+
+
+getName 是箭头函数（Arrow Function）
+
+    this 在定义时就已经确定（词法绑定，lexical binding）
+    当 new MyClass() 创建实例 c 时，箭头函数 getName 已经把 this 绑定到了 c 这个实例上
+    即使你把它赋值给变量 g 再调用 g()，它仍然记得 this 是谁
+    所以 g() 能正确返回 "MyClass"
+
+getName2 是普通方法（Regular Method）
+
+    this 在调用时才确定（动态绑定）
+    当作为 c.getName2() 调用时，this 指向 c
+    当作为 g2() 调用时，this 变成 undefined（严格模式下）
+    全局对象没有 name 属性（或值不同），所以返回 undefined，甚至可能报错
+
+
+---
+
+
 https://developer.mozilla.org/zh-CN/docs/Learn_web_development/Core/Scripting/What_is_JavaScript ,
 
 内联 JavaScript 处理器
@@ -1225,6 +1269,168 @@ $
 # access html file in browser:
 
 http://192.168.1.3:8000/foo.html
+
+
+---
+
+
+// server.js
+
+const WebSocket = require('ws');
+const http = require('http');
+const fs = require('fs');
+const path = require('path');
+
+// Create HTTP server to serve HTML
+const server = http.createServer((req, res) => {
+    if (req.url === '/') {
+        fs.readFile(path.join(__dirname, 'index.html'), (err, data) => {
+            if (err) {
+                res.writeHead(500);
+                res.end('Error loading page');
+                return;
+            }
+            res.writeHead(200, { 'Content-Type': 'text/html' });
+            res.end(data);
+        });
+    }
+});
+
+// Create WebSocket server on same HTTP server
+const wss = new WebSocket.Server({ server });
+
+wss.on('connection', (ws, req) => {
+
+    // Get client IP address and port
+    const clientIP = req.socket.remoteAddress;
+    const clientPort = req.socket.remotePort;
+
+    console.log(`🟢 New client connected from ${clientIP}:${clientPort}, socket fd: ${req.socket.fd}`);
+
+    ws.send('Hello from server!');
+
+    ws.on('message', (data) => {
+        console.log('🤖 Received:', data.toString());
+        // Echo message back to client
+        ws.send('Echo: ' + data.toString());
+    });
+
+    ws.on('close', () => {
+        console.log('🔴 Client disconnected');
+    });
+
+    ws.on('error', (err) => {
+        console.error('❌ WebSocket error:', err);
+    });
+});
+
+const PORT = 8080;
+server.listen(PORT, () => {
+    console.log(`🌐 Server running at http://localhost:${PORT}`);
+});
+
+
+// index.html
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>WebSocket Demo</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 20px;
+        }
+
+        #messages {
+            border: 1px solid #ccc;
+            height: 200px;
+            overflow-y: auto;
+            margin: 10px 0;
+            padding: 10px;
+        }
+
+        input {
+            width: 300px;
+            padding: 8px;
+        }
+
+        button {
+            padding: 8px 16px;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>WebSocket Chat</h1>
+    <div id="messages"></div>
+    <input type="text" id="messageInput" placeholder="Type a message..." />
+    <button onclick="sendMessage()">Send</button>
+    <button onclick="closeConnection()">Close</button>
+
+    <script>
+        let socket;
+
+        // Connect to WebSocket server
+        function connect() {
+            socket = new WebSocket('ws://localhost:8080');
+
+            socket.onopen = () => {
+                addMessage('🟢 Connected to server');
+            };
+
+            socket.onmessage = (event) => {
+                addMessage(`🤖 Server: ${event.data}`);
+            };
+
+            socket.onclose = () => {
+                addMessage('🔴 Disconnected');
+            };
+
+            socket.onerror = (error) => {
+                addMessage(`❌ WebSocket error: ${error.message}`);
+                console.error('❌ WebSocket error:', error);
+            };
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            if (message && socket.readyState === WebSocket.OPEN) {
+                socket.send(message);
+                addMessage(`👤 You: ${message}`);
+                input.value = '';
+            }
+        }
+
+        function closeConnection() {
+            if (socket) {
+                socket.close();
+            }
+        }
+
+        function addMessage(text) {
+            const messages = document.getElementById('messages');
+            const msg = document.createElement('div');
+            msg.textContent = text;
+            messages.appendChild(msg);
+            messages.scrollTop = messages.scrollHeight; // Auto-scroll
+        }
+
+        // Handle Enter key
+        document.getElementById('messageInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+        // Auto-connect on page load
+        connect();
+    </script>
+</body>
+
+</html>
 
 
 ---
