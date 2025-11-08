@@ -429,6 +429,7 @@ EventTarget.prototype.addEventListener() 等方法时，
 
 1. 箭头函数没有自己的 this，它会词法捕获外层作用域的 this。
     在对象字面量中定义时，this 通常指向全局对象（或模块顶层），无法访问该对象自身的属性。
+    在对象字面量中定义箭头函数是个反模式，因为对象字面量本身不是一个函数作用域，箭头函数会捕获更外层的 this。
 
     const person = {
         name: 'Alice',
@@ -482,8 +483,7 @@ EventTarget.prototype.addEventListener() 等方法时，
     });
 
 
----
-
+5. 即使执行上下文改变，箭头函数依然捕获定义时的 this
 
 // https://www.typescriptlang.org/docs/handbook/2/classes.html#arrow-functions ,
 
