@@ -1274,6 +1274,9 @@ http://192.168.1.3:8000/foo.html
 ---
 
 
+$ npm install ws
+
+$ cat server.js
 // server.js
 
 const WebSocket = require('ws');
@@ -1331,7 +1334,9 @@ server.listen(PORT, () => {
     console.log(`🌐 Server running at http://localhost:${PORT}`);
 });
 
+$
 
+$ cat index.html
 // index.html
 
 <!DOCTYPE html>
@@ -1433,6 +1438,8 @@ server.listen(PORT, () => {
 </body>
 
 </html>
+
+$
 
 
 ---
