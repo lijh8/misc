@@ -1305,14 +1305,16 @@ wss.on('connection', (ws, req) => {
     const clientIP = req.socket.remoteAddress;
     const clientPort = req.socket.remotePort;
 
-    console.log(`🟢 New client connected from ${clientIP}:${clientPort}, socket fd: ${req.socket.fd}`);
+    console.log(`🟢 New client connected from ${clientIP}:${clientPort}`);
 
     ws.send('Hello from server!');
 
     ws.on('message', (data) => {
         console.log('🤖 Received:', data.toString());
         // Echo message back to client
-        ws.send('Echo: ' + data.toString());
+        if (data && ws.readyState === WebSocket.OPEN) {
+            ws.send('Echo: ' + data.toString());
+        }
     });
 
     ws.on('close', () => {
@@ -1372,25 +1374,25 @@ server.listen(PORT, () => {
     <button onclick="closeConnection()">Close</button>
 
     <script>
-        let socket;
+        let ws;
 
         // Connect to WebSocket server
         function connect() {
-            socket = new WebSocket('ws://localhost:8080');
+            ws = new WebSocket('ws://localhost:8080');
 
-            socket.onopen = () => {
+            ws.onopen = () => {
                 addMessage('🟢 Connected to server');
             };
 
-            socket.onmessage = (event) => {
+            ws.onmessage = (event) => {
                 addMessage(`🤖 Server: ${event.data}`);
             };
 
-            socket.onclose = () => {
+            ws.onclose = () => {
                 addMessage('🔴 Disconnected');
             };
 
-            socket.onerror = (error) => {
+            ws.onerror = (error) => {
                 addMessage(`❌ WebSocket error: ${error.message}`);
                 console.error('❌ WebSocket error:', error);
             };
@@ -1399,16 +1401,16 @@ server.listen(PORT, () => {
         function sendMessage() {
             const input = document.getElementById('messageInput');
             const message = input.value.trim();
-            if (message && socket.readyState === WebSocket.OPEN) {
-                socket.send(message);
+            if (message && ws.readyState === WebSocket.OPEN) {
+                ws.send(message);
                 addMessage(`👤 You: ${message}`);
                 input.value = '';
             }
         }
 
         function closeConnection() {
-            if (socket) {
-                socket.close();
+            if (ws) {
+                ws.close();
             }
         }
 
