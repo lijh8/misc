@@ -877,7 +877,7 @@ https://developer.mozilla.org/zh-CN/docs/Glossary/IIFE ,
     - 在底层实现上，async 函数可以被视为一个由编译器生成的状态机，它通过 Promise 的 .then() 链来管理和推进函数的执行流程。
 
 2. 如果目的仅仅是启动一个异步任务，而不需要等待其完成结果，那么直接调用 async 函数（例如 foo()）即可，无需使用 await。
-    （这种模式常被称为“发射后不管”，但需要注意：如果被忽略的 Promise 被拒绝（rejected）且未被处理，可能会在控制台产生未处理的 rejection 警告或错误。）
+    （这种模式常被称为“fire and forget”，但需要注意：如果被忽略的 Promise 被拒绝（rejected）且未被处理，可能会在控制台产生未处理的 rejection 警告或错误。）
 
 3. await 的操作对象并不仅限于 async 函数。
 
@@ -893,7 +893,7 @@ https://developer.mozilla.org/zh-CN/docs/Glossary/IIFE ,
 
     console.log('1. 外层代码');
     main();
-    console.log('3. async函数内部，执行权立即返回外层代码，外层代码继续执行');
+    console.log('3. async函数内部挂起，执行权立即返回外层代码，外层代码继续执行');
 
     async function main() {
         console.log('2. main 开始');
