@@ -931,8 +931,9 @@ $ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bas
 
 $ source "$HOME/.nvm/nvm.sh"
 
-# Download and install Node.js:
+# install Node.js:
 $ nvm install --lts
+$ nvm use --lts
 # $ nvm install 24
 # $ nvm use 24
 $ nvm current
@@ -1440,6 +1441,23 @@ $ cat index.html
 </html>
 
 $
+
+
+---
+
+
+VSCode:
+Unable to resolve your shell environment in a reasonable time.
+Please review your shell configuration and restart.
+
+# https://github.com/nvm-sh/nvm#additional-notes ,
+# You can add --no-use to the end of the above script to postpone using nvm until you manually use it:
+
+$ vi ~/.zshrc
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" --no-use  # This loads nvm
+$
+$ nvm use --lts
+$ nvm use default
 
 
 ---
