@@ -867,6 +867,72 @@ https://developer.mozilla.org/zh-CN/docs/Glossary/IIFE ,
 ---
 
 
+1. 当执行到 await 语句时，只有包含该 await 语句的 async 函数会被“挂起”（suspended）：
+
+    - 该 async 函数的执行会被暂停。
+    - 函数会立即向调用方返回一个 Promise 对象（代表该异步函数的最终完成结果），从而将执行权交还给外部调用栈。
+    - JavaScript 主线程（或外层代码）会继续执行 async 函数调用之后的代码。
+    - await 的操作对象（通常是一个 Promise）会在后台继续其执行。
+    - await 的操作对象落定（fulfilled 或 rejected）后，从 async 函数中原来的挂起点恢复执行。
+    - 在底层实现上，async 函数可以被视为一个由编译器生成的状态机，它通过 Promise 的 .then() 链来管理和推进函数的执行流程。
+
+2. 如果目的仅仅是启动一个异步任务，而不需要等待其完成结果，那么直接调用 async 函数（例如 foo()）即可，无需使用 await。
+    （这种模式常被称为“发射后不管”，但需要注意：如果被忽略的 Promise 被拒绝（rejected）且未被处理，可能会在控制台产生未处理的 rejection 警告或错误。）
+
+3. await 的操作对象并不仅限于 async 函数。
+
+    - 它可以等待任何 "thenable" 对象（即拥有 .then() 方法的对象），其中最主要的就是 Promise 对象。
+    - 它甚至可以直接等待一个普通的非 Promise 值（例如 await 42），在这种情况下，JavaScript 引擎会使用 Promise.resolve() 自动将其包装为一个已解决的 Promise。
+
+4. await 的使用位置：
+
+    - 可以在任何 async 函数内部使用。
+    - 也可以在 JavaScript 模块的顶层代码中使用——但这需要运行环境支持 ES2022 的“顶层 await” 特性。
+    - 支持顶层 await 的典型场景：ES 模块（例如在 Node.js 中将 package.json 设置为 "type": "module"，或在浏览器中使用 <script type="module">）。
+
+
+    console.log('1. 外层代码');
+    main();
+    console.log('3. async函数内部，执行权立即返回外层代码，外层代码继续执行');
+
+    async function main() {
+        console.log('2. main 开始');
+
+        // await 只阻塞当前 async 函数内的后续代码，执行权立即返回给外层代码
+        await fetchData(); // await 的操作对象会继续执行
+
+        // await 操作对象执行完成，从挂起点恢复执行。
+        console.log('4. main 结束');
+    }
+
+    // 输出顺序：1 → 2 → 3 → 4
+
+
+---
+
+
+// 当有多个异步任务时，才能实现并发，使用 Promise.all() 同时并行执行，减少总耗时。
+// 类似 Python 中的 asyncio.gather() 或结构化并发（structured concurrency）的思想：
+// 任务组一起启动、一起等待。
+
+假设你有 3 个独立的，各耗时 1 秒的异步任务（比如 3 个 API 请求）：
+
+    // 并发执行（同时发起），总耗时 ≈ 最慢的那个（如 1 秒）
+    const [res1, res2, res3] = await Promise.all([
+        fetch('/api1'),
+        fetch('/api2'),
+        fetch('/api3')
+    ]);
+
+    // 对比：串行执行（一个接一个），总耗时 ≈ 3 秒
+    const res1 = await fetch('/api1');
+    const res2 = await fetch('/api2');
+    const res3 = await fetch('/api3');
+
+
+---
+
+
 https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise ,
 
 Promise 并发
