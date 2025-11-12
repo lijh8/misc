@@ -1020,15 +1020,54 @@ Promise 是现代 JavaScript 中异步编程的基础。它是一个由异步函
 ---
 
 
-. await 可以在 async 异步函数中使用，或者在顶层代码中使用。
-. await 的操作表达式是一个 thenable 对象，或 Promise。
-. 一个异步函数返回 Promise，所以 await 可以用于调用异步函数。
-. 当执行到 await 语句时，await 语句所在的函数会暂停，执行权返回到外层函数或主线程。
-. 外层或主线程代码在javascript引擎继续执行，不会阻塞。
-. 同时 await 的操作表达式对应的 Promise 异步任务也会在宿主环境（chrome, nodejs）继续执行。
-. 当 await 的操作表达式对应的异步任务执行完，await 所在的函数会恢复执行。
-. 异步函数必须返回一个 Promise。
-. 异步函数中的 return value 会被 JavaScript 引擎自动包装成 Promise.resolve(value)。
+JavaScript 异步概念和执行流程：
+
+- 异步操作由宿主（ Nodejs, 浏览器）执行，通过事件循环回调到 JavaScript 引擎主线程；
+- 异步操作依赖宿主环境提供的原生异步能力（如 fetch, setTimeout 等） ；
+- async 声明的函数是异步函数，它返回一个 Promise ；
+- 异步函数中返回的非 Promise 值，会被自动转换为 Promise.resolve(value) ；
+- await 只能在 async 函数内部使用，或者在支持 await 的 ES 模块的顶层代码中使用；
+
+- 主线程在执行一个异步函数调用语句时，异步函数在 await 语句处挂起；
+- 主线程继续执行外层在该异步函数调用语句之后的代码；
+- 异步函数 await 表达式的异步操作由宿主执行，不阻塞主线程；
+- 异步函数 await 语句之后的代码被安排为一个微任务；
+- await 表达式的异步操作完成，结果由 await 返回；
+- 异步函数在挂起点恢复，主线程执行队列中的微任务；
+
+
+async function foo1() {
+    let random = Math.random();
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    return random;
+}
+
+function foo2() {
+    let random = Math.random();
+    return new Promise(resolve => {
+        setTimeout(() => {
+            resolve(random);
+        }, 1000);
+    });
+}
+
+async function bar() {
+    console.log('2');
+    let random1 = await foo1();
+    let random2 = await foo2();
+    console.log('random1', random1);
+    console.log('random2', random2);
+    console.log('3');
+}
+
+console.log('1');
+bar();
+console.log('4');
+
+// 打印顺序：1，2，4，3；
+
+
+---
 
 
 // 1. await 方式
