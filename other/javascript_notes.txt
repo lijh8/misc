@@ -988,6 +988,30 @@ await 语句会使其所在的当前异步函数暂停。
 ---
 
 
+async function fetchData(url) {
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+        console.log(data);
+    } catch (error) {
+        console.error('请求失败:', error);
+    }
+}
+
+// 1. 单个异步任务
+let url = 'chat.qwen.ai'
+fetchData(url);
+
+// 2. 多个不相关的异步任务，用 Promise.all() 并发执行以提升性能
+const [user, posts] = await Promise.all([
+    fetchUser(),
+    fetchPosts()
+]);
+
+
+---
+
+
 // 正确例子：基于原生异步能力
 async function foo1() {
     let random = Math.random();
