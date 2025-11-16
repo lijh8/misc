@@ -1102,28 +1102,46 @@ Promise 类提供了四个静态方法来促进异步任务的并发：
 1.
 
 // foo.js
-export function fun() {
+function f1() {
     console.log('fun');
+}
+function f2() {
+    console.log('fun');
+}
+
+export {
+    f1,
+    f2
 }
 
 // main.js
 import * as foo from './foo.js';
-foo.fun();
+
+foo.f1();
+foo.f2();
 
 
 2.
 
 // foo.js
-function fun() {
+function f1() {
     console.log('fun');
 }
+function f2() {
+    console.log('fun');
+}
+
 export default {
-    fun
+    f1,
+    f2
 }
 
 // main.js
 import foo from './foo.js';
-foo.fun();
+
+foo.f1();
+foo.f2();
+
 
 
 3.
