@@ -1159,6 +1159,99 @@ foo();  // use function directly
 ---
 
 
+$ ls
+foo.js  foo.test.js  main.js  node_modules  package.json  package-lock.json
+$
+
+$ cat package.json
+{
+  "name": "hello_js",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "node --test",
+    "start": "node main.js",
+    "dev": "nodemon main.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "devDependencies": {
+    "nodemon": "^3.1.11"
+  }
+}
+$
+
+$ cat foo.js
+function add_v1(a, b) {
+    return a + b;
+}
+
+function add_v2(a, b) {
+    return a + b + 1; // for test purpose
+}
+
+export {
+    add_v1,
+    add_v2
+}
+$
+
+$ cat foo.test.js
+import assert from 'node:assert'
+import test from 'node:test'
+import * as foo from './foo.js'
+
+test('', () => assert(foo.add_v1(1, 2) === 3));
+test('', () => assert(foo.add_v2(1, 2) === 3));
+$
+
+$ npm test
+
+> hello_js@1.0.0 test
+> node --test
+
+✔ <anonymous> (1.315354ms)
+✖ <anonymous> (9.241743ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 1
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 139.038753
+
+✖ failing tests:
+
+test at foo.test.js:6:1
+✖ <anonymous> (9.241743ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+
+    assert(foo.add_v2(1, 2) === 3)
+
+      at TestContext.<anonymous> (file:///home/ljh/Documents/hello_js/foo.test.js:6:16)
+      at Test.runInAsyncScope (node:async_hooks:213:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+$
+
+
+---
+
+
 # Install nodejs
 
 # download and unzip:
