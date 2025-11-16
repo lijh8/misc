@@ -1097,19 +1097,10 @@ Promise 类提供了四个静态方法来促进异步任务的并发：
 ---
 
 
-# Download and install nvm:
-$ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
-=> Downloading nvm from git to '/Users/ljh/.nvm'
-=> Cloning into '/Users/ljh/.nvm'...
+# Install nodejs
 
-$ source "$HOME/.nvm/nvm.sh"
-
-# install Node.js:
-$ nvm install --lts
-$ nvm use --lts
-# $ nvm install 24
-# $ nvm use 24
-$ nvm current
+# download and unzip:
+$ tar xf node-v25.2.0-linux-x64.tar.xz -C /usr/local --strip-components=1
 $ node -v
 $ npm -v
 
@@ -1614,23 +1605,6 @@ $ cat index.html
 </html>
 
 $
-
-
----
-
-
-VSCode:
-Unable to resolve your shell environment in a reasonable time.
-Please review your shell configuration and restart.
-
-# https://github.com/nvm-sh/nvm#additional-notes ,
-# You can add --no-use to the end of the above script to postpone using nvm until you manually use it:
-
-$ vi ~/.zshrc
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" --no-use  # This loads nvm
-$
-$ nvm use --lts
-$ nvm use default
 
 
 ---
