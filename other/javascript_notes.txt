@@ -1314,10 +1314,9 @@ main().catch(console.error);
 
 // logger.js
 export function LOG(...args) {
-    const now = new Date().toISOString();
-    const stack = new Error().stack.split('\n')[2];
-    const caller = stack.match(/([^/\\]+\.\w+):(\d+):\d+\)?$/);
-    console.log(now, `${caller[1]}:${caller[2]}`, ...args);
+    const caller = new Error().stack.split('\n')[2];
+    const location = caller.match(/([^/\\]+\.\w+):(\d+):\d+\)?$/);
+    console.log(`${location[1]}:${location[2]}`, ...args);
 }
 
 /*
@@ -1330,10 +1329,10 @@ LOG('aaa', 10, 3.14);
 LOG('bbb', 10, 3.14);
 
 // output:
-2025-11-17T08:12:30.378Z main.js:3
-2025-11-17T08:12:30.383Z main.js:4
-2025-11-17T08:12:30.383Z main.js:5 aaa 10 3.14
-2025-11-17T08:12:30.383Z main.js:6 bbb 10 3.14
+main.js:3
+main.js:4
+main.js:5 aaa 10 3.14
+main.js:6 bbb 10 3.14
 */
 
 
