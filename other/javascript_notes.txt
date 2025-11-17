@@ -1326,15 +1326,15 @@ main().catch(console.error);
 /*
 // main.js
 import './logger.js'
-console.debug('debug');
 console.log('log');
+console.debug('debug');
 console.info('info');
 console.warn('warn');
 console.error('error');
 
 // output:
-[DEBUG] main.js:6 debug
 [LOG  ] main.js:5 log
+[DEBUG] main.js:6 debug
 [INFO ] main.js:7 info
 [WARN ] main.js:8 warn
 [ERROR] main.js:9 error
