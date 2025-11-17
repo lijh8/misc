@@ -1313,31 +1313,27 @@ main().catch(console.error);
 
 
 // logger.js
-['log', 'debug', 'info', 'warn', 'error'].forEach(level => {
-    const original = console[level];
-    console[level] = (...args) => {
-        const stack = new Error().stack.split('\n')[2];
-        const match = stack.match(/([^/\\]+\.\w+):(\d+):\d+\)?$/);
-        const location = match ? `${match[1]}:${match[2]}` : 'unknown';
-        original(`[${level.toUpperCase().padEnd(5)}]`, location, ...args);
-    };
-});
+export function LOG(...args) {
+    const now = new Date().toISOString();
+    const stack = new Error().stack.split('\n')[2];
+    const caller = stack.match(/([^/\\]+\.\w+):(\d+):\d+\)?$/);
+    console.log(now, `${caller[1]}:${caller[2]}`, ...args);
+}
 
 /*
 // main.js
-import './logger.js'
-console.log('log');
-console.debug('debug');
-console.info('info');
-console.warn('warn');
-console.error('error');
+import { LOG } from './logger.js';
+
+LOG();
+LOG('');
+LOG('aaa', 10, 3.14);
+LOG('bbb', 10, 3.14);
 
 // output:
-[LOG  ] main.js:5 log
-[DEBUG] main.js:6 debug
-[INFO ] main.js:7 info
-[WARN ] main.js:8 warn
-[ERROR] main.js:9 error
+2025-11-17T08:12:30.378Z main.js:3
+2025-11-17T08:12:30.383Z main.js:4
+2025-11-17T08:12:30.383Z main.js:5 aaa 10 3.14
+2025-11-17T08:12:30.383Z main.js:6 bbb 10 3.14
 */
 
 
