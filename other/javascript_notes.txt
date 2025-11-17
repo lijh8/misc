@@ -1312,6 +1312,38 @@ main().catch(console.error);
 ---
 
 
+// logger.js
+['log', 'debug', 'info', 'warn', 'error'].forEach(level => {
+    const original = console[level];
+    console[level] = (...args) => {
+        const stack = new Error().stack.split('\n')[2];
+        const match = stack.match(/([^/\\]+\.\w+):(\d+):\d+\)?$/);
+        const location = match ? `${match[1]}:${match[2]}` : 'unknown';
+        original(`[${level.toUpperCase().padEnd(5)}]`, location, ...args);
+    };
+});
+
+/*
+// main.js
+import './logger.js'
+console.debug('debug');
+console.log('log');
+console.info('info');
+console.warn('warn');
+console.error('error');
+
+// output:
+[DEBUG] main.js:6 debug
+[LOG  ] main.js:5 log
+[INFO ] main.js:7 info
+[WARN ] main.js:8 warn
+[ERROR] main.js:9 error
+*/
+
+
+---
+
+
 // version 1:
 // 自定义亮暗主题背景色和前景色。
 
