@@ -1339,6 +1339,41 @@ main.js:6 bbb 10 3.14
 ---
 
 
+// nodejs 服务端程序 自动打开浏览器 加载静态html网页 展示界面
+
+import express from 'express';
+import path from 'path';
+import url from 'url';
+import child_process from 'child_process';
+
+const filename = url.fileURLToPath(import.meta.url);
+const dirname = path.dirname(filename);
+const app = express();
+const PORT = 8080;
+const address = `http://localhost:${PORT}`;
+
+app.use(express.static(path.join(dirname, 'public')));
+
+app.get('/', (req, res) => {
+    res.sendFile(path.join(dirname, 'public', 'index.html'));
+});
+
+const server = app.listen(PORT);
+
+server.on('listening', () => {
+    child_process.exec(`xdg-open ${address}`);
+}).on('error', (err) => {
+    if (err.code === 'EADDRINUSE') {
+        child_process.exec(`xdg-open ${address}`);
+    } else {
+        console.log(err);
+    }
+});
+
+
+---
+
+
 // version 1:
 // 自定义亮暗主题背景色和前景色。
 
