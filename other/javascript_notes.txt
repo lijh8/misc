@@ -1386,6 +1386,69 @@ $
 ---
 
 
+$ ls
+index.html  main.js  package.json
+$
+$ cat index.html
+<!DOCTYPE html>
+<html>
+
+<body>
+    <div id="foo"></div>
+
+    <script>
+        (async () => {
+            const response = await fetch('/api/foo');
+            const data = await response.json();
+            document.getElementById('foo').textContent = data.foo;
+        })();
+    </script>
+</body>
+
+</html>
+$
+$ cat main.js
+import path from 'node:path';
+import url from 'node:url';
+import express from 'express';
+
+const app = express();
+const PORT = 8080;
+
+const filename = url.fileURLToPath(import.meta.url);
+const dirname = path.dirname(filename);
+
+app.use(express.static(dirname));
+
+app.get('/api/foo', (req, res) => {
+    res.json({ foo: 'bar' });
+});
+
+app.listen(PORT, () => {
+    console.log(`Server running at http://localhost:${PORT}`);
+});
+$
+$ cat package.json
+{
+  "name": "myapp",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "node --test",
+    "start": "node main.js",
+    "dev": "node --watch main.js"
+  },
+  "type": "module",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
+$
+
+
+---
+
+
 // version 1:
 // 自定义亮暗主题背景色和前景色。
 
