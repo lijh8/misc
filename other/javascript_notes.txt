@@ -1902,6 +1902,60 @@ $
 ---
 
 
+# electron
+
+// https://www.electronjs.org/docs/latest/tutorial/tutorial-first-app ,
+// https://www.electronjs.org/docs/latest/tutorial/installation#custom-mirrors-and-caches ,
+
+$ vi ~/.bashrc
+export ELECTRON_MIRROR="https://npmmirror.com/mirrors/electron/"
+export ELECTRON_BUILDER_BINARIES_MIRROR="https://npmmirror.com/mirrors/electron-builder-binaries/"
+$
+$ . ~/.bashrc
+
+$ cd ~/myapp
+$ ls
+index.html  main.js  node_modules  package-lock.json  package.json
+$
+$ npm install --save-dev electron electron-builder
+
+# run chmod after chown
+$ sudo chown root node_modules/electron/dist/chrome-sandbox
+$ sudo chmod 4755 node_modules/electron/dist/chrome-sandbox
+
+$ cat package.json
+{
+  "name": "my-electron-app",
+  "version": "1.0.0",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron .",
+    "build": "electron-builder"
+  },
+  "build": {
+    "appId": "com.yourname.yourapp",
+    "productName": "YourApp",
+    "directories": {
+      "output": "dist"
+    },
+    "linux": {
+      "target": "AppImage"
+    }
+  },
+  "devDependencies": {
+    "electron": "^39.2.3",
+    "electron-builder": "^26.0.12"
+  }
+}
+$
+$ npm run start
+$ npm run build
+
+
+---
+
+
 WebRTC - 实时视频传输
 WebSocket - 控制信令传输
 Canvas - 视频渲染和坐标映射
