@@ -1386,9 +1386,13 @@ $
 ---
 
 
-$ ls
-index.html  main.js  package.json
+$ pwd
+/home/ljh/Documents/myapp
 $
+$ ls
+index.html  main.js  node_modules  package-lock.json  package.json
+$
+
 $ cat index.html
 <!DOCTYPE html>
 <html>
@@ -1407,14 +1411,16 @@ $ cat index.html
 
 </html>
 $
+
 $ cat main.js
+import child_process from 'node:child_process';
 import path from 'node:path';
 import url from 'node:url';
 import express from 'express';
 
 const app = express();
 const PORT = 8080;
-
+const addr = `http://localhost:${PORT}`;
 const filename = url.fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
 
@@ -1424,21 +1430,36 @@ app.get('/api/foo', (req, res) => {
     res.json({ foo: 'bar' });
 });
 
-app.listen(PORT, () => {
-    console.log(`Server running at http://localhost:${PORT}`);
+const server = app.listen(PORT, () => {
+    console.log(`Server running at ${addr}`);
+});
+
+server.on("listening", () => {
+    child_process.exec(`xdg-open ${addr}`);
+});
+
+server.on("error", (err) => {
+    if (err.code === 'EADDRINUSE') {
+        child_process.exec(`xdg-open ${addr}`);
+    } else {
+        console.log(err);
+    }
 });
 $
+
 $ cat package.json
 {
   "name": "myapp",
   "version": "1.0.0",
-  "main": "index.js",
+  "description": "myapp",
+  "author": "@me",
+  "type": "module",
+  "main": "main.js",
   "scripts": {
     "test": "node --test",
     "start": "node main.js",
-    "dev": "node --watch main.js"
+    "dev": "node --run start -- --watch"
   },
-  "type": "module",
   "dependencies": {
     "express": "^5.1.0"
   }
