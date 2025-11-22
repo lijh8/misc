@@ -1923,15 +1923,51 @@ $ npm install --save-dev electron electron-builder
 $ sudo chown root node_modules/electron/dist/chrome-sandbox
 $ sudo chmod 4755 node_modules/electron/dist/chrome-sandbox
 
+$ cat main.js
+
+import { app, BrowserWindow } from 'electron/main';
+
+const createWindow = () => {
+    const win = new BrowserWindow({
+        width: 800,
+        height: 600
+    })
+
+    win.loadFile('index.html')
+}
+
+app.whenReady().then(() => {
+    createWindow()
+
+    app.on('activate', () => {
+        if (BrowserWindow.getAllWindows().length === 0) {
+            createWindow()
+        }
+    })
+})
+
+app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin') {
+        app.quit()
+    }
+})
+
+$
+
 $ cat package.json
 {
   "name": "my-electron-app",
   "version": "1.0.0",
   "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node --test",
     "start": "electron .",
     "build": "electron-builder"
+  },
+  "type": "module",
+  "devDependencies": {
+    "electron": "^39.2.3",
+    "electron-builder": "^26.0.12"
   },
   "build": {
     "appId": "com.yourname.yourapp",
@@ -1942,15 +1978,145 @@ $ cat package.json
     "linux": {
       "target": "AppImage"
     }
-  },
-  "devDependencies": {
-    "electron": "^39.2.3",
-    "electron-builder": "^26.0.12"
   }
 }
 $
 $ npm run start
 $ npm run build
+
+
+---
+
+
+$ pwd
+/home/ljh/Documents/myapp
+$ ls
+dist  index.html  main.js  node_modules  package-lock.json  package.json
+$
+
+$ cat index.html
+<!DOCTYPE html>
+<html>
+
+<body>
+  <div id="foo"></div>
+
+  <script>
+    (async () => {
+      const response = await fetch('/api/foo');
+      const data = await response.json();
+      document.getElementById('foo').textContent = data.foo;
+    })();
+  </script>
+</body>
+
+</html>
+$
+
+$ cat main.js
+import { app, BrowserWindow } from 'electron';
+import express from 'express';
+import path from 'node:path';
+import url from 'node:url';
+
+const filename = url.fileURLToPath(import.meta.url);
+const dirname = path.dirname(filename);
+
+let mainWindow;
+let expressServer;
+
+const createWindow = () => {
+    mainWindow = new BrowserWindow({
+        width: 800,
+        height: 600,
+        webPreferences: {
+            nodeIntegration: false,
+            contextIsolation: true
+        }
+    });
+
+    mainWindow.loadURL('http://localhost:8080');
+};
+
+const startExpressServer = () => {
+    const expressApp = express();
+    const PORT = 8080;
+
+    expressApp.use(express.static(dirname));
+
+    expressApp.get('/api/foo', (req, res) => {
+        res.json({ foo: 'bar' });
+    });
+
+    expressServer = expressApp.listen(PORT, () => {
+        console.log(`Server running at http://localhost:${PORT}`);
+        createWindow();
+    });
+};
+
+app.whenReady().then(() => {
+    startExpressServer();
+});
+
+app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin') {
+        if (expressServer) {
+            expressServer.close();
+        }
+        app.quit();
+    }
+});
+
+app.on('activate', () => {
+    if (BrowserWindow.getAllWindows().length === 0) {
+        createWindow();
+    }
+});
+
+app.on('before-quit', () => {
+    if (expressServer) {
+        expressServer.close();
+    }
+});
+$
+
+$ cat package.json
+{
+  "name": "my-electron-app",
+  "version": "1.0.0",
+  "description": "myapp",
+  "author": "@me",
+  "type": "module",
+  "main": "main.js",
+  "scripts": {
+    "test": "node --test",
+    "start": "electron .",
+    "build:linux": "electron-builder --linux"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "electron": "^39.2.3",
+    "electron-builder": "^26.0.12"
+  },
+  "build": {
+    "appId": "com.yourname.yourapp",
+    "productName": "YourApp",
+    "directories": {
+      "output": "dist"
+    },
+    "linux": {
+      "target": "AppImage",
+      "category": "Utility"
+    }
+  }
+}
+$
+
+$ npm install  # install packges specified in ./packages.json
+$ npm start
+$ npm run build:linux
 
 
 ---
