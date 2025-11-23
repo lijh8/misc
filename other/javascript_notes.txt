@@ -1457,8 +1457,8 @@ $ cat package.json
   "main": "main.js",
   "scripts": {
     "test": "node --test",
-    "start": "node main.js",
-    "dev": "node --watch main.js"
+    "start": "node .",
+    "dev": "node --watch ."
   },
   "dependencies": {
     "express": "^5.1.0"
