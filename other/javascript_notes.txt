@@ -1390,7 +1390,7 @@ $ pwd
 /home/ljh/Documents/myapp
 $
 $ ls
-index.html  main.js  node_modules  package-lock.json  package.json
+index.html  index.js  package.json
 $
 
 $ cat index.html
@@ -1412,7 +1412,7 @@ $ cat index.html
 </html>
 $
 
-$ cat main.js
+$ cat index.js
 import child_process from 'node:child_process';
 import path from 'node:path';
 import url from 'node:url';
@@ -1454,7 +1454,6 @@ $ cat package.json
   "description": "myapp",
   "author": "@me",
   "type": "module",
-  "main": "main.js",
   "scripts": {
     "test": "node --test",
     "start": "node .",
