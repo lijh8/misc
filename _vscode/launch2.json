@@ -1,6 +1,8 @@
 {
   // ms-vscode.cpptools
-  // https://code.visualstudio.com/docs/cpp/config-linux
+  // .vscode/launch.json:
+  // View / Run / Run and Debug (Shift-Cmd-D),
+  // create a launch.json.
   "version": "0.2.0",
   "configurations": [
     {
@@ -23,7 +25,6 @@
       ],
       "externalConsole": false,
       "MIMode": "gdb",
-      "miDebuggerPath": "/usr/bin/gdb",
       "setupCommands": [
         {
           "description": "Enable pretty-printing for gdb",
