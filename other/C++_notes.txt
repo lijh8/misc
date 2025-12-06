@@ -188,21 +188,18 @@ i + (i = 1); // error?
 ---
 
 
-# CXXFLAGS += -fsanitize=address -fsanitize=undefined
-# LDFLAGS  += -fsanitize=address -fsanitize=undefined
-
 // StackOutOfBounds
 int main(int argc, char **argv) {
   int stack_array[100];
   stack_array[1] = 0;
-  return stack_array[argc + 100];  // BOOM
+  return stack_array[argc + 100];  // error
 }
 
 // UseAfterFree
 int main(int argc, char **argv) {
   int *array = new int[100];
   delete [] array;
-  return array[argc];  // BOOM
+  return array[argc];  // error
 }
 
 
@@ -229,17 +226,27 @@ CppCon 2015: "Beyond Sanitizers", by Kostya Serebr,
 https://www.usenix.org/sites/default/files/conference/protected-files/enigma_slides_serebryany.pdf ,
 
 1. Sanitizer:
-address,
-leak,
-uninitialized memory,
-undefined behavior,
-thread;
+  address,leak,undefined behavior,
+  uninitialized memory,
+  thread;
 
-flags: -fsanitize={address, leak, memory, undefined, thread} ;
+  both compiling and linking should include the same flags:
 
-both compiling and linking should include the flag:
-    CXXFLAGS += -sanitize=address
-    LDFLAGS += -sanitize=address
+  1.1:
+    CXXFLAGS += -fsanitize=address,leak,undefined
+    LDFLAGS  += -fsanitize=address,leak,undefined
+
+  1.2:
+    CXXFLAGS += -fsanitize=memory
+    LDFLAGS  += -fsanitize=memory
+
+  1.3:
+    CXXFLAGS += -fsanitize=thread
+    LDFLAGS  += -fsanitize=thread
+
+  1.4:
+    then just run the program compiled with the sanitize flags.
+    the errors will be reported if there were any of them.
 
 
 2. Coverage tests with llvm libfuzzer:
@@ -2044,8 +2051,8 @@ int main()
 /*
 $ make -C src/ && src/main
 make: Entering directory '/home/ljh/Documents/hello_cpp/src'
-g++ -std=c++23 -g  -fsanitize=address -fsanitize=leak -fsanitize=undefined -MMD -MP   -c -o main.o main.cpp
-g++  -fsanitize=address -fsanitize=leak -fsanitize=undefined  main.o   -o main
+g++ -std=c++23 -g  -MMD -MP   -c -o main.o main.cpp
+g++   main.o   -o main
 make: Leaving directory '/home/ljh/Documents/hello_cpp/src'
 s[4]: o
 s[5]: 你
@@ -2318,25 +2325,6 @@ int main() {
 ---
 
 
-both compile and link should be with address sanitizer:
-$ make -C src/main
-c++ -fsanitize=address -Wall -Wextra -std=c++2a -g  -MMD -MP  -c -o main.o main.cpp
-c++  -fsanitize=address   main.o   -o main
-$
-
-run the program built with address sanitizer on command line directly;
-do not run executable built with address sanitizer in gdb debugger;
-
-check address sanitizer:
-$ src/main/main
-
-check memory leak with address sanitizer:
-$ LSAN_OPTIONS=verbosity=1:log_threads=1 src/main/main
-
-
----
-
-
 ldd - print shared object dependencies;
 nm - list symbols from object files;
 objdump - display information from object files;
@@ -2558,27 +2546,6 @@ int main() {
 ---
 
 
-int main() {
-  int a[3] = {1,2,3};
-  a[0] = 1;
-  a[3] = 1;       // asan, address sanitize
-  a[102400] = 1;  // ubsan, undefined behavior sanitize
-  return 0;
-}
-
-/*
-
-# address (including leak), undefined behavior sanitizer
-
-CXXFLAGS += -fsanitize=address -fsanitize=undefined
-LDFLAGS += -fsanitize=address -fsanitize=undefined
-
-*/
-
-
----
-
-
 # build dynamic library with -fPIC -shared
 CFLAGS = -g # -O3 -fPIC # CXXFLAGS for .cpp
 CPPFLAGS = -MMD -MP # -I../foo -DNDEBUG
@@ -2632,19 +2599,19 @@ CXXFLAGS += -std=c++2a -Wall -Wextra -Wpedantic
 #   "asan+lsan+ubsan is fine, the rest should run separately."  --kcc, Jan 12, 2019
 
 # address (including leak), undefined behavior sanitizers,
-# CXXFLAGS += -fsanitize=address -fsanitize=leak -fsanitize=undefined
-# LDFLAGS += -fsanitize=address -fsanitize=leak -fsanitize=undefined
-
-# thread sanitizer,
-# CXXFLAGS += -fsanitize=thread
-# LDFLAGS += -fsanitize=thread
+# CXXFLAGS += -fsanitize=address,leak,undefined
+# LDFLAGS  += -fsanitize=address,leak,undefined
 
 # https://github.com/google/sanitizers/issues/1039#issuecomment-453306241 ,
 #   "GCC doesn't have msan at all."  --kcc, Jan 11, 2019
 
 # memory sanitizer, (gcc has no msan. use clang, clang++, if needed)
-# CXXFLAGS += -fsanitize=memory -fPIE
-# LDFLAGS += -fsanitize=memory -pie
+# CXXFLAGS += -fsanitize=memory
+# LDFLAGS  += -fsanitize=memory
+
+# thread sanitizer,
+# CXXFLAGS += -fsanitize=thread
+# LDFLAGS  += -fsanitize=thread
 
 
 ---
@@ -2801,12 +2768,12 @@ For [sanitizer_name] use one of the following:
   -fsanitize=leak (included in address, cannot be combined with thread);
   -fsanitize=undefined;
 
--fsanitize=thread (cannot be combined with address, leak);
-
 -fsanitize=memory (gcc has no msan. use clang if needed);
 
 https://github.com/google/sanitizers/issues/1039#issuecomment-453306241 ,
   "GCC doesn't have msan at all."  --kcc, Jan 11, 2019
+
+-fsanitize=thread (cannot be combined with address, leak);
 
 
 ---
@@ -3411,8 +3378,8 @@ main.cpp:11:9: warning: ‘void* memcpy(void*, const void*, size_t)’ accessing
 both reported by asan (with clang on macOS):
 
 $ make -C src/main && src/main/main
-c++ -g  -std=c++2a -Wall -Wextra -Wpedantic -Wcast-qual -Wconversion -Wfloat-equal -Wformat -Woverflow -Wsign-conversion -Wuninitialized -Wwrite-strings -fsanitize=address -fsanitize=undefined  -MMD -MP  -I/home/ljh/app/GSL/include/ -I/home/ljh/app/boost_1_86_0/  -c -o main.o main.cpp
-c++   -L/home/ljh/app/boost_1_86_0/stage/lib -fsanitize=address -fsanitize=undefined   main.o   -o main
+c++ -g  -std=c++2a -Wall -Wextra -Wpedantic -Wcast-qual -Wconversion -Wfloat-equal -Wformat -Woverflow -Wsign-conversion -Wuninitialized -Wwrite-strings  -MMD -MP  -I/home/ljh/app/GSL/include/ -I/home/ljh/app/boost_1_86_0/  -c -o main.o main.cpp
+c++   -L/home/ljh/app/boost_1_86_0/stage/lib   main.o   -o main
 ld: warning: directory not found for option '-L/home/ljh/app/boost_1_86_0/stage/lib'
 =================================================================
 ==1245==ERROR: AddressSanitizer: memcpy-param-overlap: memory ranges [0x00010c1fa062,0x00010c1fa066) and [0x00010c1fa060, 0x00010c1fa064) overlap
