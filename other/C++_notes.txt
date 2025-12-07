@@ -1999,6 +1999,8 @@ $
 ---
 
 
+// unicode
+
 #include <iostream>
 #include <string>
 #include <cstdint>
@@ -2107,6 +2109,17 @@ isspace()、isupper() 等字符分类函数（但 不支持 UTF-8！）
 imbue 为 特定流（如 std::cout）设置 locale
 影响流的格式化行为（如 double 输出的小数点是 . 还是 ,）
 同样 不处理 Unicode 编码（如 UTF-8 ↔ UTF-32 转换）
+
+4.
+
+g++ 编译选项 ` -fexec-charset=charset `:
+
+影响当前程序，在编译时的字符和字符串的默认编码；
+不影响输入和输出编码，操作系统编码，或其它程序编码；
+影响默认字符和字符串类型的变量或字面量： std::string、char、"..."、'x'；
+不影响已指定的 unicode 类型的变量或字面量： std::u32string、char32_t、U"..."、u8"..." ；
+
+Linux/macOS: -fexec-charset=charset 默认是是 -fexec-charset=UTF-8 ;
 
 */
 
