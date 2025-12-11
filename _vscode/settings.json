@@ -60,7 +60,7 @@
   "editor.folding": false,
   "editor.fontSize": 15,
   "editor.formatOnSave": true, // formatOnPaste conflicts with SortIncludes
-  "editor.hover.enabled": false,
+  "editor.hover.enabled": "off",
   "editor.inlayHints.enabled": "off",
   "editor.lightbulb.enabled": "off",
   // "editor.lineNumbers": "off", //
@@ -145,6 +145,7 @@
   "terminal.integrated.persistentSessionReviveProcess": "never",
   "terminal.integrated.shellIntegration.decorationsEnabled": "never",
   "terminal.integrated.stickyScroll.enabled": false,
+  "terminal.integrated.suggest.enabled": false,
   "vim.hlsearch": true,
   "vim.overrideCopy": false,
   "vim.wrapscan": false,
