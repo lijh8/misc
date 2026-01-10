@@ -1,8 +1,9 @@
 {
   // ms-vscode.cpptools
   // .vscode/launch.json:
+  // open main.cpp in current editor window,
   // View / Run / Run and Debug (Shift-Cmd-D),
-  // create a launch.json.
+  // create a launch.json / Add Configuration / C++: Launch
   "version": "0.2.0",
   "configurations": [
     {

@@ -1,6 +1,8 @@
 {
   // vadimcn.vscode-lldb
-  // https://code.visualstudio.com/docs/debugtest/tasks
+  // .vscode/tasks.json:
+  // open main.cpp in current editor window,
+  // F5 (Run / Start Debugging) / Detected Task (compiler: /usr/bin/g++)
   "tasks": [
     {
       "type": "shell",
