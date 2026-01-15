@@ -4034,7 +4034,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
 // CXXFLAGS += -fsanitize=address,leak,undefined,fuzzer
 // LDFLAGS  += -fsanitize=address,leak,undefined,fuzzer
 
-// for 5 minutes (300 secs) or 10 million rounds, whichever
+// for 5 minutes (300 secs) or 10 million rounds, whichever first
 // $ make -C src/main/ && src/main/main -max_total_time=300 -runs=10000000
 // make: Entering directory '/home/ljh/doc/hello_cpp/src/main'
 // clang++ -g -fPIE  -fsanitize=address,leak,undefined,fuzzer -MMD -MP   -c -o main.o main.cpp
