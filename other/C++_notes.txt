@@ -3969,6 +3969,98 @@ But the members data, size, capacity on stack is still copied
 ---
 
 
+// fuzz test
+
+#include <iostream>
+#include <cstdint>
+#include <climits>
+#include <cstddef>
+
+int add(int a, int b)
+{
+    return a + b;
+}
+
+extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
+{
+    if (size < sizeof(int) * 2)
+    {
+        return 0;
+    }
+
+    int a = *reinterpret_cast<const int *>(data);
+    int b = *reinterpret_cast<const int *>(data + sizeof(int));
+    int result;
+
+    // manual check for overflow
+    // if (b > 0 && a > INT_MAX - b)
+    // {
+    //     return 0; // Would overflow
+    // }
+    // if (b < 0 && a < INT_MIN - b)
+    // {
+    //     return 0; // Would underflow
+    // }
+    // result = add(a, b);
+
+    // or check with builtin functions
+    // __builtin_add_overflow ,
+    // __builtin_sub_overflow ,
+    // __builtin_mul_overflow ,
+    if (__builtin_add_overflow(a, b, &result))
+    {
+        // overflow
+        return 0;
+    }
+
+    // std::cout << "result:" << result
+    //           << ", a:" << a
+    //           << ", b:" << b << "\n";
+
+    return 0;
+}
+
+// int main()
+// {
+//     std::cout << add(1, 2) << "\n";
+//     return 0;
+// }
+
+// comment out normal main entry function,
+// clang libfuzzer will call the LLVMFuzzerTestOneInput entry.
+
+// CXX		 = clang++
+// CC        = $(CXX) # link with CXX for .cpp
+// CXXFLAGS += -fsanitize=address,leak,undefined,fuzzer
+// LDFLAGS  += -fsanitize=address,leak,undefined,fuzzer
+
+// for 5 minutes (300 secs) or 10 million rounds, whichever
+// $ make -C src/main/ && src/main/main -max_total_time=300 -runs=10000000
+// make: Entering directory '/home/ljh/doc/hello_cpp/src/main'
+// clang++ -g -fPIE  -fsanitize=address,leak,undefined,fuzzer -MMD -MP   -c -o main.o main.cpp
+// clang++  -pie  -fsanitize=address,leak,undefined,fuzzer  main.o   -o main
+// make: Leaving directory '/home/ljh/doc/hello_cpp/src/main'
+// INFO: Running with entropic power schedule (0xFF, 100).
+// INFO: Seed: 88398622
+// INFO: Loaded 1 modules   (13 inline 8-bit counters): 13 [0x56e257dddef0, 0x56e257dddefd),
+// INFO: Loaded 1 PC tables (13 PCs): 13 [0x56e257dddf00,0x56e257dddfd0),
+// INFO: -max_len is not provided; libFuzzer will not generate inputs larger than 4096 bytes
+// INFO: A corpus is not provided, starting from an empty corpus
+// #2      INITED cov: 2 ft: 2 corp: 1/1b exec/s: 0 rss: 32Mb
+// #431    NEW    cov: 6 ft: 6 corp: 2/9b lim: 8 exec/s: 0 rss: 32Mb L: 8/8 MS: 4 ChangeBit-InsertRepeatedBytes-ChangeByte-CopyPart-
+// #506    NEW    cov: 7 ft: 7 corp: 3/17b lim: 8 exec/s: 0 rss: 32Mb L: 8/8 MS: 5 EraseBytes-InsertRepeatedBytes-CrossOver-ChangeByte-ShuffleBytes-
+// #1048576        pulse  cov: 7 ft: 7 corp: 3/17b lim: 4096 exec/s: 349525 rss: 112Mb
+// #2097152        pulse  cov: 7 ft: 7 corp: 3/17b lim: 4096 exec/s: 299593 rss: 191Mb
+// #4194304        pulse  cov: 7 ft: 7 corp: 3/17b lim: 4096 exec/s: 349525 rss: 349Mb
+// #8388608        pulse  cov: 7 ft: 7 corp: 3/17b lim: 4096 exec/s: 335544 rss: 565Mb
+// #10000000       DONE   cov: 7 ft: 7 corp: 3/17b lim: 4096 exec/s: 333333 rss: 566Mb
+// Done 10000000 runs in 30 second(s)
+// $
+
+
+---
+
+
 
 
 
