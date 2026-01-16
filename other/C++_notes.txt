@@ -4029,33 +4029,46 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
 // comment out normal main entry function,
 // clang libfuzzer will call the LLVMFuzzerTestOneInput entry.
 
-// CXX		 = clang++
-// CC        = $(CXX) # link with CXX for .cpp
-// CXXFLAGS += -fsanitize=address,leak,undefined,fuzzer
-// LDFLAGS  += -fsanitize=address,leak,undefined,fuzzer
+// with gcc
 
-// for 5 minutes (300 secs) or 10 million rounds, whichever first
-// $ make -C src/main/ && src/main/main -max_total_time=300 -runs=10000000
-// make: Entering directory '/home/ljh/doc/hello_cpp/src/main'
-// clang++ -g -fPIE  -fsanitize=address,leak,undefined,fuzzer -MMD -MP   -c -o main.o main.cpp
-// clang++  -pie  -fsanitize=address,leak,undefined,fuzzer  main.o   -o main
-// make: Leaving directory '/home/ljh/doc/hello_cpp/src/main'
-// INFO: Running with entropic power schedule (0xFF, 100).
-// INFO: Seed: 88398622
-// INFO: Loaded 1 modules   (13 inline 8-bit counters): 13 [0x56e257dddef0, 0x56e257dddefd),
-// INFO: Loaded 1 PC tables (13 PCs): 13 [0x56e257dddf00,0x56e257dddfd0),
-// INFO: -max_len is not provided; libFuzzer will not generate inputs larger than 4096 bytes
-// INFO: A corpus is not provided, starting from an empty corpus
-// #2      INITED cov: 2 ft: 2 corp: 1/1b exec/s: 0 rss: 32Mb
-// #431    NEW    cov: 6 ft: 6 corp: 2/9b lim: 8 exec/s: 0 rss: 32Mb L: 8/8 MS: 4 ChangeBit-InsertRepeatedBytes-ChangeByte-CopyPart-
-// #506    NEW    cov: 7 ft: 7 corp: 3/17b lim: 8 exec/s: 0 rss: 32Mb L: 8/8 MS: 5 EraseBytes-InsertRepeatedBytes-CrossOver-ChangeByte-ShuffleBytes-
-// #1048576        pulse  cov: 7 ft: 7 corp: 3/17b lim: 4096 exec/s: 349525 rss: 112Mb
-// #2097152        pulse  cov: 7 ft: 7 corp: 3/17b lim: 4096 exec/s: 299593 rss: 191Mb
-// #4194304        pulse  cov: 7 ft: 7 corp: 3/17b lim: 4096 exec/s: 349525 rss: 349Mb
-// #8388608        pulse  cov: 7 ft: 7 corp: 3/17b lim: 4096 exec/s: 335544 rss: 565Mb
-// #10000000       DONE   cov: 7 ft: 7 corp: 3/17b lim: 4096 exec/s: 333333 rss: 566Mb
-// Done 10000000 runs in 30 second(s)
-// $
+$ apt-file list libfuzzer-21-dev
+libfuzzer-21-dev: /usr/lib/llvm-21/lib/libFuzzer.a
+$ sudo apt install libfuzzer-21-dev
+
+  LDFLAGS   =  -L/usr/lib/llvm-21/lib/
+  LDLIBS    = -lFuzzer
+  CC        = $(CXX) # link with CXX for .cpp
+  CXXFLAGS += -fsanitize=address,leak,undefined
+  LDFLAGS  += -fsanitize=address,leak,undefined
+
+// or, with clang's builtin libFuzzer support,
+// no need to install libfuzzer-21-dev.
+
+  CXX		    = clang++
+  CC        = $(CXX) # link with CXX for .cpp
+  CXXFLAGS += -fsanitize=address,leak,undefined,fuzzer
+  LDFLAGS  += -fsanitize=address,leak,undefined,fuzzer
+
+// for 5 minutes (300 secs) or 10 million runs, whichever first
+
+$ make -C src/main/ && src/main/main -max_total_time=300 -runs=10000000
+make: Entering directory '/home/ljh/doc/hello_cpp/src/main'
+g++ -g -fPIE  -fsanitize=address,leak,undefined -MMD -MP   -c -o main.o main.cpp
+g++  -pie -L/usr/lib/llvm-21/lib/  -fsanitize=address,leak,undefined  main.o  -lFuzzer  -o main
+make: Leaving directory '/home/ljh/doc/hello_cpp/src/main'
+INFO: Running with entropic power schedule (0xFF, 100).
+INFO: Seed: 62723208
+INFO: -max_len is not provided; libFuzzer will not generate inputs larger than 4096 bytes
+INFO: A corpus is not provided, starting from an empty corpus
+#2      INITED exec/s: 0 rss: 32Mb
+WARNING: no interesting inputs were found so far. Is the code instrumented for coverage?
+This may also happen if the target rejected all inputs we tried so far
+#2097152        pulse  corp: 1/1b lim: 4096 exec/s: 699050 rss: 191Mb
+#4194304        pulse  corp: 1/1b lim: 4096 exec/s: 838860 rss: 349Mb
+#8388608        pulse  corp: 1/1b lim: 4096 exec/s: 762600 rss: 615Mb
+#10000000       DONE   corp: 1/1b lim: 4096 exec/s: 769230 rss: 616Mb
+Done 10000000 runs in 13 second(s)
+$
 
 
 ---
