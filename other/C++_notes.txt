@@ -3969,7 +3969,164 @@ But the members data, size, capacity on stack is still copied
 ---
 
 
-// fuzz test
+https://github.com/google/fuzztest
+fuzztest-2025-07-28/doc/quickstart-cmake.md:
+
+- Do not use these:
+  *   `-g -DFUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION -UNDEBUG`
+  *   `-fsanitize-coverage=inline-8bit-counters -fsanitize-coverage=trace-cmp`
+
+- Use asan, lsan, ubsan for both CXXFLAGS and LDFLAGS:
+  *   `-fsanitize=address,undefined
+
+
+$ pwd
+/home/ljh/doc/hello_cpp/src
+$ ls
+CMakeLists.txt  first_fuzz_test  fuzztest-2025-07-28
+$
+$ cat CMakeLists.txt
+cmake_minimum_required(VERSION 3.19)
+project(first_fuzz_project)
+add_subdirectory(fuzztest-2025-07-28)
+add_subdirectory(first_fuzz_test)
+$
+$ cd first_fuzz_test/
+$ ls
+CMakeLists.txt  add.cc  add.h  first_fuzz_test.cc
+$
+$ cat CMakeLists.txt
+set(CMAKE_CXX_STANDARD 17)
+
+add_compile_options(
+   -fsanitize=address,undefined
+)
+add_link_options(
+   -fsanitize=address,undefined
+)
+
+enable_testing()
+include(GoogleTest)
+fuzztest_setup_fuzzing_flags()
+
+add_executable(
+  first_fuzz_test
+  first_fuzz_test.cc
+  add.cc
+)
+
+link_fuzztest(first_fuzz_test)
+gtest_discover_tests(first_fuzz_test)
+$
+$ cat add.cc
+#include <climits>
+#include <cstddef>
+#include <cstdint>
+#include "add.h"
+
+bool add(int a, int b, int *result)
+{
+    // if (b < 0 && a < INT_MIN - b || b > 0 && a > INT_MAX - b)
+    //     return false;
+
+    *result = a + b;
+    return true;
+}
+$
+$ cat add.h
+#ifndef add_h
+#define add_h
+
+bool add(int a, int b, int *result);
+
+#endif
+$
+$ cat first_fuzz_test.cc
+#include "fuzztest/fuzztest.h"
+#include "gtest/gtest.h"
+#include "add.h"
+
+TEST(MyTestSuite, test1)
+{
+    int sum1, sum2;
+    auto ret1 = add(1, 2, &sum1);
+    auto ret2 = add(2, 1, &sum2);
+
+    EXPECT_EQ(ret1, ret2);
+
+    if (ret1 && ret2)
+    {
+        EXPECT_EQ(sum1, sum2);
+    }
+}
+
+void test2(int a, int b)
+{
+    int sum1, sum2;
+    auto ret1 = add(a, b, &sum1);
+    auto ret2 = add(b, a, &sum2);
+
+    EXPECT_EQ(ret1, ret2);
+
+    if (ret1 && ret2)
+    {
+        EXPECT_EQ(sum1, sum2);
+    }
+}
+
+FUZZ_TEST(MyTestSuite, test2);
+$
+
+
+$ cd /home/ljh/doc/hello_cpp/src
+$ mkdir build && cd build
+$
+$ CC=clang CXX=clang++ cmake -DFUZZTEST_FUZZING_MODE=on ..
+$ cmake --build . -j 4
+$
+$
+$ first_fuzz_test/first_fuzz_test --fuzz_for=300s
+[.] Sanitizer coverage enabled. Counter map size: 42506, Cmp map size: 262144
+Note: Google Test filter = *-MyTestSuite.test1
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from MyTestSuite
+[ RUN      ] MyTestSuite.test2
+FUZZTEST_PRNG_SEED=4YCcmd9mmayemum_0xvc_Y6XfhLY8KMYagiUmbVVWuQ
+[*] Corpus size:     1 | Edges covered:     26 | Fuzzing time:       1.723657ms | Total runs:  1.00e+00 | Runs/secs:   580 | Max stack usage:      416
+[.] Fuzzing timeout set to: 10s
+/home/ljh/doc/hello_cpp/src/first_fuzz_test/add.cc:11:17: runtime error: signed integer overflow: 2125844995 + 135562446 cannot be represented in type 'int'
+SUMMARY: UndefinedBehaviorSanitizer: undefined-behavior /home/ljh/doc/hello_cpp/src/first_fuzz_test/add.cc:11:17
+[*] Corpus size:     2 | Edges covered:     28 | Fuzzing time:       2.535793ms | Total runs:  2.00e+00 | Runs/secs:   788 | Max stack usage:      416
+[*] Corpus size:     3 | Edges covered:     33 | Fuzzing time:     4.001493858s | Total runs:  9.75e+04 | Runs/secs: 24376 | Max stack usage:      416
+[*] Corpus size:     4 | Edges covered:     33 | Fuzzing time:     6.001824769s | Total runs:  1.58e+05 | Runs/secs: 26267 | Max stack usage:      416
+[*] Corpus size:     5 | Edges covered:     37 | Fuzzing time:     8.002303826s | Total runs:  2.19e+05 | Runs/secs: 27404 | Max stack usage:      416
+
+[.] Fuzzing was terminated.
+
+=================================================================
+=== Fuzzing stats
+
+Elapsed time: 300.000376664s
+Total runs: 282570
+Edges covered: 37
+Total edges: 42506
+Corpus size: 5
+Max stack used: 416
+
+[       OK ] MyTestSuite.test2 (10007 ms)
+[----------] 1 test from MyTestSuite (10007 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (10008 ms total)
+[  PASSED  ] 1 test.
+$
+
+
+---
+
+
+// libfuzzer
 
 #include <iostream>
 #include <cstdint>
