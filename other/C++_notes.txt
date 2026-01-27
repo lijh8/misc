@@ -3972,12 +3972,13 @@ But the members data, size, capacity on stack is still copied
 https://github.com/google/fuzztest
 fuzztest-2025-07-28/doc/quickstart-cmake.md:
 
-- Do not use these:
-  *   `-g -DFUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION -UNDEBUG`
-  *   `-fsanitize-coverage=inline-8bit-counters -fsanitize-coverage=trace-cmp`
+*   `-g -DFUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION -UNDEBUG`
+*   `-fsanitize-coverage=inline-8bit-counters -fsanitize-coverage=trace-cmp`
+*   `-fsanitize=address -DADDRESS_SANITIZER` (optionally enabling sanitizer)
 
-- Use asan, lsan, ubsan for both CXXFLAGS and LDFLAGS:
-  *   `-fsanitize=address,undefined
+the macro fuzztest_setup_fuzzing_flags includes the above flags,
+but ubsan is not included. it's better to add ubsan with asan using
+both add_compile_options and add_link_options: ` -fsanitize=address,undefined `
 
 
 $ pwd
@@ -3999,10 +4000,10 @@ $ cat CMakeLists.txt
 set(CMAKE_CXX_STANDARD 17)
 
 add_compile_options(
-   -fsanitize=address,undefined
+  -fsanitize=address,undefined
 )
 add_link_options(
-   -fsanitize=address,undefined
+  -fsanitize=address,undefined
 )
 
 enable_testing()
