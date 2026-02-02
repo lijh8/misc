@@ -107,21 +107,6 @@
     "LD_LIBRARY_PATH": "$LD_LIBRARY_PATH:${workspaceFolder}/src/foo:/home/ljh/Downloads/ng-log-0.8.2/build",
     "NGLOG_alsologtostderr": "1", // ng-log is successor to Google's glog
   },
-  "makefile.configureOnOpen": true,
-  "makefile.launchConfigurations": [
-    {
-      "binaryArgs": [],
-      "binaryPath": "${workspaceFolder}/src/main/main",
-      "cwd": "${workspaceFolder}/src/main",
-      "environment": [
-        {
-          "name": "LD_LIBRARY_PATH",
-          "value": "${workspaceFolder}/src/foo:../foo"
-        }
-      ]
-    }
-  ],
-  "makefile.makeDirectory": "${workspaceFolder}/src",
   "mojo.lsp.includeDirs": [
     "${workspaceFolder}/src",
   ],
