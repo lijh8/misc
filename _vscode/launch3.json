@@ -1,0 +1,27 @@
+{
+  // vadimcn.vscode-lldb
+  // .vscode/launch.json:
+  // open main.cpp in current active editor window,
+  // View / Run / Run and Debug (Shift-Cmd-D),
+  // create a launch.json / Add Configuration / C++: Launch
+  //
+  // variables like LD_LIBRARY_PATH should be defined in launch.json.
+  //
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug",
+      "program": "${fileDirname}/${fileBasenameNoExtension}",
+      "args": [],
+      "env": { // env variables here override variables with same name in lldb.launch.env in settings.json
+        // "LD_LIBRARY_PATH": "$LD_LIBRARY_PATH:${workspaceFolder}/src/foo:/home/ljh/Downloads/ng-log-0.8.2/build",
+        // "NGLOG_alsologtostderr": "1",
+      },
+      "cwd": "${fileDirname}",
+      "preLaunchTask": "make",
+      "console": "integratedTerminal",
+    }
+  ]
+}

@@ -1,5 +1,5 @@
 {
-  // vadimcn.vscode-lldb
+  // ms-vscode.cpptools
   // .vscode/launch.json:
   // open main.cpp in current active editor window,
   // View / Run / Run and Debug (Shift-Cmd-D),
@@ -10,18 +10,38 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "type": "lldb",
+      "name": "(gdb) Launch",
+      "type": "cppdbg",
       "request": "launch",
-      "name": "Debug",
       "program": "${fileDirname}/${fileBasenameNoExtension}",
       "args": [],
-      "env": { // env variables here override variables with same name in lldb.launch.env in settings.json
-        // "LD_LIBRARY_PATH": "$LD_LIBRARY_PATH:${workspaceFolder}/src/foo:/home/ljh/Downloads/ng-log-0.8.2/build",
-        // "NGLOG_alsologtostderr": "1",
-      },
+      "stopAtEntry": false,
       "cwd": "${fileDirname}",
+      "environment": [
+        {
+          "name": "LD_LIBRARY_PATH",
+          "value": "${workspaceFolder}/src/foo:/home/ljh/Downloads/ng-log-0.8.2/build"
+        },
+        {
+          "name": "NGLOG_alsologtostderr",
+          "value": "1"
+        }
+      ],
+      "externalConsole": false,
+      "MIMode": "gdb",
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        },
+        {
+          "description": "Set Disassembly Flavor to Intel",
+          "text": "-gdb-set disassembly-flavor intel",
+          "ignoreFailures": true
+        }
+      ],
       "preLaunchTask": "make",
-      "console": "integratedTerminal",
     }
   ]
 }
