@@ -13,14 +13,14 @@
       "name": "(gdb) Launch",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/build/main/main",
+      "program": "${fileDirname}/${fileBasenameNoExtension}",
       "args": [],
       "stopAtEntry": false,
-      "cwd": "${workspaceFolder}",
+      "cwd": "${fileDirname}",
       "environment": [
         {
           "name": "LD_LIBRARY_PATH",
-          "value": "${workspaceFolder}/build/foo:/home/ljh/Downloads/ng-log-0.8.2/build"
+          "value": "${workspaceFolder}/src/foo:/home/ljh/Downloads/ng-log-0.8.2/build"
         },
         {
           "name": "NGLOG_alsologtostderr",
@@ -41,7 +41,7 @@
           "ignoreFailures": true
         }
       ],
-      "preLaunchTask": "cmake",
+      "preLaunchTask": "make",
     }
   ]
 }

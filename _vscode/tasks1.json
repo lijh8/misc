@@ -5,29 +5,26 @@
   // F5 (Run / Start Debugging) / Detected Task (compiler: /usr/bin/g++)
   //
   // 1. the generated tasks.json has this configuration.
-  //  it means if the output executable is in same directory and has same
-  //  basename with current active source file, then it can be found and be used for debugging.
-  //    "args": [
-  //      "-g",
-  //      "${file}",
-  //      "-o",
-  //      "${fileDirname}/${fileBasenameNoExtension}"
-  //    ],
+  //    it means if the output executable is in same directory and has same
+  //    basename with current active source file, then it can be found and be used for debugging.
+  // "args": [
+  //     "-g",
+  //     "${file}",
+  //     "-o",
+  //     "${fileDirname}/${fileBasenameNoExtension}"
+  // ],
   //
   // 2. if the current program links to another shared dynamic library,
-  //  variables like LD_LIBRARY_PATH should be defined in launch.json.
+  //    variables like LD_LIBRARY_PATH should be defined in launch.json.
   //
   "tasks": [
     {
       "type": "cppbuild",
-      "label": "cmake",
-      "command": "bash",
-      "args": [
-        "-c",
-        "cmake -B build -S src -DCMAKE_BUILD_TYPE=Debug && cmake --build build -j4 -v"
-      ],
+      "label": "make",
+      "command": "make",
+      "args": [],
       "options": {
-        "cwd": "${workspaceFolder}"
+        "cwd": "${fileDirname}"
       },
       "problemMatcher": [
         "$gcc"
