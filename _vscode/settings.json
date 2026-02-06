@@ -145,6 +145,7 @@
   "terminal.integrated.persistentSessionReviveProcess": "never",
   "terminal.integrated.scrollback": 10000,
   "terminal.integrated.shellIntegration.decorationsEnabled": "never",
+  "terminal.integrated.showLinkHover": false,
   "terminal.integrated.stickyScroll.enabled": false,
   "terminal.integrated.suggest.enabled": false,
   "vim.hlsearch": true,
