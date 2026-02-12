@@ -1,12 +1,52 @@
+ubuntu linux
 
-ubuntu linux mirrors
-https://launchpad.net/ubuntu/+cdmirrors
+# network
+$ cat /etc/netplan/00-installer-config.yaml
+network:
+  ethernets:
+    enp0s3:
+      match:
+        macaddress: 08:00:27:ce:e8:27
+      set-name: enp0s3
+      addresses:
+        - 192.168.1.16/24
+      routes:
+        - to: default
+          via: 192.168.1.1
+      nameservers:
+        addresses: [192.168.1.1]
+
+  version: 2
+$
+
+# mirrors
+# https://launchpad.net/ubuntu/+cdmirrors
+# https://mirrors.tuna.tsinghua.edu.cn/ubuntu
+# https://mirrors.zju.edu.cn/ubuntu/
+# https://mirror.nyist.edu.cn/ubuntu
+# https://mirrors.jcut.edu.cn/ubuntu/
+
+$ cat /etc/apt/sources.list.d/ubuntu.sources
+Types: deb
+#URIs: http://archive.ubuntu.com/ubuntu/
+URIs: https://mirrors.tuna.tsinghua.edu.cn/ubuntu
+Suites: questing questing-updates questing-backports
+Components: main restricted universe multiverse
+Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
+
+Types: deb
+#URIs: http://security.ubuntu.com/ubuntu/
+URIs: https://mirrors.tuna.tsinghua.edu.cn/ubuntu
+Suites: questing-security
+Components: main restricted universe multiverse
+Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
+$
 
 $ apt update && \
-sudo apt upgrade -y && \
-sudo apt full-upgrade -y && \
-sudo apt autoremove -y --purge && \
-sudo apt autoclean
+  sudo apt upgrade -y && \
+  sudo apt full-upgrade -y && \
+  sudo apt autoremove -y --purge && \
+  sudo apt autoclean
 
 $ apt search build-essential
 $ apt list build-essential
@@ -14,37 +54,35 @@ $ apt install build-essential
 
 $ apt install apt-file
 $ apt-file update
-
 $ apt-file search --package-only bin/nodejs
 $ apt-file search --package-only nodejs
 $ apt-file list nodejs
 
-# create link at the same directory with ./foo/bar/target
-# just specify path of target for link, no need to cd to the path of target.
-# target is relative to the link, not the current working directory CWD.
-$ ln -s target ./foo/bar/link
+# create link at the same directory with ./path/target
+$ ln -s target ./path/link
 
 # find by name
-$ find /path -name "file.txt"                   # exact name
-$ find /path -iname "file.txt"                  # case-insensitive
-$ find /path -name "*.log"                      # wildcard
-$ find /path -type f -name "*.conf"             # files only
+$ find /directory -name "file.txt"
+$ find /directory -iname "file.txt"  # case-insensitive
+$ find /directory -name "*.txt"      # wildcard
 
 # find by content
-$ find . -type f -exec grep -l "hello" {} +     # case-sensitive
-$ find . -type f -exec grep -li "Hello" {} +    # case-insensitive
+$ find /directory -type f -exec grep -l "hello" {} +
+$ find /directory -type f -exec grep -li "Hello" {} +    # case-insensitive
+$ find /directory -type f -exec grep -l 'hello.*' {} +   # regex
 
 # top largest directories
-$ du -ah /path | sort -hr 2>/dev/null | head -10
+$ du -ah /directory | sort -hr 2>/dev/null | head -10
 
-$ grep "test" ./file.txt                        # search in file
-$ grep -v "test" ./file.txt                     # invert match
-$ grep -i "test" ./file.txt                     # case-insensitive
-$ grep -r "test" ./src/                         # recursive search in directory
+$ grep "hello" file.txt
+$ grep -i "hello" file.txt    # case-insensitive
+$ grep -v "hello" file.txt    # invert match
+$ grep -r "hello" /directory  # recursive search in directory
 
-$ sed 's/old/new/g' file.txt                    # print to stdout, file unchanged
-$ sed -i 's/old/new/g' file.txt                 # modify content of file in-place
+$ sed 's/old/new/g' file.txt      # print to stdout, file unchanged
+$ sed -i 's/old/new/g' file.txt   # modify content of file in-place
 
-# dash (-) is not required for back compatibiity
-$ tar -cf foo.tar foo
-$ tar -xf foo.tar
+# dash (-) can be omitted for backward compatibiity
+$ tar -cf files.tar file1.txt file2.txt
+$ tar -cf files.tar /directory
+$ tar -xf files.tar
