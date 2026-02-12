@@ -43,10 +43,10 @@ Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
 $
 
 $ apt update && \
-  sudo apt upgrade -y && \
-  sudo apt full-upgrade -y && \
-  sudo apt autoremove -y --purge && \
-  sudo apt autoclean
+  apt upgrade -y && \
+  apt full-upgrade -y && \
+  apt autoremove -y --purge && \
+  apt autoclean
 
 $ apt search build-essential
 $ apt list build-essential
