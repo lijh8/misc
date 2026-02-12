@@ -1,0 +1,50 @@
+
+ubuntu linux mirrors
+https://launchpad.net/ubuntu/+cdmirrors
+
+$ apt update && \
+sudo apt upgrade -y && \
+sudo apt full-upgrade -y && \
+sudo apt autoremove -y --purge && \
+sudo apt autoclean
+
+$ apt search build-essential
+$ apt list build-essential
+$ apt install build-essential
+
+$ apt install apt-file
+$ apt-file update
+
+$ apt-file search --package-only bin/nodejs
+$ apt-file search --package-only nodejs
+$ apt-file list nodejs
+
+# create link at the same directory with ./foo/bar/target
+# just specify path of target for link, no need to cd to the path of target.
+# target is relative to the link, not the current working directory CWD.
+$ ln -s target ./foo/bar/link
+
+# find by name
+$ find /path -name "file.txt"                   # exact name
+$ find /path -iname "file.txt"                  # case-insensitive
+$ find /path -name "*.log"                      # wildcard
+$ find /path -type f -name "*.conf"             # files only
+
+# find by content
+$ find . -type f -exec grep -l "hello" {} +     # case-sensitive
+$ find . -type f -exec grep -li "Hello" {} +    # case-insensitive
+
+# top largest directories
+$ du -ah /path | sort -hr 2>/dev/null | head -10
+
+$ grep "test" ./file.txt                        # search in file
+$ grep -v "test" ./file.txt                     # invert match
+$ grep -i "test" ./file.txt                     # case-insensitive
+$ grep -r "test" ./src/                         # recursive search in directory
+
+$ sed 's/old/new/g' file.txt                    # print to stdout, file unchanged
+$ sed -i 's/old/new/g' file.txt                 # modify content of file in-place
+
+# dash (-) is not required for back compatibiity
+$ tar -cf foo.tar foo
+$ tar -xf foo.tar
