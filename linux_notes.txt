@@ -52,39 +52,42 @@ $ apt install build-essential
 
 $ apt install apt-file
 $ apt-file update
-$ apt-file search --package-only bin/nodejs
-$ apt-file search --package-only nodejs
-$ apt-file list nodejs
+$ apt-file search --package-only bin/nodejs   # which packages contain the file
+$ apt-file search --package-only nodejs       # which packages contain the file
+$ apt-file list nodejs                        # list package content
 
 # find by name
-$ find directory/ -name "file.txt"
-$ find directory/ -iname "file.txt"  # case-insensitive
-$ find directory/ -name "*.txt"      # wildcard
+$ find ./ -name "file.txt"
+$ find ./ -iname "file.txt"  # case-insensitive
+$ find ./ -name "*.txt"      # wildcard
 
 # find by content
-$ find directory/ -type f -exec grep -l "hello" {} +
-$ find directory/ -type f -exec grep -li "Hello" {} +    # case-insensitive
-$ find directory/ -type f -exec grep -l 'hello.*' {} +   # regex
+$ find ./ -type f -exec grep -l "hello" {} +
+$ find ./ -type f -exec grep -li "Hello" {} +    # case-insensitive
+$ find ./ -type f -exec grep -l 'hello.*' {} +   # regex
+
+# tree equivalent
+$ find ./ -print | sed -e 's;[^/]*/;|____;g;s;____|; |;g'
 
 # top largest directories
-$ du -ah directory/ | sort -hr 2>/dev/null | head -10
+$ du -ah ./ | sort -hr 2>/dev/null | head -10
 
 $ grep "hello" file.txt
-$ grep -i "hello" file.txt    # case-insensitive
-$ grep -v "hello" file.txt    # invert match
-$ grep -r "hello" directory/  # recursive search in directory
+$ grep -i "hello" file.txt  # case-insensitive
+$ grep -v "hello" file.txt  # invert match
+$ grep -r "hello" ./        # recursive search in directory
 
 # info sed
-# /, ? : serach forward, backward; {, } : next, previous match
+# /,?:serach forward,backward; {,}:next,previous match
 # SpaceBar, DEL : page down, up
 $ sed 's/old/new/g' file.txt
 $ sed 's/old/new/gi' file.txt     # case-insensitive
 $ sed -i 's/old/new/g' file.txt   # edit file in-place
 
-# create symlink at the same directory with target: directory/target
-$ ln -s target directory/link
+# create symlink at the same directory with target: ./path/target
+$ ln -s target ./path/link
 
 # dash (-) can be omitted for backward compatibiity
 $ tar -cf files.tar file1.txt file2.txt
-$ tar -cf files.tar directory/
+$ tar -cf files.tar ./path/
 $ tar -xf files.tar
