@@ -1,18 +1,19 @@
-C++ notes
+c, c++ notes
 
 // variadic macro
 // log with filename, line number source location
 
-#define LOG(fmt, ...) printf("%s:%d: " fmt "\n", __FILE__, __LINE__, ##__VA_ARGS__)
-LOG();
-LOG("");
-LOG("%s, %d, %f", "hello", 123, 3.14);
+#define LOG(fmt, ...) printf("%s:%d: " fmt "\n", __FILE__, __LINE__, __VA_ARGS__)
+LOG("%s", "");                          // portable
+LOG("%s, %d, %f", "hello", 123, 3.14);  // portable
 
-$ ./src/main/main
+// GNU extension ##__VA_ARGS__
+#define LOG(fmt, ...) printf("%s:%d: " fmt "\n", __FILE__, __LINE__, ##__VA_ARGS__)
+LOG();                                  // with GNU extension
+LOG("");                                // with GNU extension
+
 main.c:10:
-main.c:11:
 main.c:12: hello, 123, 3.140000
-$
 
 
 ---
