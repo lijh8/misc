@@ -1,11 +1,10 @@
 javascript: (function () {
-    console.log('adjust offset for less paging');
-    const OFFSET = 250;
+    const LESS_PAGING = 250;
     const MIN_SCROLL = 80;
     function h(e) {
         if (e.key === 'PageDown' || e.key === 'PageUp') {
             e.preventDefault();
-            let a = window.innerHeight - OFFSET;
+            let a = window.innerHeight - LESS_PAGING;
             a = a < MIN_SCROLL ? MIN_SCROLL : a;
             window.scrollBy({ top: e.key === 'PageDown' ? a : -a, behavior: 'smooth' });
         }
