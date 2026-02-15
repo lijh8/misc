@@ -19,11 +19,18 @@ main.c:12: hello, 123, 3.140000
 ---
 
 
-// In C arrays, inserting or removing elements at the beginning requires O(n)
-// shifts. Quicksort avoids this by using swaps: it selects a pivot, swaps
-// smaller elements to the left, places the pivot after the last smaller element,
-// and leaves larger elements on the right implicitly. Recursively applying
-// this partitions the entire array into sorted order.
+// quick sort
+//
+// It selects an element as a pivot and partitions the array so that smaller
+// elements end up on the left and larger ones on the right. It recursively
+// partitions the subarrays until the entire array is sorted.
+//
+// It swaps all smaller elements to the left, then places the pivot at the end
+// of all smaller elements; the elements remaining on the right are the larger
+// ones naturally. In C arrays, inserting or removing elements at the beginning
+// requires O(n) shifts, but quick sort achieves its purpose without insertions
+// or deletions.
+
 
 #include <stdio.h>
 
@@ -49,7 +56,7 @@ int partition(int arr[], int low, int high)
         }
     }
     swap(&arr[i + 1], &arr[high]);
-    return (i + 1);
+    return i + 1;
 }
 
 void quickSort(int arr[], int low, int high)
@@ -141,6 +148,7 @@ class rule_of_five
 //      std::swap(cstring, other.cstring);
 //      return *this;
 //  }
+
 };
 
 
