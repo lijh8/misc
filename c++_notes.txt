@@ -18,3 +18,131 @@ main.c:12: hello, 123, 3.140000
 
 ---
 
+
+// In C arrays, inserting or removing elements at the beginning requires O(n)
+// shifts. Quicksort avoids this by using swaps: it selects a pivot, swaps
+// smaller elements to the left, places the pivot after the last smaller element,
+// and leaves larger elements on the right implicitly. Recursively applying
+// this partitions the entire array into sorted order.
+
+#include <stdio.h>
+
+void swap(int *a, int *b)
+{
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+// places pivot in correct position and returns its index
+int partition(int arr[], int low, int high)
+{
+    int pivot = arr[high];
+    int i = low - 1;
+
+    for (int j = low; j < high; j++)
+    {
+        if (arr[j] <= pivot)
+        {
+            i++;
+            swap(&arr[i], &arr[j]);
+        }
+    }
+    swap(&arr[i + 1], &arr[high]);
+    return (i + 1);
+}
+
+void quickSort(int arr[], int low, int high)
+{
+    if (low < high)
+    {
+        // pi is partitioning index
+        int pi = partition(arr, low, high);
+
+        quickSort(arr, low, pi - 1);
+        quickSort(arr, pi + 1, high);
+    }
+}
+
+void printArray(int arr[], int size)
+{
+    for (int i = 0; i < size; i++)
+    {
+        printf("%d ", arr[i]);
+    }
+    printf("\n");
+}
+
+int main()
+{
+    int arr[] = {10, 7, 8, 9, 1, 5};
+    int n = sizeof(arr) / sizeof(arr[0]);
+
+    printf("Original array: ");
+    printArray(arr, n);
+
+    quickSort(arr, 0, n - 1);
+
+    printf("Sorted array: ");
+    printArray(arr, n);
+
+    return 0;
+}
+
+
+---
+
+
+// rule of five
+// https://en.cppreference.com/w/cpp/language/rule_of_three.html
+// official archive: 7 June 2019
+
+class rule_of_five
+{
+    char* cstring; // raw pointer used as a handle to a dynamically-allocated memory block
+ public:
+    rule_of_five(const char* s = "")
+    : cstring(nullptr)
+    {
+        if (s) {
+            std::size_t n = std::strlen(s) + 1;
+            cstring = new char[n];      // allocate
+            std::memcpy(cstring, s, n); // populate
+        }
+    }
+
+    ~rule_of_five()
+    {
+        delete[] cstring;  // deallocate
+    }
+
+    rule_of_five(const rule_of_five& other) // copy constructor
+    : rule_of_five(other.cstring)
+    {}
+
+    rule_of_five(rule_of_five&& other) noexcept // move constructor
+    : cstring(std::exchange(other.cstring, nullptr))
+    {}
+
+    rule_of_five& operator=(const rule_of_five& other) // copy assignment
+    {
+         return *this = rule_of_five(other);
+    }
+
+    rule_of_five& operator=(rule_of_five&& other) noexcept // move assignment
+    {
+        std::swap(cstring, other.cstring);
+        return *this;
+    }
+
+// alternatively, replace both assignment operators with
+//  rule_of_five& operator=(rule_of_five other) noexcept
+//  {
+//      std::swap(cstring, other.cstring);
+//      return *this;
+//  }
+};
+
+
+---
+
