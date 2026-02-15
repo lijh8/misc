@@ -19,17 +19,18 @@ main.c:12: hello, 123, 3.140000
 ---
 
 
-// quick sort
-//
-// It selects an element as a pivot and partitions the array so that smaller
-// elements end up on the left and larger ones on the right. It recursively
-// partitions the subarrays until the entire array is sorted.
-//
-// It swaps all smaller elements to the left, then places the pivot at the end
-// of all smaller elements; the elements remaining on the right are the larger
-// ones naturally. In C arrays, inserting or removing elements at the beginning
-// requires O(n) shifts, but quick sort achieves its purpose without insertions
-// or deletions.
+Quick sort
+
+1. It selects an element as a pivot (common strategies include the first, last,
+    middle, or a random element).
+2. It partitions the array so that:
+    - Elements less than or equal to the pivot are swapped to its left.
+    - Elements greater than the pivot are swapped to its right.
+    - The pivot is placed in its final sorted position.
+3. It recursively applies the same process to the left and right subarrays until
+    the entire array is sorted.
+4. Quicksort implementations often use in-place swaps instead of insertions or
+    deletions.
 
 
 #include <stdio.h>
