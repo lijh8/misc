@@ -211,7 +211,7 @@ void printArray(int arr[], int size)
 
 int main()
 {
-    srand(time(NULL)); // Add this line
+    srand(time(NULL));
 
     // quick sort
     printf("quick sort\n\n");
