@@ -105,8 +105,8 @@ the larger side (n-1). This creates a deep, skewed recursion tree (like a linked
 list) rather than a balanced tree.
 
 In the worst cases, the same elements survive for more rounds of recursion and
-are compared against a new pivot in every round. In the best cases, elements
-are isolated quickly, reducing total comparisons.
+are compared again repeatedly against a new pivot in every round. In the best
+cases, elements are isolated quickly, reducing total comparisons.
 
 
 // test
