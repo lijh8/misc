@@ -104,8 +104,8 @@ When more zeros are recorded (left:0 or right:0), the algorithm must recurse on
 the larger side (n-1). This creates a deep, skewed recursion tree (like a linked
 list) rather than a balanced tree.
 
-In the worst case, the same elements survive for more rounds of recursion and
-are compared against a new pivot in every round. In the average case, elements
+In the worst cases, the same elements survive for more rounds of recursion and
+are compared against a new pivot in every round. In the best cases, elements
 are isolated quickly, reducing total comparisons.
 
 
