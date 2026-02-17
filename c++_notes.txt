@@ -107,6 +107,44 @@ int main()
 ---
 
 
+// 912. Sort an Array
+// https://leetcode.cn/problems/sort-an-array/description/
+
+void quickSort3Way(int arr[], int low, int high) {
+    if (low >= high)
+        return;
+
+    int random_idx = low + rand() % (high - low + 1);
+    swap(&arr[low], &arr[random_idx]);
+    int pivot = arr[low];
+
+    int lt = low;
+    int gt = high;
+    int i = low + 1;
+
+    while (i <= gt) {
+        if (arr[i] < pivot)
+            swap(&arr[lt++], &arr[i++]);
+        else if (arr[i] > pivot)
+            swap(&arr[i], &arr[gt--]);
+        else
+            i++;
+    }
+
+    quickSort3Way(arr, low, lt - 1);
+    quickSort3Way(arr, gt + 1, high);
+}
+
+vector<int> sortArray(vector<int>& nums) {
+    srand(time(NULL));
+    quickSort3Way(nums.data(), 0, nums.size() - 1);
+    return nums;
+}
+
+
+---
+
+
 When more zeros are recorded (left:0 or right:0), the algorithm must recurse on
 the larger side (n-1). This creates a deep, skewed recursion tree (like a linked
 list) rather than a balanced tree.
@@ -122,6 +160,9 @@ further comparisons cross these partitions.
 
 In exhaustive brute force like selection sort: each pass reduces the number of
 comparisons for the next pass by only 1.
+
+
+---
 
 
 // test
