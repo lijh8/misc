@@ -279,8 +279,8 @@ int main()
         printf("compare_count: %d, swap_count: %d, partition_count: %d\n\n", compare_count, swap_count, partition_count);
     }
 
-    // selectSort
-    printf("selectSort\n\n");
+    // select sort
+    printf("select sort\n\n");
 
     {
         int arr[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
@@ -398,7 +398,7 @@ random 3: 9 3 6 2 8 1 7 4 10 5
 left:4, right:5; left:3, right:0; left:0, right:2; left:1, right:0; left:2, right:2; left:1, right:0; left:0, right:1; Sorted array: 1 2 3 4 5 6 7 8 9 10
 compare_count: 21, swap_count: 18, partition_count: 7
 
-selectSort
+select sort
 
 Ascending: 1 2 3 4 5 6 7 8 9 10
 Sorted array: 1 2 3 4 5 6 7 8 9 10
