@@ -31,11 +31,18 @@ Quick sort
     the entire array is sorted.
 4. Quicksort implementations often use in-place swaps instead of insertions or
     deletions.
+5. Quick sort uses divide and conquer: each comparison eliminates many
+    possibilities. Once a pivot is placed, elements on the left are known to be
+    smaller than the pivot and elements on the right are known to be larger. No
+    further comparisons cross these partitions.
+6. In exhaustive brute force like selection sort: each pass reduces the number of
+    comparisons for the next pass by only 1.
 
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
+---
+
+
+// K&R C 2nd, sec. 4.10 Recursion
 
 void swap(int *a, int *b)
 {
@@ -43,6 +50,30 @@ void swap(int *a, int *b)
     *a = *b;
     *b = temp;
 }
+
+void qsort(int v[], int left, int right)
+{
+    int i, last;
+
+    if (left >= right)
+        return;
+    swap(&v[left], &v[(left + right) / 2]);
+    last = left;
+    for (i = left + 1; i <= right; i++)
+        if (v[i] < v[left])
+            swap(&v[++last], &v[i]);
+    swap(&v[left], &v[last]);
+    qsort(v, left, last - 1);
+    qsort(v, last + 1, right);
+}
+
+
+---
+
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
 // places pivot in correct position and returns its index
 int partition(int arr[], int low, int high)
@@ -74,33 +105,6 @@ void quickSort(int arr[], int low, int high)
         quickSort(arr, low, pi - 1);
         quickSort(arr, pi + 1, high);
     }
-}
-
-void printArray(int arr[], int size)
-{
-    for (int i = 0; i < size; i++)
-    {
-        printf("%d ", arr[i]);
-    }
-    printf("\n");
-}
-
-int main()
-{
-    srand(time(NULL));
-
-    int arr[] = {10, 7, 8, 9, 1, 5};
-    int n = sizeof(arr) / sizeof(arr[0]);
-
-    printf("Original array: ");
-    printArray(arr, n);
-
-    quickSort(arr, 0, n - 1);
-
-    printf("Sorted array: ");
-    printArray(arr, n);
-
-    return 0;
 }
 
 
@@ -145,80 +149,6 @@ vector<int> sortArray(vector<int>& nums) {
 ---
 
 
-When more zeros are recorded (left:0 or right:0), the algorithm must recurse on
-the larger side (n-1). This creates a deep, skewed recursion tree (like a linked
-list) rather than a balanced tree.
-
-In the worst cases, the same elements survive for more rounds of recursion and
-are compared again repeatedly against a new pivot in every round. In the best
-cases, elements are isolated quickly, reducing total comparisons.
-
-Quick sort uses divide and conquer: each comparison eliminates many
-possibilities. Once a pivot is placed, elements on the left are known to be
-smaller than the pivot and elements on the right are known to be larger. No
-further comparisons cross these partitions.
-
-In exhaustive brute force like selection sort: each pass reduces the number of
-comparisons for the next pass by only 1.
-
-
----
-
-
-// test
-
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-
-int compare_count = 0;
-int swap_count = 0;
-int partition_count = 0;
-
-void swap(int *a, int *b)
-{
-    int temp = *a;
-    *a = *b;
-    *b = temp;
-}
-
-// places pivot in correct position and returns its index
-int partition(int arr[], int low, int high)
-{
-    int random_idx = low + rand() % (high - low + 1);
-    swap(&arr[random_idx], &arr[high]);
-
-    int pivot = arr[high];
-    int i = low - 1;
-
-    for (int j = low; j < high; j++)
-    {
-        compare_count++; // messure compare count
-        if (arr[j] <= pivot)
-        {
-            swap_count++; // messure swap count
-            swap(&arr[++i], &arr[j]);
-        }
-    }
-    swap_count++; // messure swap count
-    swap(&arr[i + 1], &arr[high]);
-    return i + 1;
-}
-
-void quickSort(int arr[], int low, int high)
-{
-    if (low < high)
-    {
-        // pi is partitioning index
-        partition_count++; // messure partition count
-        int pi = partition(arr, low, high);
-        printf("left:%d, right:%d; ", pi - low, high - pi);
-        quickSort(arr, low, pi - 1);
-        quickSort(arr, pi + 1, high);
-    }
-}
-
 void selectSort(int arr[], int n)
 {
     for (int i = 0; i < n - 1; i++)
@@ -241,245 +171,123 @@ void selectSort(int arr[], int n)
     }
 }
 
-void printArray(int arr[], int size)
+
+---
+
+
+// K&R C 2nd, sec. 3.3 Else-If
+
+int bsearch(int arr[], int left, int right, int target)
 {
-    for (int i = 0; i < size; i++)
+    int mid = left + (right - left) / 2;
+
+    if (left > right)
+        return -1;
+
+    if (target == arr[mid])
+        return mid;
+    else if (target < arr[mid])
+        return bsearch(arr, left, mid - 1, target);
+    else if (target > arr[mid])
+        return bsearch(arr, mid + 1, right, target);
+
+    return -1;
+}
+
+
+---
+
+
+// K&R C 2nd, sec. 5.5 Character Pointers and Functions
+
+// copies the string src to the string dest.
+// dest=src copies the pointer, not the characters.
+
+#include <cstdio>
+#include <cstring>
+
+void strcpy(char *dest, char *src)
+{
+    while (*dest++ = *src++)
+        ;
+}
+
+// handle overlap with memmove
+// when both src and dest point to the same character string array
+//
+// 1. src is after dest, copy forward normally
+//          src
+//           |
+//     .........
+//       |
+//      dest
+//
+// 2. src is before dest, copy backward
+//      src
+//       |
+//     .........
+//           |
+//          dest
+//
+void memmove(char *dest, const char *src, int n)
+{
+    if (src > dest)
     {
-        printf("%d ", arr[i]);
+        // forward
+        while (n-- > 0)
+        {
+            *dest++ = *src++;
+        }
     }
-    printf("\n");
+    else if (src < dest)
+    {
+        // backward
+        src += n;
+        dest += n;
+
+        while (n-- > 0)
+        {
+            *--dest = *--src;
+        }
+    }
 }
 
 int main()
 {
-    srand(time(NULL));
-
-    // quick sort
-    printf("quick sort\n\n");
-
     {
-        int arr[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-        int n = sizeof(arr) / sizeof(arr[0]);
-        compare_count = 0;
-        swap_count = 0;
-        partition_count = 0;
-        printf("Ascending: ");
-        printArray(arr, n);
-        quickSort(arr, 0, n - 1);
-        printf("Sorted array: ");
-        printArray(arr, n);
-        printf("compare_count: %d, swap_count: %d, partition_count: %d\n\n", compare_count, swap_count, partition_count);
+        char buffer[] = "Hello World!";
+        char *src = buffer + 6;
+        char *dest = buffer;
+        memmove(dest, src, 5);
+        printf("%s\n", buffer);
     }
 
     {
-        int arr[] = {10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
-        int n = sizeof(arr) / sizeof(arr[0]);
-        compare_count = 0;
-        swap_count = 0;
-        partition_count = 0;
-        printf("Descending: ");
-        printArray(arr, n);
-        quickSort(arr, 0, n - 1);
-        printf("Sorted array: ");
-        printArray(arr, n);
-        printf("compare_count: %d, swap_count: %d, partition_count: %d\n\n", compare_count, swap_count, partition_count);
+        char buffer[] = "Hello World!";
+        char *src = buffer;
+        char *dest = buffer + 6;
+        memmove(dest, src, 5);
+        printf("%s\n", buffer);
     }
-
-    {
-        int arr[] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
-        int n = sizeof(arr) / sizeof(arr[0]);
-        compare_count = 0;
-        swap_count = 0;
-        partition_count = 0;
-        printf("All equal: ");
-        printArray(arr, n);
-        quickSort(arr, 0, n - 1);
-        printf("Sorted array: ");
-        printArray(arr, n);
-        printf("compare_count: %d, swap_count: %d, partition_count: %d\n\n", compare_count, swap_count, partition_count);
-    }
-
-    {
-        int arr[] = {3, 7, 2, 9, 1, 5, 8, 4, 10, 6};
-        int n = sizeof(arr) / sizeof(arr[0]);
-        compare_count = 0;
-        swap_count = 0;
-        partition_count = 0;
-        printf("random 1: ");
-        printArray(arr, n);
-        quickSort(arr, 0, n - 1);
-        printf("Sorted array: ");
-        printArray(arr, n);
-        printf("compare_count: %d, swap_count: %d, partition_count: %d\n\n", compare_count, swap_count, partition_count);
-    }
-
-    {
-        int arr[] = {7, 3, 10, 1, 5, 9, 2, 8, 4, 6};
-        int n = sizeof(arr) / sizeof(arr[0]);
-        compare_count = 0;
-        swap_count = 0;
-        partition_count = 0;
-        printf("random 2: ");
-        printArray(arr, n);
-        quickSort(arr, 0, n - 1);
-        printf("Sorted array: ");
-        printArray(arr, n);
-        printf("compare_count: %d, swap_count: %d, partition_count: %d\n\n", compare_count, swap_count, partition_count);
-    }
-
-    {
-        int arr[] = {9, 3, 6, 2, 8, 1, 7, 4, 10, 5};
-        int n = sizeof(arr) / sizeof(arr[0]);
-        compare_count = 0;
-        swap_count = 0;
-        partition_count = 0;
-        printf("random 3: ");
-        printArray(arr, n);
-        quickSort(arr, 0, n - 1);
-        printf("Sorted array: ");
-        printArray(arr, n);
-        printf("compare_count: %d, swap_count: %d, partition_count: %d\n\n", compare_count, swap_count, partition_count);
-    }
-
-    // select sort
-    printf("select sort\n\n");
-
-    {
-        int arr[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-        int n = sizeof(arr) / sizeof(arr[0]);
-        compare_count = 0;
-        swap_count = 0;
-        printf("Ascending: ");
-        printArray(arr, n);
-        selectSort(arr, sizeof(arr) / sizeof(arr[0]));
-        printf("Sorted array: ");
-        printArray(arr, n);
-        printf("compare_count: %d, swap_count: %d\n\n", compare_count, swap_count);
-    }
-
-    {
-        int arr[] = {10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
-        int n = sizeof(arr) / sizeof(arr[0]);
-        compare_count = 0;
-        swap_count = 0;
-        printf("Descending: ");
-        printArray(arr, n);
-        selectSort(arr, sizeof(arr) / sizeof(arr[0]));
-        printf("Sorted array: ");
-        printArray(arr, n);
-        printf("compare_count: %d, swap_count: %d\n\n", compare_count, swap_count);
-    }
-
-    {
-        int arr[] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
-        int n = sizeof(arr) / sizeof(arr[0]);
-        compare_count = 0;
-        swap_count = 0;
-        printf("All equal: ");
-        printArray(arr, n);
-        selectSort(arr, sizeof(arr) / sizeof(arr[0]));
-        printf("Sorted array: ");
-        printArray(arr, n);
-        printf("compare_count: %d, swap_count: %d\n\n", compare_count, swap_count);
-    }
-
-    {
-        int arr[] = {3, 7, 2, 9, 1, 5, 8, 4, 10, 6};
-        int n = sizeof(arr) / sizeof(arr[0]);
-        compare_count = 0;
-        swap_count = 0;
-        printf("random 1: ");
-        printArray(arr, n);
-        selectSort(arr, sizeof(arr) / sizeof(arr[0]));
-        printf("Sorted array: ");
-        printArray(arr, n);
-        printf("compare_count: %d, swap_count: %d\n\n", compare_count, swap_count);
-    }
-
-    {
-        int arr[] = {7, 3, 10, 1, 5, 9, 2, 8, 4, 6};
-        int n = sizeof(arr) / sizeof(arr[0]);
-        compare_count = 0;
-        swap_count = 0;
-        printf("random 2: ");
-        printArray(arr, n);
-        selectSort(arr, sizeof(arr) / sizeof(arr[0]));
-        printf("Sorted array: ");
-        printArray(arr, n);
-        printf("compare_count: %d, swap_count: %d\n\n", compare_count, swap_count);
-    }
-
-    {
-        int arr[] = {9, 3, 6, 2, 8, 1, 7, 4, 10, 5};
-        int n = sizeof(arr) / sizeof(arr[0]);
-        compare_count = 0;
-        swap_count = 0;
-        printf("random 3: ");
-        printArray(arr, n);
-        selectSort(arr, sizeof(arr) / sizeof(arr[0]));
-        printf("Sorted array: ");
-        printArray(arr, n);
-        printf("compare_count: %d, swap_count: %d\n\n", compare_count, swap_count);
-    }
-
     return 0;
 }
 
 
-$ ./src/main/main
-quick sort
+---
 
-Ascending: 1 2 3 4 5 6 7 8 9 10
-left:1, right:8; left:1, right:6; left:2, right:3; left:0, right:1; left:1, right:1; Sorted array: 1 2 3 4 5 6 7 8 9 10
-compare_count: 24, swap_count: 10, partition_count: 5
 
-Descending: 10 9 8 7 6 5 4 3 2 1
-left:2, right:7; left:0, right:1; left:4, right:2; left:2, right:1; left:0, right:1; left:0, right:1; Sorted array: 1 2 3 4 5 6 7 8 9 10
-compare_count: 21, swap_count: 14, partition_count: 6
+// https://c-faq.com/misc/intovf.html
+// integer arithmetic overflow
 
-All equal: 1 1 1 1 1 1 1 1 1 1
-left:9, right:0; left:8, right:0; left:7, right:0; left:6, right:0; left:5, right:0; left:4, right:0; left:3, right:0; left:2, right:0; left:1, right:0; Sorted array: 1 1 1 1 1 1 1 1 1 1
-compare_count: 45, swap_count: 54, partition_count: 9
+bool add(int a, int b, int *result)
+{
+    if (b < 0 && a < INT_MIN - b || b > 0 && a > INT_MAX - b)
+        return false;
 
-random 1: 3 7 2 9 1 5 8 4 10 6
-left:1, right:8; left:3, right:4; left:1, right:1; left:0, right:3; left:0, right:2; left:1, right:0; Sorted array: 1 2 3 4 5 6 7 8 9 10
-compare_count: 24, swap_count: 12, partition_count: 6
+    *result = a + b;
 
-random 2: 7 3 10 1 5 9 2 8 4 6
-left:2, right:7; left:1, right:0; left:2, right:4; left:0, right:1; left:3, right:0; left:1, right:1; Sorted array: 1 2 3 4 5 6 7 8 9 10
-compare_count: 22, swap_count: 15, partition_count: 6
-
-random 3: 9 3 6 2 8 1 7 4 10 5
-left:6, right:3; left:2, right:3; left:0, right:1; left:0, right:2; left:1, right:0; left:0, right:2; left:1, right:0; Sorted array: 1 2 3 4 5 6 7 8 9 10
-compare_count: 21, swap_count: 17, partition_count: 7
-
-select sort
-
-Ascending: 1 2 3 4 5 6 7 8 9 10
-Sorted array: 1 2 3 4 5 6 7 8 9 10
-compare_count: 45, swap_count: 0
-
-Descending: 10 9 8 7 6 5 4 3 2 1
-Sorted array: 1 2 3 4 5 6 7 8 9 10
-compare_count: 45, swap_count: 5
-
-All equal: 1 1 1 1 1 1 1 1 1 1
-Sorted array: 1 1 1 1 1 1 1 1 1 1
-compare_count: 45, swap_count: 0
-
-random 1: 3 7 2 9 1 5 8 4 10 6
-Sorted array: 1 2 3 4 5 6 7 8 9 10
-compare_count: 45, swap_count: 9
-
-random 2: 7 3 10 1 5 9 2 8 4 6
-Sorted array: 1 2 3 4 5 6 7 8 9 10
-compare_count: 45, swap_count: 7
-
-random 3: 9 3 6 2 8 1 7 4 10 5
-Sorted array: 1 2 3 4 5 6 7 8 9 10
-compare_count: 45, swap_count: 8
-
-$
+    return true;
+}
 
 
 ---
