@@ -8,15 +8,11 @@ javascript: (function () {
         s.id = id;
         s.textContent = `
             :root {
-                --bg-color: #212529;
-                --fg-color: #f8f9fa;
+                --inverted-of: #ffffff;
             }
             html {
                 filter: invert(1) grayscale(1) !important;
-                background: var(--bg-color) !important;
-            }
-            body {
-                background: var(--fg-color) !important;
+                background-color: var(--inverted-of) !important;
             }
             img, video, iframe, [style*="background-image"] {
                 filter: invert(1) grayscale(1) !important;
