@@ -6,14 +6,11 @@ javascript: (function () {
     } else {
         let s = document.createElement('style');
         s.id = id;
-        s.textContent = ':root {'
-            + '    --inverted-of: #ffffff;'
-            + '}'
-            + 'html {'
+        s.textContent = 'html, iframe {'
             + '    filter: invert(1) grayscale(1) !important;'
-            + '    background-color: var(--inverted-of) !important;'
+            + '    background-color: white !important;'
             + '}'
-            + 'img, video, iframe, [style*="background-image"] {'
+            + '[style*="background-image"], img, svg, video {'
             + '    filter: invert(1) grayscale(1) !important;'
             + '}';
         document.head.appendChild(s);
