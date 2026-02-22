@@ -89,3 +89,36 @@ $ go fix -diff ./...
 +       x := min(1, 2)
 
 $
+
+
+---
+
+
+https://go.dev/doc/modules/managing-source#repository-scope
+Choosing repository scope
+
+You can maintain a repository that has a single module’s source in it.
+In this model, you place your go.mod file at the repository root,
+with package subdirectories containing Go source beneath.
+
+Each subdirectory that is a module root directory must have its own go.mod file.
+
+
+---
+
+
+https://go.dev/doc/modules/layout#multiple-packages
+Multiple packages
+
+A module can consist of multiple importable packages;
+each package has its own directory, and can be structured hierarchically.
+
+the module line in go.mod says:
+	module github.com/someuser/modname
+
+The modname package resides in the root directory,
+declares package modname and can be imported by users with:
+	import "github.com/someuser/modname"
+
+
+---
