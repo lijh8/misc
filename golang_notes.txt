@@ -33,7 +33,7 @@ $ vi main.go
 package main
 import (
     "fmt"
-	"example.com/foo" # moudle path in foo/go.mod
+	"example.com/foo" // moudle path in foo/go.mod
 )
 func main() {
     fmt.Println("main")
