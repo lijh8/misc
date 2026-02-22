@@ -1,0 +1,91 @@
+golang notes
+
+# mirrors
+$ cat ~/.bashrc
+export PATH=$PATH:/usr/local/go/bin
+go env -w GOSUMDB="sum.golang.google.cn"
+go env -w GOPROXY="https://goproxy.io,https://goproxy.cn,direct"
+$
+
+# macOS, https://go.dev/doc/manage-install
+$ cat /etc/paths.d/go
+/usr/local/go/bin
+$
+
+$ go version
+
+vscode extension: golang.go from Go team
+tools: dlv, gopls
+
+$ cd ~
+$ mkdir workspace
+$ cd workspace
+$ mkdir main
+$ cd main
+
+$ go mod init example.com/main
+$ cat go.mod
+module example.com/main
+go 1.26.0
+$
+
+$ vi main.go
+package main
+import (
+    "fmt"
+	"example.com/foo" # moudle path in foo/go.mod
+)
+func main() {
+    fmt.Println("main")
+    foo.Foo()
+}
+$
+
+$ cd ~/workspace
+$ mkdir foo
+$ cd foo
+
+$ go mod init example.com/foo
+$ cat go.mod
+module example.com/foo
+go 1.26.0
+$
+
+$ vi foo.go
+package foo
+import (
+	"fmt"
+)
+func Foo() {
+	fmt.Println("foo")
+}
+$
+
+$ cd ~/workspace
+$ go work init ./main
+$ go work use ./foo
+$ cat go.work
+go 1.26.0
+use (
+	./foo
+	./main
+)
+$
+
+$ go run ./main
+$ go build -o a.out ./main
+$ ./a.out
+
+# modernizers, https://go.dev/blog/gofix
+$ go fix -diff ./...
+--- /Users/ljh/Documents/go_work/main/main.go (old)
++++ /Users/ljh/Documents/go_work/main/main.go (new)
+@@ -90,9 +90,6 @@
+
+-       x := 1
+-       if x > 2 {
+-               x = 2
+-       }
++       x := min(1, 2)
+
+$
