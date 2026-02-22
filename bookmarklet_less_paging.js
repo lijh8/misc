@@ -1,5 +1,5 @@
 javascript: (function () {
-    const LESS_PAGING = 250;
+    const LESS_PAGING = 200;
     const MIN_SCROLL = 80;
     function h(e) {
         if (e.key === 'PageDown' || e.key === 'PageUp') {
