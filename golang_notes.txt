@@ -72,12 +72,16 @@ use (
 )
 $
 
-$ go run ./main
-$ go build -o a.out ./main
+$ cd ~/workspace/main
+
+$ go mod tidy # download packages and update go.mod and go.sum automatically
+$ go env GOPATH # https://go.dev/ref/mod: GOPATH/pkg/mod, GOPATH/bin
+
+$ go run .
+$ go build -o a.out .
 $ ./a.out
 
-# modernizers, https://go.dev/blog/gofix
-$ go fix -diff ./...
+$ go fix -diff ./... # modern golang, https://go.dev/blog/gofix
 --- /Users/ljh/Documents/go_work/main/main.go (old)
 +++ /Users/ljh/Documents/go_work/main/main.go (new)
 @@ -90,9 +90,6 @@
