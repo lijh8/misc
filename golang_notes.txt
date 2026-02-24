@@ -98,6 +98,27 @@ $
 ---
 
 
+// print log with filename, line number source location
+
+package main
+
+import (
+	"log"
+)
+
+func main() {
+	log.SetFlags(log.Lshortfile)
+	log.Println("abc", 123, 3.14)
+}
+
+$ go run ./main
+main.go:9: abc 123 3.14
+$
+
+
+---
+
+
 https://go.dev/tour/basics/1
 
 Every Go program is made up of packages.
@@ -231,6 +252,34 @@ $ go install github.com/someuser/modname/prog2@latest
 ---
 
 
+https://go.dev/wiki/TableDrivenTests
+
+Table Driven Tests
+Each table entry is a complete test case with inputs and expected results, and
+sometimes with additional information such as a test name to make the test
+output easily readable.
+
+If you ever find yourself using copy and paste when writing a test, think about
+whether refactoring into a table-driven test or pulling the copied code out into
+a helper function might be a better option.
+
+Given a table of test cases, the actual test simply iterates through all table
+entries and for each entry performs the necessary tests.
+
+They can be stored in a map as well and there are several advantages to doing it
+this way.
+
+One advantage of using maps is that the “name” of each test can simply be the
+map index.
+
+More importantly, map iteration order isn’t specified nor is it even guaranteed
+o be the same from one iteration to the next. This ensures that each test is
+independent of the others and that testing order doesn’t impact results.
+
+
+---
+
+
 fuzz test
 
 https://go.dev/doc/tutorial/fuzz
@@ -242,7 +291,7 @@ $ pwd
 $ ls
 add     go.work main
 $
-$ find ./ -print | sed -e 's;[^/]*/;|____;g;s;____|; |;g'
+$ find . | sed -e 's;[^/]*/;|____;g;s;____|; |;g'
 
 |____
 | |____go.work
@@ -323,6 +372,57 @@ fuzz: elapsed: 10s, execs: 481356 (48166/sec), new interesting: 0 (total: 29)
 === NAME
 PASS
 ok      example.com/main        10.066s
+$
+
+
+---
+
+
+https://go.dev/doc/faq#generic_methods
+Why does Go not support methods with type parameters?
+
+We do not anticipate that Go will ever add generic methods.
+
+Instead of methods with type parameters,
+use top-level functions with type parameters,
+or add the type parameters to the receiver type.
+
+package main
+
+import (
+	"log"
+)
+
+// FUNCTION: type parameter goes with the function
+func Nop[T any](x T) T {
+	return x
+}
+
+// METHOD: Type parameters are attached to the receiver type, not the method
+func (n Nopper[T]) Nop(x T) T {
+	return x
+}
+
+type Nopper[T any] struct {
+	a, b T
+}
+
+func main() {
+	log.SetFlags(log.Lshortfile)
+	log.Println(Nop("abc"))
+	log.Println(Nop(123))
+
+	m := Nopper[string]{}
+	log.Println(m.Nop("abc"))
+	n := Nopper[int]{}
+	log.Println(n.Nop(123))
+}
+
+$ go run ./main
+main.go:24: abc
+main.go:25: 123
+main.go:28: abc
+main.go:30: 123
 $
 
 

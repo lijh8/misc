@@ -57,25 +57,25 @@ $ apt-file search --package-only nodejs       # which packages contain the file
 $ apt-file list nodejs                        # list package content
 
 # find by name
-$ find ./ -name "file.txt"
-$ find ./ -iname "file.txt"  # case-insensitive
-$ find ./ -name "*.txt"      # wildcard
+$ find . -name "file.txt"
+$ find . -iname "file.txt"  # case-insensitive
+$ find . -name "*.txt"      # wildcard
 
 # find by content
-$ find ./ -type f -exec grep -l "hello" {} +
-$ find ./ -type f -exec grep -li "Hello" {} +    # case-insensitive
-$ find ./ -type f -exec grep -l 'hello.*' {} +   # regex
+$ find . -type f -exec grep -l "hello" {} +
+$ find . -type f -exec grep -li "Hello" {} +    # case-insensitive
+$ find . -type f -exec grep -l 'hello.*' {} +   # regex
 
 # tree equivalent
-$ find ./ -print | sed -e 's;[^/]*/;|____;g;s;____|; |;g'
+$ find . | sed -e 's;[^/]*/;|____;g;s;____|; |;g'
 
 # top largest directories
-$ du -ah ./ | sort -hr 2>/dev/null | head -10
+$ du -ah . | sort -hr 2>/dev/null | head -10
 
 $ grep "hello" file.txt
 $ grep -i "hello" file.txt  # case-insensitive
 $ grep -v "hello" file.txt  # invert match
-$ grep -r "hello" ./        # recursive search in directory
+$ grep -r "hello" .         # recursive search in directory
 
 # info sed
 # /,?:serach forward,backward; {,}:next,previous match
