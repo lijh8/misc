@@ -32,12 +32,12 @@ $
 $ vi main.go
 package main
 import (
-    "fmt"
-	"example.com/foo" // moudle path in foo/go.mod
+	"fmt"
+	"example.com/foo" // same moudle path in foo/go.mod
 )
 func main() {
-    fmt.Println("main")
-    foo.Foo()
+	fmt.Println("main")
+	foo.Foo()
 }
 $
 
@@ -98,6 +98,32 @@ $
 ---
 
 
+https://go.dev/tour/basics/1
+
+Every Go program is made up of packages.
+Programs start running in package main.
+This program is using the packages with import paths "fmt" and "math/rand".
+
+By convention, the package name is the same as the last element of the import
+path. For instance, the "math/rand" package comprises files that begin with the
+statement package rand.
+
+
+---
+
+
+https://go.dev/doc/modules/managing-source
+
+go.mod: describes the module, including its module path (in effect, its name)
+and its dependencies.
+
+The module path will be given in a module directive, such as:
+	module example.com/mymodule
+
+
+---
+
+
 https://go.dev/doc/modules/managing-source#repository-scope
 Choosing repository scope
 
@@ -111,18 +137,95 @@ Each subdirectory that is a module root directory must have its own go.mod file.
 ---
 
 
-https://go.dev/doc/modules/layout#multiple-packages
-Multiple packages
+https://go.dev/doc/modules/layout
+Organizing a Go module
+Go projects can include packages, command-line programs or a combination of the
+two.
 
+
+Basic package
+A basic Go package has all its code in the project’s root directory. The project
+consists of a single module, which consists of a single package. The package
+name matches the last path component of the module name.
+
+project-root-directory/
+  go.mod
+  modname.go
+  modname_test.go
+
+Assuming this directory is uploaded to a GitHub repository at
+	github.com/someuser/modname,
+
+the module line in the go.mod file should say
+	module github.com/someuser/modname
+
+The code in modname.go declares the package with:
+	package modname
+	// ... package code here
+
+Users can then rely on this package by import-ing it in their Go code with:
+	import "github.com/someuser/modname"
+
+
+Basic command
+A basic executable program (or command-line tool) is structured according to its
+complexity and code size. The simplest program can consist of a single Go file
+where func main is defined. Larger programs can have their code split across
+multiple files, all declaring package main
+
+
+Multiple packages
 A module can consist of multiple importable packages;
 each package has its own directory, and can be structured hierarchically.
 
-the module line in go.mod says:
+project-root-directory/
+  go.mod
+  modname.go
+  modname_test.go
+  auth/
+    auth.go
+    auth_test.go
+    token/
+      token.go
+      token_test.go
+  hash/
+    hash.go
+  internal/
+    trace/
+      trace.go
+
+As a reminder, we assume that the module line in go.mod says:
 	module github.com/someuser/modname
 
-The modname package resides in the root directory,
-declares package modname and can be imported by users with:
+The modname package resides in the root directory, declares package modname and
+can be imported by users with:
 	import "github.com/someuser/modname"
+
+Sub-packages can be imported by users as follows:
+
+	import "github.com/someuser/modname/auth"
+	import "github.com/someuser/modname/auth/token"
+	import "github.com/someuser/modname/hash"
+
+
+Multiple commands
+Multiple programs in the same repository will typically have separate directories:
+
+project-root-directory/
+  go.mod
+  internal/
+    ... shared internal packages
+  prog1/
+    main.go
+  prog2/
+    main.go
+
+In each directory, the program’s Go files declare package main.
+
+Users can install these programs as follows:
+
+$ go install github.com/someuser/modname/prog1@latest
+$ go install github.com/someuser/modname/prog2@latest
 
 
 ---
