@@ -231,6 +231,104 @@ $ go install github.com/someuser/modname/prog2@latest
 ---
 
 
+fuzz test
+
+https://go.dev/doc/tutorial/fuzz
+https://go.dev/doc/security/fuzz/
+https://pkg.go.dev/cmd/go#hdr-Testing_flags
+
+$ pwd
+/Users/ljh/Documents/go_work
+$ ls
+add     go.work main
+$
+$ find ./ -print | sed -e 's;[^/]*/;|____;g;s;____|; |;g'
+
+|____
+| |____go.work
+| |____add
+| | |____add.go
+| | |____go.mod
+| |____main
+| | |____add_test.go
+| | |____go.mod
+| | |____go.sum
+| | |____main.go
+$
+
+$ cat add/add.go
+package add
+
+import "math"
+
+// Check for overflow
+func Add(a, b int) (result int, err bool) {
+	if (b > 0 && a > math.MaxInt-b) || (b < 0 && a < math.MinInt-b) {
+		return 0, true
+	}
+	return a + b, false
+}
+$
+
+$ cat main/add_test.go
+package main
+import (
+	"math"
+	"testing"
+	"example.com/add"
+)
+
+func FuzzAdd(f *testing.F) {
+	testCases := []struct {
+		a, b int
+	}{
+		{1, 2},
+		{0, 0},
+		{-1, 1},
+		{math.MaxInt, math.MaxInt},
+		{math.MaxInt, math.MinInt},
+		{math.MinInt, math.MinInt},
+	}
+
+	for _, tc := range testCases {
+		f.Add(tc.a, tc.b)
+	}
+
+	// https://go.dev/doc/security/fuzz/
+	// A fuzz target must be a method call to (*testing.F).Fuzz which
+	// accepts a *testing.T as the first parameter,
+	// followed by the fuzzing arguments.
+	// Fuzzing arguments are builtin types and provided by fuzzing engine.
+
+	f.Fuzz(func(t *testing.T, a, b int) { // fuzz target
+		result, err := add.Add(a, b)
+		if !err { // comment out to see unpromised results
+			if (b > 0 && a > math.MaxInt-b) || (b < 0 && a < math.MinInt-b) {
+				t.Errorf("add.Add(%d, %d) = %d; ", a, b, result)
+			}
+		}
+	})
+}
+$
+
+$ go test -fuzz=Fuzz -fuzztime 60s -v ./main
+=== RUN   FuzzAdd
+fuzz: elapsed: 0s, gathering baseline coverage: 0/29 completed
+fuzz: elapsed: 0s, gathering baseline coverage: 29/29 completed, now fuzzing with 4 workers
+fuzz: elapsed: 3s, execs: 133944 (44632/sec), new interesting: 0 (total: 29)
+fuzz: elapsed: 6s, execs: 279717 (48591/sec), new interesting: 0 (total: 29)
+fuzz: elapsed: 9s, execs: 430660 (50329/sec), new interesting: 0 (total: 29)
+fuzz: elapsed: 10s, execs: 481356 (48166/sec), new interesting: 0 (total: 29)
+--- PASS: FuzzAdd (10.06s)
+=== NAME
+PASS
+ok      example.com/main        10.066s
+$
+
+
+---
+
+
 package main
 
 import (
