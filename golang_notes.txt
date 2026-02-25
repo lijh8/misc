@@ -378,6 +378,32 @@ $
 ---
 
 
+https://go.dev/doc/faq#pass_by_value
+When are function parameters passed by value?
+
+As in all languages in the C family, everything in Go is passed by value. That
+is, a function always gets a copy of the thing being passed, as if there were an
+assignment statement assigning the value to the parameter. For instance, passing
+an int value to a function makes a copy of the int, and passing a pointer value
+makes a copy of the pointer, but not the data it points to. (See a later section
+for a discussion of how this affects method receivers.)
+
+Map and slice values behave like pointers: they are descriptors that contain
+pointers to the underlying map or slice data. Copying a map or slice value
+doesn’t copy the data it points to. Copying an interface value makes a copy of
+the thing stored in the interface value. If the interface value holds a struct,
+copying the interface value makes a copy of the struct. If the interface value
+holds a pointer, copying the interface value makes a copy of the pointer, but
+again not the data it points to.
+
+Note that this discussion is about the semantics of the operations. Actual
+implementations may apply optimizations to avoid copying as long as the
+optimizations do not change the semantics.
+
+
+---
+
+
 https://go.dev/doc/faq#generic_methods
 Why does Go not support methods with type parameters?
 
