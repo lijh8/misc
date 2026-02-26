@@ -112,8 +112,11 @@ import (
 	"log"
 )
 
-func main() {
+func init() {
 	log.SetFlags(log.Lshortfile)
+}
+
+func main() {
 	log.Println("abc", 123, 3.14)
 }
 
@@ -507,7 +510,6 @@ type Nopper[T any] struct {
 }
 
 func main() {
-	log.SetFlags(log.Lshortfile)
 	log.Println(Nop("abc"))
 	log.Println(Nop(123))
 
