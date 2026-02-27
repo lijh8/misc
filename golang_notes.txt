@@ -563,6 +563,9 @@ func main() {
 	for {
 		line, err := reader.ReadString('\n')
 
+		// Process the line even if we hit EOF (e.g., file doesn't end with \n)
+		fmt.Print(line)
+
 		if err == io.EOF {
 			break
 		}
@@ -570,8 +573,6 @@ func main() {
 			fmt.Println(err)
 			break
 		}
-
-		fmt.Print(line)
 	}
 }
 
