@@ -32,12 +32,12 @@ $
 $ vi main.go
 package main
 import (
-	"fmt"
-	"example.com/foo" // same moudle path in foo/go.mod
+        "fmt"
+        "example.com/foo" // same moudle path in foo/go.mod
 )
 func main() {
-	fmt.Println("main")
-	foo.Foo()
+        fmt.Println("main")
+        foo.Foo()
 }
 $
 
@@ -54,10 +54,10 @@ $
 $ vi foo.go
 package foo
 import (
-	"fmt"
+        "fmt"
 )
 func Foo() {
-	fmt.Println("foo")
+        fmt.Println("foo")
 }
 $
 
@@ -67,8 +67,8 @@ $ go work use ./foo
 $ cat go.work
 go 1.26.0
 use (
-	./foo
-	./main
+        ./foo
+        ./main
 )
 $
 
@@ -109,15 +109,15 @@ $
 package main
 
 import (
-	"log"
+        "log"
 )
 
 func init() {
-	log.SetFlags(log.Lshortfile)
+        log.SetFlags(log.Lshortfile)
 }
 
 func main() {
-	log.Println("abc", 123, 3.14)
+        log.Println("abc", 123, 3.14)
 }
 
 $ go run ./main
@@ -148,7 +148,7 @@ go.mod: describes the module, including its module path (in effect, its name)
 and its dependencies.
 
 The module path will be given in a module directive, such as:
-	module example.com/mymodule
+        module example.com/mymodule
 
 
 ---
@@ -251,17 +251,17 @@ project-root-directory/
   modname_test.go
 
 Assuming this directory is uploaded to a GitHub repository at
-	github.com/someuser/modname,
+        github.com/someuser/modname,
 
 the module line in the go.mod file should say
-	module github.com/someuser/modname
+        module github.com/someuser/modname
 
 The code in modname.go declares the package with:
-	package modname
-	// ... package code here
+        package modname
+        // ... package code here
 
 Users can then rely on this package by import-ing it in their Go code with:
-	import "github.com/someuser/modname"
+        import "github.com/someuser/modname"
 
 
 Basic command
@@ -292,17 +292,17 @@ project-root-directory/
       trace.go
 
 As a reminder, we assume that the module line in go.mod says:
-	module github.com/someuser/modname
+        module github.com/someuser/modname
 
 The modname package resides in the root directory, declares package modname and
 can be imported by users with:
-	import "github.com/someuser/modname"
+        import "github.com/someuser/modname"
 
 Sub-packages can be imported by users as follows:
 
-	import "github.com/someuser/modname/auth"
-	import "github.com/someuser/modname/auth/token"
-	import "github.com/someuser/modname/hash"
+        import "github.com/someuser/modname/auth"
+        import "github.com/someuser/modname/auth/token"
+        import "github.com/someuser/modname/hash"
 
 
 Multiple commands
@@ -388,51 +388,51 @@ import "math"
 
 // Check for overflow
 func Add(a, b int) (result int, err bool) {
-	if (b > 0 && a > math.MaxInt-b) || (b < 0 && a < math.MinInt-b) {
-		return 0, true
-	}
-	return a + b, false
+        if (b > 0 && a > math.MaxInt-b) || (b < 0 && a < math.MinInt-b) {
+                return 0, true
+        }
+        return a + b, false
 }
 $
 
 $ cat main/add_test.go
 package main
 import (
-	"math"
-	"testing"
-	"example.com/add"
+        "math"
+        "testing"
+        "example.com/add"
 )
 
 func FuzzAdd(f *testing.F) {
-	testCases := []struct {
-		a, b int
-	}{
-		{1, 2},
-		{0, 0},
-		{-1, 1},
-		{math.MaxInt, math.MaxInt},
-		{math.MaxInt, math.MinInt},
-		{math.MinInt, math.MinInt},
-	}
+        testCases := []struct {
+                a, b int
+        }{
+                {1, 2},
+                {0, 0},
+                {-1, 1},
+                {math.MaxInt, math.MaxInt},
+                {math.MaxInt, math.MinInt},
+                {math.MinInt, math.MinInt},
+        }
 
-	for _, tc := range testCases {
-		f.Add(tc.a, tc.b)
-	}
+        for _, tc := range testCases {
+                f.Add(tc.a, tc.b)
+        }
 
-	// https://go.dev/doc/security/fuzz/
-	// A fuzz target must be a method call to (*testing.F).Fuzz which
-	// accepts a *testing.T as the first parameter,
-	// followed by the fuzzing arguments.
-	// Fuzzing arguments are builtin types and provided by fuzzing engine.
+        // https://go.dev/doc/security/fuzz/
+        // A fuzz target must be a method call to (*testing.F).Fuzz which
+        // accepts a *testing.T as the first parameter,
+        // followed by the fuzzing arguments.
+        // Fuzzing arguments are builtin types and provided by fuzzing engine.
 
-	f.Fuzz(func(t *testing.T, a, b int) { // fuzz target
-		result, err := add.Add(a, b)
-		if !err { // comment out to see unpromised results
-			if (b > 0 && a > math.MaxInt-b) || (b < 0 && a < math.MinInt-b) {
-				t.Errorf("add.Add(%d, %d) = %d; ", a, b, result)
-			}
-		}
-	})
+        f.Fuzz(func(t *testing.T, a, b int) { // fuzz target
+                result, err := add.Add(a, b)
+                if !err { // comment out to see unpromised results
+                        if (b > 0 && a > math.MaxInt-b) || (b < 0 && a < math.MinInt-b) {
+                                t.Errorf("add.Add(%d, %d) = %d; ", a, b, result)
+                        }
+                }
+        })
 }
 $
 
@@ -492,31 +492,31 @@ or add the type parameters to the receiver type.
 package main
 
 import (
-	"log"
+        "log"
 )
 
 // FUNCTION: type parameter goes with the function
 func Nop[T any](x T) T {
-	return x
+        return x
 }
 
 // METHOD: Type parameters are attached to the receiver type, not the method
 func (n Nopper[T]) Nop(x T) T {
-	return x
+        return x
 }
 
 type Nopper[T any] struct {
-	a, b T
+        a, b T
 }
 
 func main() {
-	log.Println(Nop("abc"))
-	log.Println(Nop(123))
+        log.Println(Nop("abc"))
+        log.Println(Nop(123))
 
-	m := Nopper[string]{}
-	log.Println(m.Nop("abc"))
-	n := Nopper[int]{}
-	log.Println(n.Nop(123))
+        m := Nopper[string]{}
+        log.Println(m.Nop("abc"))
+        n := Nopper[int]{}
+        log.Println(n.Nop(123))
 }
 
 $ go run ./main
@@ -536,45 +536,130 @@ $
 package main
 
 import (
-	"bufio"
-	"fmt"
-	"io"
-	"os"
-	"path/filepath"
+        "bufio"
+        "fmt"
+        "io"
+        "os"
+        "path/filepath"
 )
 
 func main() {
-	if len(os.Args) != 2 {
-		basename := filepath.Base(os.Args[0])
-		fmt.Printf("%s <filename>\n", basename)
-		return
-	}
+        if len(os.Args) != 2 {
+                basename := filepath.Base(os.Args[0])
+                fmt.Printf("%s <filename>\n", basename)
+                return
+        }
 
-	filename := os.Args[1]
-	file, err := os.Open(filename)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
+        filename := os.Args[1]
+        file, err := os.Open(filename)
+        if err != nil {
+                fmt.Println(err)
+                return
+        }
 
-	defer file.Close()
-	reader := bufio.NewReader(file)
+        defer file.Close()
+        reader := bufio.NewReader(file)
 
-	for {
-		line, err := reader.ReadString('\n')
+        for {
+                line, err := reader.ReadString('\n')
 
-		// Process the line even if we hit EOF (e.g., file doesn't end with \n)
-		fmt.Print(line)
+                // Process the line even if we hit EOF (e.g., file doesn't end with \n)
+                fmt.Print(line)
 
-		if err == io.EOF {
-			break
-		}
-		if err != nil {
-			fmt.Println(err)
-			break
-		}
-	}
+                if err == io.EOF {
+                        break
+                }
+                if err != nil {
+                        fmt.Println(err)
+                        break
+                }
+        }
 }
+
+
+---
+
+
+$ cat a.txt
+c1:a1=v1
+c2:a2=v2, c22:a22=v22
+c3 : a3 = v3 , c33:a33=v33 , c333 : a333 = v333
+$
+
+$ cat main.go
+package main
+
+import (
+        "bufio"
+        "fmt"
+        "io"
+        "os"
+        "path/filepath"
+        "regexp"
+)
+
+// Parse text file with the format for each line:
+//      cmd:arg=value
+//
+// Each line can have repeatitions of those combinations separated by comma:
+//      cmd:arg=value, cmd:arg=value
+//
+// Spaces should be omitted:
+//      cmd : arg = value ,   cmd : arg = value
+//
+// e.g., a.txt:
+//      c1:a1=v1
+//      c2:a2=v2, c22:a22=v22
+//      c3 : a3 = v3 , c33:a33=v33 , c333 : a333 = v333
+
+func main() {
+        if len(os.Args) != 2 {
+                basename := filepath.Base(os.Args[0])
+                fmt.Printf("%s <filename>\n", basename)
+                return
+        }
+
+        filename := os.Args[1]
+        file, err := os.Open(filename)
+        if err != nil {
+                fmt.Println(err)
+                return
+        }
+        defer file.Close()
+
+        reader := bufio.NewReader(file)
+        pattern := regexp.MustCompile(`(\w+)\s*:\s*(\w+)\s*=\s*(\w+)`)
+
+        for {
+                line, err := reader.ReadString('\n')
+                matches := pattern.FindAllStringSubmatch(line, -1)
+
+                for _, match := range matches {
+                        cmd := match[1]
+                        arg := match[2]
+                        value := match[3]
+                        fmt.Printf("Cmd: %s, Arg: %s, Value: %s\n", cmd, arg, value)
+                }
+
+                if err == io.EOF {
+                        break
+                }
+                if err != nil {
+                        fmt.Println(err)
+                        break
+                }
+        }
+}
+$
+
+$ go run . a.txt
+Cmd: c1, Arg: a1, Value: v1
+Cmd: c2, Arg: a2, Value: v2
+Cmd: c22, Arg: a22, Value: v22
+Cmd: c3, Arg: a3, Value: v3
+Cmd: c33, Arg: a33, Value: v33
+Cmd: c333, Arg: a333, Value: v333
+$
 
 
 ---
@@ -583,52 +668,52 @@ func main() {
 package main
 
 import (
-	"fmt"
-	"math/rand"
+        "fmt"
+        "math/rand"
 )
 
 // three-way partition
 func quickSort(arr []int, low, high int) {
-	if low >= high {
-		return
-	}
+        if low >= high {
+                return
+        }
 
-	randIndex := low + rand.Intn(high-low+1)
-	arr[low], arr[randIndex] = arr[randIndex], arr[low]
-	pivot := arr[low]
-	lt, gt := low, high
-	i := low + 1
+        randIndex := low + rand.Intn(high-low+1)
+        arr[low], arr[randIndex] = arr[randIndex], arr[low]
+        pivot := arr[low]
+        lt, gt := low, high
+        i := low + 1
 
-	for i <= gt {
-		if arr[i] < pivot {
-			arr[lt], arr[i] = arr[i], arr[lt]
-			lt++
-			i++
-		} else if arr[i] > pivot {
-			arr[i], arr[gt] = arr[gt], arr[i]
-			gt--
-		} else {
-			i++
-		}
-	}
+        for i <= gt {
+                if arr[i] < pivot {
+                        arr[lt], arr[i] = arr[i], arr[lt]
+                        lt++
+                        i++
+                } else if arr[i] > pivot {
+                        arr[i], arr[gt] = arr[gt], arr[i]
+                        gt--
+                } else {
+                        i++
+                }
+        }
 
-	quickSort(arr, low, lt-1)
-	quickSort(arr, gt+1, high)
+        quickSort(arr, low, lt-1)
+        quickSort(arr, gt+1, high)
 }
 
 func main() {
-	arrs := [][]int{
-		{1, 2, 3, 4, 5, 6, 7, 8, 9, 10},
-		{10, 9, 8, 7, 6, 5, 4, 3, 2, 1},
-		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-		{3, 8, 2, 10, 5, 1, 7, 4, 9, 6},
-		{5, 2, 8, 4, 9, 1, 7, 3, 10, 6},
-	}
+        arrs := [][]int{
+                {1, 2, 3, 4, 5, 6, 7, 8, 9, 10},
+                {10, 9, 8, 7, 6, 5, 4, 3, 2, 1},
+                {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                {3, 8, 2, 10, 5, 1, 7, 4, 9, 6},
+                {5, 2, 8, 4, 9, 1, 7, 3, 10, 6},
+        }
 
-	for _, arr := range arrs {
-		quickSort(arr, 0, len(arr)-1)
-		fmt.Println(arr)
-	}
+        for _, arr := range arrs {
+                quickSort(arr, 0, len(arr)-1)
+                fmt.Println(arr)
+        }
 }
 
 
