@@ -580,18 +580,6 @@ func main() {
 ---
 
 
-$ cat main.go
-package main
-
-import (
-        "bufio"
-        "fmt"
-        "io"
-        "os"
-        "path/filepath"
-        "regexp"
-)
-
 // Parse text file with the format for each line:
 //      cmd:arg=value
 //
@@ -605,6 +593,18 @@ import (
 //      c1:a1=v1
 //      c2 : a2 = v2
 //      c3:a3=v3,c33:a33=v33 , c333:a333=v333   c3333 : a3333 = v3333
+
+$ cat main.go
+package main
+
+import (
+        "bufio"
+        "fmt"
+        "io"
+        "os"
+        "path/filepath"
+        "regexp"
+)
 
 func main() {
         if len(os.Args) != 2 {
