@@ -583,9 +583,8 @@ func main() {
 $ cat a.txt
 c1:a1=v1
 c2:a2=v2, c22:a22=v22
-c3 : a3 = v3 , c33:a33=v33 , c333 : a333 = v333
+c3 : a3 = v3 , c33:a33=v33   c333 : a333 = v333
 $
-
 $ cat main.go
 package main
 
@@ -601,16 +600,16 @@ import (
 // Parse text file with the format for each line:
 //      cmd:arg=value
 //
-// Each line can have repeatitions of those combinations separated by comma:
-//      cmd:arg=value, cmd:arg=value
+// space should be omitted:
+//      cmd : arg = value
 //
-// Spaces should be omitted:
-//      cmd : arg = value ,   cmd : arg = value
+// it could repeat with optional comma separators:
+//      cmd:arg=value, cmd:arg=value  cmd:arg=value
 //
 // e.g., a.txt:
 //      c1:a1=v1
 //      c2:a2=v2, c22:a22=v22
-//      c3 : a3 = v3 , c33:a33=v33 , c333 : a333 = v333
+//      c3 : a3 = v3 , c33:a33=v33   c333 : a333 = v333
 
 func main() {
         if len(os.Args) != 2 {
@@ -625,19 +624,18 @@ func main() {
                 fmt.Println(err)
                 return
         }
-        defer file.Close()
 
+        defer file.Close()
         reader := bufio.NewReader(file)
-        pattern := regexp.MustCompile(`(\w+)\s*:\s*(\w+)\s*=\s*(\w+)`)
+        pattern := `(\w+)\s*:\s*(\w+)\s*=\s*(\w+)`
+        re := regexp.MustCompile(pattern)
 
         for {
                 line, err := reader.ReadString('\n')
-                matches := pattern.FindAllStringSubmatch(line, -1)
+                matches := re.FindAllStringSubmatch(line, -1)
 
                 for _, match := range matches {
-                        cmd := match[1]
-                        arg := match[2]
-                        value := match[3]
+                        cmd, arg, value := match[1], match[2], match[3]
                         fmt.Printf("Cmd: %s, Arg: %s, Value: %s\n", cmd, arg, value)
                 }
 
@@ -651,7 +649,6 @@ func main() {
         }
 }
 $
-
 $ go run . a.txt
 Cmd: c1, Arg: a1, Value: v1
 Cmd: c2, Arg: a2, Value: v2
