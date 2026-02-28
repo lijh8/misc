@@ -580,11 +580,6 @@ func main() {
 ---
 
 
-$ cat a.txt
-c1:a1=v1
-c2:a2=v2, c22:a22=v22
-c3 : a3 = v3 , c33:a33=v33   c333 : a333 = v333
-$
 $ cat main.go
 package main
 
@@ -604,12 +599,12 @@ import (
 //      cmd : arg = value
 //
 // it could repeat with optional comma separators:
-//      cmd:arg=value, cmd:arg=value  cmd:arg=value
+//      cmd:arg=value,cmd:arg=value , cmd:arg=value  cmd:arg=value
 //
 // e.g., a.txt:
 //      c1:a1=v1
-//      c2:a2=v2, c22:a22=v22
-//      c3 : a3 = v3 , c33:a33=v33   c333 : a333 = v333
+//      c2 : a2 = v2
+//      c3:a3=v3,c33:a33=v33 , c333:a333=v333   c3333 : a3333 = v3333
 
 func main() {
         if len(os.Args) != 2 {
@@ -649,13 +644,18 @@ func main() {
         }
 }
 $
+$ cat a.txt
+c1:a1=v1
+c2 : a2 = v2
+c3:a3=v3,c33:a33=v33 , c333:a333=v333   c3333 : a3333 = v3333
+$
 $ go run . a.txt
 Cmd: c1, Arg: a1, Value: v1
 Cmd: c2, Arg: a2, Value: v2
-Cmd: c22, Arg: a22, Value: v22
 Cmd: c3, Arg: a3, Value: v3
 Cmd: c33, Arg: a33, Value: v33
 Cmd: c333, Arg: a333, Value: v333
+Cmd: c3333, Arg: a3333, Value: v3333
 $
 
 
