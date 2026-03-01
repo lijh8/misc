@@ -25,7 +25,9 @@ Debugger: github.com/go-delve/delve/cmd/dlv
 $ cat .vscode/launch.json
 {
         // open func main in current active editor;
-        // View / Run: Run and Debug (Shift-Cmd-D) / create a launch.json;
+        // View / Run: Run and Debug (Shift-Cmd-D):
+        // create a launch.json / Go / Go: Launch Package;
+
         "version": "0.2.0",
         "configurations": [
                 {
@@ -34,7 +36,14 @@ $ cat .vscode/launch.json
                         "request": "launch",
                         "mode": "auto",
                         "program": "${fileDirname}",
-                        "console": "integratedTerminal", // stdin
+                        "console": "integratedTerminal",
+                        "cwd": "${fileDirname}",
+                        "args": [
+                                "input_data.txt",
+                        ],
+                        "env": {
+                                "LD_LIBRARY_PATH": "${env:LD_LIBRARY_PATH}:/custom/path",
+                        },
                 }
         ]
 }
@@ -42,7 +51,7 @@ $
 
 $ cat .vscode/settings.json
         "go.toolsEnvVars": {
-                "LD_LIBRARY_PATH": "/path/to/lib",
+                "LD_LIBRARY_PATH": "${env:LD_LIBRARY_PATH}:/custom/path",
         },
 $
 
