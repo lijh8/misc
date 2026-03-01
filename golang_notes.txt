@@ -18,8 +18,9 @@ $ cat /etc/paths.d/go
 /usr/local/go/bin
 $
 
-vscode extension: golang.go from Go team
-tools: dlv, gopls
+VSCode Extension: golang.go from Go team
+Debugger: github.com/go-delve/delve/cmd/dlv
+LSP: golang.org/x/tools/gopls
 
 $ cd ~
 $ mkdir workspace
@@ -661,6 +662,96 @@ Cmd: c33, Arg: a33, Value: v33
 Cmd: c333, Arg: a333, Value: v333
 Cmd: c3333, Arg: a3333, Value: v3333
 $
+
+
+---
+
+
+https://go.dev/blog/loopvar-preview
+
+$ pwd
+/home/ljh/doc/go_work/src/main
+$ ls
+go.mod  main.go
+$ cat main.go
+package main
+
+import "fmt"
+
+func main() {
+        done := make(chan bool)
+
+        values := []string{"a", "b", "c"}
+        for _, v := range values {
+                go func() {
+                        fmt.Println(v)
+                        done <- true
+                }()
+        }
+
+        for _ = range values {
+                <-done
+        }
+}
+$
+
+$ grep go go.mod
+go 1.22.0
+$
+$ go run .
+c
+a
+b
+$
+
+$ grep go go.mod
+go 1.21.0
+$
+$ go run
+go: no go files listed
+$ go run .
+c
+c
+c
+$
+
+
+---
+
+
+https://go.dev/doc/go1.7
+
+The new back end, based on SSA, generates more compact, more efficient code and
+provides a better platform for optimizations such as bounds check elimination.
+
+
+---
+
+
+https://go.dev/doc/gc-guide#Escape_analysis
+
+"Escape to heap" is Go's way of ensuring memory safety when variables outlive
+their scope. However, heap allocation has costs.
+
+// Returning a Pointer to a Local Variable
+func create() *int {
+    x := 42
+    return &x  // x escapes: pointer outlives function
+}
+
+// Capturing Variables in a Closure:
+// If a function literal (closure) references a variable from an outer scope,
+// and that closure might outlive the current function (e.g., when passed to go),
+// the captured variable escapes.
+
+func main() {
+    for i := 0; i < 3; i++ {
+        // The variable 'i' is captured and will likely escape.
+        go func() { fmt.Println(i) }()
+    }
+}
+
+$ go build -gcflags="-m" .
 
 
 ---
