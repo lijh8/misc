@@ -534,38 +534,38 @@ or add the type parameters to the receiver type.
 package main
 
 import (
-        "log"
+        "fmt"
 )
 
-// FUNCTION: type parameter goes with the function
-func Nop[T any](x T) T {
-        return x
+// FUNCTION:
+// type parameter goes with the function
+func Add[T int | float64](a, b T) T {
+        return a + b
 }
 
-// METHOD: Type parameters are attached to the receiver type, not the method
-func (n Nopper[T]) Nop(x T) T {
-        return x
+// METHOD:
+// Type parameters are attached to the receiver struct type.
+// Type parameters can then be used in method parameters and return types,
+// achieving the same goal: making types generic.
+func (recv *Addable[T]) Add(a, b T) T {
+        recv.value = a + b
+        return recv.value
 }
 
-type Nopper[T any] struct {
-        a, b T
+type Addable[T int | float64] struct {
+        value T
 }
 
 func main() {
-        log.Println(Nop("abc"))
-        log.Println(Nop(123))
+        fmt.Println(Add(1.0, 2.0))
 
-        m := Nopper[string]{}
-        log.Println(m.Nop("abc"))
-        n := Nopper[int]{}
-        log.Println(n.Nop(123))
+        m := Addable[float64]{}
+        fmt.Println(m.Add(3.14, 2))
 }
 
-$ go run ./main
-main.go:24: abc
-main.go:25: 123
-main.go:28: abc
-main.go:30: 123
+$ go run .
+3
+5.140000000000001
 $
 
 
@@ -772,8 +772,8 @@ their scope. However, heap allocation has costs.
 
 // Returning a Pointer to a Local Variable
 func create() *int {
-    x := 42
-    return &x  // x escapes: pointer outlives function
+        x := 42
+        return &x  // x escapes: pointer outlives function
 }
 
 // Capturing Variables in a Closure:
@@ -782,10 +782,10 @@ func create() *int {
 // the captured variable escapes.
 
 func main() {
-    for i := 0; i < 3; i++ {
-        // The variable 'i' is captured and will likely escape.
-        go func() { fmt.Println(i) }()
-    }
+        for i := 0; i < 3; i++ {
+                // The variable 'i' is captured and will likely escape.
+                go func() { fmt.Println(i) }()
+        }
 }
 
 $ go build -gcflags="-m" .
