@@ -19,6 +19,41 @@ main.c:12: hello, 123, 3.140000
 ---
 
 
+prefer < over != in traditional loop
+
+// increment by more than 1 step where != could not work
+
+std::string s = "abcdef";
+for (size_t i = 0; i < s.size(); i += 2)
+{
+    s[i] = std::toupper(s[i]);
+}
+
+s = "abcdef";
+for (auto it = begin(s); it < end(s); it += 2)
+{
+    *it = std::toupper(*it);
+}
+
+
+// increment by 1 step where != could work
+
+s = "abcdef";
+for (size_t i = 0; i != s.size(); i++)
+{
+    s[i] = std::toupper(s[i]);
+}
+
+s = "abcdef";
+for (auto it = begin(s); it != end(s); ++it)
+{
+    *it = std::toupper(*it);
+}
+
+
+---
+
+
 Quick sort
 
 1. It selects an element as a pivot (common strategies include the first, last,
