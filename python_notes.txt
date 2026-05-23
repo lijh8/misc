@@ -1,0 +1,37 @@
+The Python Tutorial
+https://docs.python.org/3/tutorial/index.html
+
+
+6.4. Packages
+
+The __init__.py files are required to make Python treat directories containing
+the file as packages (unless using a namespace package, a relatively advanced
+feature)
+
+---
+
+7.2. Reading and Writing Files
+
+It is good practice to use the with keyword when dealing with file objects. The
+advantage is that the file is properly closed after its suite finishes, even if
+an exception is raised at some point. Using with is also much shorter than
+writing equivalent try-finally blocks:
+
+    with open('workfile', encoding="utf-8") as f:
+        read_data = f.read()
+
+    # We can check that the file has been automatically closed.
+    f.closed
+
+If you’re not using the with keyword, then you should call f.close() to close
+the file and immediately free up any system resources used by it.
+
+---
+
+7.2.1. Methods of File Objects
+
+For reading lines from a file, you can loop over the file object. This is memory
+efficient, fast, and leads to simple code:
+
+    for line in f:
+        print(line, end='')
