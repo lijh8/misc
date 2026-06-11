@@ -395,3 +395,23 @@ std::shared_ptr<int[]> sp2(new int[3]{1, 2, 3});
 
 
 ---
+
+
+fgets(buf, size, stream);
+最多写入 size - 1 个;
+自动补 '\0';
+
+snprintf(buf, size, fmt, ...);
+最多写入 size - 1 个;
+自动补 '\0';
+
+strncpy(dest, src, size);
+最多写入 size 个;
+自动补 '\0' (仅当src长度 < size 时补，否则不补);
+
+memcpy(dest, src, size);
+最多写入 size 个;
+不自动补 '\0';
+
+
+---
