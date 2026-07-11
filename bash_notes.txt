@@ -1,0 +1,87 @@
+#!/usr/bin/env bash
+set -euo pipefail # strict mode
+
+# bash main.sh
+
+# echo with filename and line number
+shopt -s expand_aliases
+# alias echo='echo $BASH_SOURCE:$LINENO:$FUNCNAME: '
+alias echo='echo $BASH_SOURCE:$LINENO: '
+
+# no spaces before and after the assignment operator, e.g., var=foo
+#   a=123    # ok
+#   a = 123  # err
+
+# integer: (( ))
+a=10
+b=5
+if (( a < b )) # comparison
+then
+    echo "$a < $b"
+elif (( a == b )) # equality
+then
+    echo "$a == $b"
+else
+    echo "$a > $b"
+fi
+
+(( b = a + 20 )) # arithmetic
+echo $b
+
+
+# floating point
+c=$(bc <<< "a=0.1; b=0.2; a+b")
+echo $c
+
+
+# text string: [[ ]]
+a="abc"
+b="def"
+if [[ $a < $b ]] # comparison
+then
+    echo "$a < $b"
+elif [[ $a == $b ]] # equality
+then
+    echo "$a == $b"
+else
+    echo "$a > $b"
+fi
+
+
+mobile="13812345678"
+pattern="^1[3-9][0-9]{9}$"
+if [[ $mobile =~ $pattern ]] # regex
+then
+    echo "valid: $mobile"
+else
+    echo "invalid: $mobile"
+fi
+
+
+# parameter and variable expansion
+a="hello"
+len=${#a}    # length
+sub=${a:0:2} # he
+b=${a/l/L}   # heLlo
+c=${a//l/L}  # heLLo
+echo "$a $len $sub $b $c"
+
+# check if command succeeds
+file=wrong_filename.txt
+file=main.sh # a correct filename
+if ls -l "$file"
+then
+    echo ok
+else
+    echo err
+fi
+
+output=$(ls -l "$file")
+exit_code=$?
+if [[ $exit_code != 0 ]]
+then
+    echo err
+else
+    echo ok
+fi
+echo $exit_code
