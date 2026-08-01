@@ -415,3 +415,86 @@ memcpy(dest, src, size);
 
 
 ---
+
+
+// C++ 虚函数的多态行为，是通过基类指针或引用，指向派生类对象来实现的。
+// 在运行时，根据指针或引用实际指向对象的类型，来调用该类的虚函数。
+// 这是一种 upcast（向上转型），把派生类指针或引用，转换为基类指针或引用。
+// 相反，dynamic_cast 常用于 downcast（向下转型）。
+
+#include <stdio.h>
+
+struct A
+{
+    virtual void foo()
+    {
+        printf("A::%s\n", __func__);
+    }
+    virtual ~A() {}
+};
+
+struct B : A
+{
+    virtual void foo()
+    {
+        printf("B::%s\n", __func__);
+    }
+    virtual ~B() {}
+};
+
+int main()
+{
+    A *p;
+    p = new A();
+    p->foo();
+    delete p;
+
+    p = new B(); // upcast
+    p->foo();
+    delete p;
+}
+
+/*
+$ ./main
+A::foo
+B::foo
+$
+*/
+
+
+---
+
+
+#include <stdio.h>
+#include <string.h>
+
+void reverse(char *s)
+{
+    if (s == NULL)
+        return;
+
+    size_t len = strlen(s);
+    if (len <= 1)
+        return;
+
+    for (char *left = s, *right = s + len - 1;
+         left < right;
+         left++, right--)
+    {
+        char t = *left;
+        *left = *right;
+        *right = t;
+    }
+}
+
+int main()
+{
+    char s[] = "abc"; // ok, 声明数组，使用字符串字面值初始化
+    // char *s = "abc"; // err, 字符串字面值是只读，修改是未定义行为
+
+    reverse(s);
+    printf("%s\n", s);
+}
+
+
+---
