@@ -1,10 +1,24 @@
 libevent
 
-读或写可以在 bufferevent_setcb 中注册的回调函数 readcb 或 writecb 中进行，
-bufferevent_setcb(bufev, readcb, writecb, eventcb, cbarg);
+使用 bufferevent_read、evbuffer_readln、bufferevent_write 等函数进行数据读写操作。
 
-也可在其它地方，比如在 evtimer_add 中注册的函数，
-调用 bufferevent_read, evbuffer_readln, bufferevent_write 进行读写，
+读写操作可以在通过 bufferevent_setcb 注册的回调函数（如 readcb 或 writecb）中执行：
+    bufferevent_setcb(bufev, readcb, writecb, eventcb, cbarg);
+
+也可以在其它位置执行，例如在通过 evtimer_add、event_new、event_add 注册回调函数中。
+
+readcb：当 libevent 已将底层 socket fd 中的数据读入到 input buffer 时，该回调被触发。
+    此时上层应用可以从 input buffer 中读取已就绪的数据。
+
+writecb：当 libevent 将 output buffer 中的数据成功写入底层 socket fd 后，该回调被触发。
+    此时 output buffer 中有可用空间，上层应用可以继续向其中写入新数据。
+    libevent 负责将数据从 output buffer 实际发送到系统 socket fd。
+
+libevent 的 Reactor 模式：
+    通知 I/O 状态已就绪 (ready)，可以开始读写。
+
+C++ Boost.Asio 的 Proactor 模式：
+    通知 I/O 操作已完成 (completion)，读写已经完成。
 
 
 ---
