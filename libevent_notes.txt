@@ -1,0 +1,324 @@
+libevent
+
+读或写可以在 bufferevent_setcb 中注册的回调函数 readcb 或 writecb 中进行，
+bufferevent_setcb(bufev, readcb, writecb, eventcb, cbarg);
+
+也可在其它地方，比如在 evtimer_add 中注册的函数，
+调用 bufferevent_read, evbuffer_readln, bufferevent_write 进行读写，
+
+
+---
+
+
+$ cat server.cpp
+// sudo apt-get install libevent-dev
+// g++ server.cpp -o server -levent -std=c++11
+// $ ./server
+
+#include <iostream>
+#include <string>
+#include <cstring>
+#include <cerrno>
+#include <unistd.h>
+#include <arpa/inet.h>
+#include <event2/listener.h>
+#include <event2/buffer.h>
+#include <event2/bufferevent.h>
+#include <event2/event.h>
+#include <event2/util.h>
+
+const int MAX_FD = 10240;
+
+struct event *g_timers[MAX_FD] = {nullptr};
+int g_server_seq[MAX_FD] = {0};
+
+void client_read_cb(struct bufferevent *bev, void *ctx)
+{
+    struct evbuffer *input = bufferevent_get_input(bev);
+    char *line;
+    size_t len;
+
+    while ((line = evbuffer_readln(input, &len, EVBUFFER_EOL_LF)) != NULL)
+    {
+        std::cout << "[Received from client] " << line << std::endl;
+        free(line);
+    }
+}
+
+void server_timer_cb(evutil_socket_t fd, short event, void *arg)
+{
+    struct bufferevent *bev = static_cast<struct bufferevent *>(arg);
+    int conn_fd = bufferevent_getfd(bev);
+
+    if (conn_fd < 0 || conn_fd >= MAX_FD)
+    {
+        return;
+    }
+
+    g_server_seq[conn_fd]++;
+
+    std::string msg = "hello from server " + std::to_string(g_server_seq[conn_fd]) + "\n";
+    bufferevent_write(bev, msg.c_str(), msg.length());
+
+    struct timeval tv = {1, 0};
+    evtimer_add(g_timers[conn_fd], &tv);
+}
+
+void client_event_cb(struct bufferevent *bev, short events, void *ctx)
+{
+    int conn_fd = bufferevent_getfd(bev);
+
+    if (!(events & (BEV_EVENT_EOF | BEV_EVENT_ERROR)))
+    {
+        return;
+    }
+
+    if (events & BEV_EVENT_EOF)
+    {
+        std::cout << "[INFO] Client connection closed normally (fd=" << conn_fd << ")" << std::endl;
+    }
+    else if (events & BEV_EVENT_ERROR)
+    {
+        std::cerr << "[ERROR] Client connection error: " << strerror(errno) << std::endl;
+    }
+
+    if (conn_fd >= 0 && conn_fd < MAX_FD)
+    {
+        if (g_timers[conn_fd])
+        {
+            event_free(g_timers[conn_fd]);
+            g_timers[conn_fd] = nullptr;
+        }
+    }
+
+    bufferevent_free(bev);
+}
+
+void accept_cb(struct evconnlistener *listener, evutil_socket_t fd,
+               struct sockaddr *addr, int socklen, void *ctx)
+{
+    struct event_base *base = static_cast<struct event_base *>(ctx);
+
+    if (fd >= MAX_FD)
+    {
+        std::cerr << "fd exceeds preset range!" << std::endl;
+        close(fd);
+        return;
+    }
+
+    struct bufferevent *bev = bufferevent_socket_new(base, fd, BEV_OPT_CLOSE_ON_FREE);
+    if (!bev)
+    {
+        std::cerr << "Failed to create bufferevent!" << std::endl;
+        close(fd);
+        return;
+    }
+
+    bufferevent_setcb(bev, client_read_cb, nullptr, client_event_cb, bev);
+    bufferevent_enable(bev, EV_READ);
+
+    char ip_str[INET_ADDRSTRLEN];
+    struct sockaddr_in *client_addr = (struct sockaddr_in *)addr;
+    inet_ntop(AF_INET, &(client_addr->sin_addr), ip_str, INET_ADDRSTRLEN);
+    int port = ntohs(client_addr->sin_port);
+
+    std::cout << "[INFO] New client connected, fd=" << fd
+              << ", peer=" << ip_str << ":" << port << std::endl;
+
+    g_server_seq[fd] = 0;
+    g_timers[fd] = evtimer_new(base, server_timer_cb, bev);
+
+    struct timeval tv = {1, 0};
+    evtimer_add(g_timers[fd], &tv);
+}
+
+int main()
+{
+    struct event_base *base = event_base_new();
+    if (!base)
+    {
+        std::cerr << "Failed to create event_base!" << std::endl;
+        return 1;
+    }
+
+    struct sockaddr_in sin;
+    memset(&sin, 0, sizeof(sin));
+    sin.sin_family = AF_INET;
+    sin.sin_addr.s_addr = htonl(INADDR_ANY);
+    sin.sin_port = htons(8888);
+
+    struct evconnlistener *listener = evconnlistener_new_bind(
+        base, accept_cb, base,
+        LEV_OPT_REUSEABLE | LEV_OPT_CLOSE_ON_FREE,
+        -1, (struct sockaddr *)&sin, sizeof(sin));
+
+    if (!listener)
+    {
+        std::cerr << "Failed to create listener: " << strerror(errno) << std::endl;
+        event_base_free(base);
+        return 1;
+    }
+
+    std::cout << "Server started, listening on port 8888..." << std::endl;
+    event_base_dispatch(base);
+
+    evconnlistener_free(listener);
+    event_base_free(base);
+    return 0;
+}
+$
+
+
+---
+
+
+$ cat client.cpp
+// sudo apt-get install libevent-dev
+// g++ client.cpp -o client -levent -std=c++11
+// $ ./client 192.168.1.16 8888 tom
+// $ ./client 192.168.1.16 8888 jerry # another terminal
+
+#include <iostream>
+#include <string>
+#include <cstring>
+#include <cerrno>
+#include <arpa/inet.h>
+#include <event2/buffer.h>
+#include <event2/bufferevent.h>
+#include <event2/event.h>
+#include <event2/util.h>
+
+struct event *g_timer_ev = nullptr;
+int g_client_seq = 0;
+std::string g_tag;
+
+void server_read_cb(struct bufferevent *bev, void *ctx)
+{
+    struct evbuffer *input = bufferevent_get_input(bev);
+    char *line;
+    size_t len;
+
+    while ((line = evbuffer_readln(input, &len, EVBUFFER_EOL_LF)) != NULL)
+    {
+        std::cout << "[Received from server] " << line << std::endl;
+        free(line);
+    }
+}
+
+void client_timer_cb(evutil_socket_t fd, short event, void *arg)
+{
+    struct bufferevent *bev = static_cast<struct bufferevent *>(arg);
+    g_client_seq++;
+
+    std::string msg = "hello from client " + g_tag + " " + std::to_string(g_client_seq) + "\n";
+    bufferevent_write(bev, msg.c_str(), msg.length());
+
+    struct timeval tv = {1, 0};
+    if (g_timer_ev)
+    {
+        evtimer_add(g_timer_ev, &tv);
+    }
+}
+
+void server_event_cb(struct bufferevent *bev, short events, void *ctx)
+{
+    if (events & BEV_EVENT_CONNECTED)
+    {
+        std::cout << "[INFO] Successfully connected to server" << std::endl;
+        return;
+    }
+
+    if (!(events & (BEV_EVENT_EOF | BEV_EVENT_ERROR)))
+    {
+        return;
+    }
+
+    if (events & BEV_EVENT_EOF)
+    {
+        std::cout << "[INFO] Server connection closed" << std::endl;
+    }
+    else if (events & BEV_EVENT_ERROR)
+    {
+        std::cerr << "[ERROR] Server connection error: " << strerror(errno) << std::endl;
+    }
+
+    struct event_base *base = bufferevent_get_base(bev);
+
+    if (g_timer_ev)
+    {
+        event_free(g_timer_ev);
+        g_timer_ev = nullptr;
+    }
+
+    bufferevent_free(bev);
+    event_base_loopbreak(base);
+}
+
+int main(int argc, char **argv)
+{
+    if (argc < 4)
+    {
+        std::cerr << "Usage: " << argv[0] << " <server_ip> <server_port> <client_tag>" << std::endl;
+        return 1;
+    }
+
+    std::string server_ip = argv[1];
+    int server_port = std::stoi(argv[2]);
+    g_tag = argv[3];
+
+    struct event_base *base = event_base_new();
+    if (!base)
+    {
+        std::cerr << "Failed to create event_base!" << std::endl;
+        return 1;
+    }
+
+    struct bufferevent *bev = bufferevent_socket_new(base, -1, BEV_OPT_CLOSE_ON_FREE);
+    if (!bev)
+    {
+        std::cerr << "Failed to create bufferevent!" << std::endl;
+        event_base_free(base);
+        return 1;
+    }
+
+    bufferevent_setcb(bev, server_read_cb, nullptr, server_event_cb, bev);
+    bufferevent_enable(bev, EV_READ);
+
+    struct sockaddr_in sin;
+    memset(&sin, 0, sizeof(sin));
+    sin.sin_family = AF_INET;
+    sin.sin_port = htons(server_port);
+
+    if (evutil_inet_pton(AF_INET, server_ip.c_str(), &sin.sin_addr) <= 0)
+    {
+        std::cerr << "Invalid server IP address: " << server_ip << std::endl;
+        bufferevent_free(bev);
+        event_base_free(base);
+        return 1;
+    }
+
+    if (bufferevent_socket_connect(bev, (struct sockaddr *)&sin, sizeof(sin)) < 0)
+    {
+        std::cerr << "Failed to connect to server: " << strerror(errno) << std::endl;
+        bufferevent_free(bev);
+        event_base_free(base);
+        return 1;
+    }
+
+    std::cout << "Client started (Tag: " << g_tag << "), attempting to connect to "
+              << server_ip << ":" << server_port << "..." << std::endl;
+
+    g_timer_ev = evtimer_new(base, client_timer_cb, bev);
+    struct timeval tv = {1, 0};
+    evtimer_add(g_timer_ev, &tv);
+
+    event_base_dispatch(base);
+
+    event_base_free(base);
+    return 0;
+}
+$
+
+
+---
+
