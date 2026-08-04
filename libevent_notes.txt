@@ -13,10 +13,10 @@ writecb：当 libevent 将 output buffer 中的数据写入底层 socket fd 后�
     此时 output buffer 中有可用空间，上层应用可以向其写入新数据。
     libevent 负责将数据从 output buffer 实际写入系统 socket fd。
 
-libevent 的 Reactor 模式：
+Reactor 模式 (e.g., libevent):
     通知 I/O 状态已就绪 (ready)，可以开始读写。
 
-C++ Boost.Asio 的 Proactor 模式：
+Proactor 模式 (e.g., C++ Boost.Asio):
     通知 I/O 操作已完成 (completion)，读写已经完成。
 
 
