@@ -499,3 +499,38 @@ int main()
 
 
 ---
+
+
+#include <stdio.h>
+
+int main()
+{
+    char *str = "1234567890";
+
+    // 1. C 语言 printf 打印字符串类型，指定最小输出字段宽度和最大输出字符数精度
+    //      进行截断和填充 truncate and pad
+    printf("Line:%2d: %8.6s\n", __LINE__, str);
+
+    // 2. 使用 * 占位符
+    int m = 8, n = 6;
+    // 第一个 * 使用 m 为最小输出字段宽度，第二个 * 使用 n 精度为最大输出字符数
+    printf("Line:%2d: %*.*s\n", __LINE__, m, n, str);
+
+    // 3. 动态构建格式字符串
+    char format[32] = {0};
+    snprintf(format, sizeof(format), "Line:%2d: %%%d.%ds\n", __LINE__, m, n);
+    printf(format, str);
+
+    return 0;
+}
+
+/*
+$ gcc main.c && ./a.out
+Line: 9:   123456
+Line:14:   123456
+Line:18:   123456
+$
+*/
+
+
+---
