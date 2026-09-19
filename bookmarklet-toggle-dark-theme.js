@@ -1,5 +1,5 @@
 javascript: (function () {
-    const id = 'bookmarklet-toggle-theme';
+    const id = 'bookmarklet-toggle-dark-theme';
     let e = document.getElementById(id);
     if (e) {
         e.remove();
