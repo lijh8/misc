@@ -5,6 +5,7 @@ $ rm -rf /usr/local/go && tar -C /usr/local -xzf go1.26.0.linux-amd64.tar.gz
 
 $ cat ~/.bashrc
 export PATH=$PATH:/usr/local/go/bin
+export PATH="$PATH:$(go env GOPATH)/bin"
 # mirrors
 go env -w GOSUMDB="sum.golang.google.cn"
 go env -w GOPROXY="https://goproxy.io,https://goproxy.cn,direct"
