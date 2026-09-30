@@ -59,6 +59,13 @@ $
 ---
 
 
+1. 在 Go 中，`go.work` 的 `use` 指令指定所需模块的路径（即模块 `go.mod` 所在目录）；
+   `import` 使用 `go.mod` 中定义的 module name（也叫 module path），子包可追加子目录；
+   代码中通过 package name 引用导出符号。
+
+2. 在 Go 中，一个目录只能有一个 package，同一目录下所有文件必须声明相同的 package name；
+   子目录中的包是独立的包。
+
 $ cd ~
 $ mkdir workspace
 $ cd workspace
