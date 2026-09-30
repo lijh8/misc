@@ -22,6 +22,8 @@ VSCode Extension: golang.go from Go team
 LSP: golang.org/x/tools/gopls
 Debugger: github.com/go-delve/delve/cmd/dlv
 
+$ go install -v github.com/go-delve/delve/cmd/dlv@latest
+
 $ cat .vscode/launch.json
 {
         // open func main in current active editor;
@@ -860,6 +862,86 @@ func main() {
                 quickSort(arr, 0, len(arr)-1)
                 fmt.Println(arr)
         }
+}
+
+
+---
+
+
+package main
+
+import (
+	"fmt"
+	"slices"
+	"sort"
+)
+
+func main() {
+	slice := []int{3, 1, 2, 3, 3, 3, 4, 5}
+	target := 3
+	slices.Sort(slice)
+
+	// lower bound: first index where slice[i] >= target
+	lower := sort.Search(len(slice), func(i int) bool {
+		return slice[i] >= target
+	})
+
+	// upper bound: first index where slice[i] > target
+	upper := sort.Search(len(slice), func(i int) bool {
+		return slice[i] > target
+	})
+
+	// equal range
+	fmt.Printf("equal range elements: %v\n", slice[lower:upper])
+}
+
+
+---
+
+
+package main
+
+import (
+	"cmp"
+	"fmt"
+	"slices"
+	"sort"
+)
+
+// Go 1.21+: Sort via slices.SortFunc instead of sort.Interface (Len, Less, Swap).
+type Item struct {
+	name string
+	num  int
+}
+
+func cmpItem(a, b Item) int {
+	return cmp.Or(
+		cmp.Compare(a.name, b.name),
+		cmp.Compare(a.num, b.num),
+	)
+}
+
+func main() {
+	items := []Item{
+		{"banana", 3},
+		{"apple", 1},
+		{"cherry", 2},
+		{"apple", 3},
+		{"banana", 1},
+		{"cherry", 3},
+	}
+	slices.SortFunc(items, cmpItem)
+	target := Item{"banana", 3}
+
+	lower := sort.Search(len(items), func(i int) bool {
+		return cmpItem(items[i], target) >= 0
+	})
+
+	upper := sort.Search(len(items), func(i int) bool {
+		return cmpItem(items[i], target) > 0
+	})
+
+	fmt.Printf("equal range elements: %v\n", items[lower:upper])
 }
 
 
