@@ -947,3 +947,62 @@ func main() {
 
 
 ---
+
+
+package main
+
+import (
+	"fmt"
+	"slices"
+	"strings"
+	"unicode/utf8"
+)
+
+func main() {
+	f1()
+	f2()
+}
+
+func f1() {
+	// 在字符串中查找子串
+	s := "你好 world, 你好 go"
+	sub := "你好"
+	pos := 5
+
+	for pos < len(s) && !utf8.RuneStart(s[pos]) {
+		pos++
+	}
+
+	// 进行切片操作;
+	// 返回字节byte为单位的索引
+	idx := strings.Index(s[pos:], sub)
+	if idx >= 0 {
+		idx += pos
+	}
+	fmt.Println("f1 byte index:", idx)
+
+	if idx >= 0 {
+		// 转换为字符rune为单位的索引
+		runeIdx := utf8.RuneCountInString(s[:idx])
+		fmt.Println("f1 rune index:", runeIdx)
+	}
+}
+
+func f2() {
+	// 在slice中查找元素
+	s := "你好 world, 你好 go"
+	r := []rune(s)
+	target := '你'
+	pos := 5
+
+	// 进行切片操作;
+	// 返回字符rune为单位的索引
+	idx := slices.Index(r[pos:], target)
+	if idx >= 0 {
+		idx += pos
+	}
+	fmt.Println("f2 rune index:", idx)
+}
+
+
+---
